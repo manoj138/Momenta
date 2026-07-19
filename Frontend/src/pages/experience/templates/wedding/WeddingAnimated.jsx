@@ -58,6 +58,10 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(false);
 
+  // Akshata Shower States
+  const [showAkshata, setShowAkshata] = useState(false);
+  const [akshataGrains, setAkshataGrains] = useState([]);
+
   // Audio Control States
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
@@ -275,6 +279,8 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   };
 
 
+  // Akshata colors: golden yellow, saffron, vermilion red, gulal pink, rice cream
+  const akshataColors = ["#fcd34d", "#f59e0b", "#ef4444", "#ec4899", "#fef3c7"];
 
   // Sub-progress mapping for two-stage scroll animation:
   // Stage 1: Welcome text fades out from progress 0 to 0.3
@@ -283,6 +289,27 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   // Stage 2: Bride & Groom slide in from progress 0.3 to 1.0
   const slideProgress = scrollProgress < 0.3 ? 0 : (scrollProgress - 0.3) / 0.7;
   const coupleOpacity = Math.min(1, slideProgress / 0.15);
+
+  // Generate akshata grains when couple meets
+  useEffect(() => {
+    if (slideProgress >= 0.95 && !showAkshata) {
+      setShowAkshata(true);
+      const grains = Array.from({ length: 60 }, (_, i) => ({
+        id: i,
+        left: Math.random() * 100,           // horizontal position %
+        size: 3 + Math.random() * 5,          // grain size px
+        delay: Math.random() * 3,             // stagger delay
+        duration: 2.5 + Math.random() * 2.5,  // fall speed
+        color: akshataColors[Math.floor(Math.random() * akshataColors.length)],
+        sway: Math.random() > 0.5 ? "sway-left" : "sway-right",
+        rotation: Math.floor(Math.random() * 360),
+      }));
+      setAkshataGrains(grains);
+    } else if (slideProgress < 0.95 && showAkshata) {
+      setShowAkshata(false);
+      setAkshataGrains([]);
+    }
+  }, [slideProgress, showAkshata]);
 
   return (
     <div
@@ -293,6 +320,25 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       }}
       className="w-full bg-[#6b0606] text-amber-100 font-serif relative scroll-smooth flex flex-col overflow-x-hidden select-none selection:bg-amber-500 selection:text-[#6b0606]"
     >
+      {/* Akshata Shower CSS Keyframes */}
+      <style>{`
+        @keyframes akshata-fall {
+          0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+          80% { opacity: 1; }
+          100% { transform: translateY(calc(100vh + 20px)) rotate(720deg); opacity: 0; }
+        }
+        @keyframes sway-left {
+          0%, 100% { margin-left: 0; }
+          25% { margin-left: -15px; }
+          75% { margin-left: 10px; }
+        }
+        @keyframes sway-right {
+          0%, 100% { margin-left: 0; }
+          25% { margin-left: 15px; }
+          75% { margin-left: -10px; }
+        }
+      `}</style>
+
       {/* Background Floral Gold Ornament Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(#fcd34d_0.8px,transparent_0.8px)] [background-size:24px_24px] opacity-5 pointer-events-none" />
 
@@ -315,6 +361,30 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       {/* STAGE 1: The Pinned Meeting Animation Fold */}
       <div className="w-full h-full shrink-0 relative flex flex-col justify-between items-center p-6 pb-12">
         
+        {/* Akshata (Colored Rice) Shower Overlay - Full Stage 1 coverage */}
+        {showAkshata && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-40">
+            {akshataGrains.map((grain) => (
+              <div
+                key={grain.id}
+                style={{
+                  position: "absolute",
+                  left: `${grain.left}%`,
+                  top: "-10px",
+                  width: `${grain.size}px`,
+                  height: `${grain.size * 1.8}px`,
+                  backgroundColor: grain.color,
+                  borderRadius: "50% 50% 50% 50% / 60% 60% 40% 40%",
+                  opacity: 0.85,
+                  transform: `rotate(${grain.rotation}deg)`,
+                  animation: `akshata-fall ${grain.duration}s ${grain.delay}s linear infinite, ${grain.sway} ${grain.duration * 0.8}s ${grain.delay}s ease-in-out infinite`,
+                  boxShadow: `0 0 3px ${grain.color}60`,
+                }}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Welcome Section (Centered absolutely in the viewport) */}
         <div
           style={{
