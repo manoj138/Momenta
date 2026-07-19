@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useApp } from "../../../../context/AppContext";
-import { Heart, Calendar, MapPin, Music, Send, CheckCircle2, MessageSquare, Clock, ArrowDown, Volume2, VolumeX } from "lucide-react";
+import { Heart, Calendar, MapPin, Clock, ArrowDown, Volume2, VolumeX } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 
 // Intricate Golden Indian Wedding Floral Corner Motif
@@ -52,7 +51,6 @@ const BrideIllustration = () => (
 );
 
 const WeddingAnimated = ({ data = {}, isDemo = false }) => {
-  const { addRSVPToExperience } = useApp();
   const containerRef = useRef(null);
 
   // Animation Control States
@@ -64,12 +62,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const audioRef = useRef(null);
   const audioUrl = data.bgMusic || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
-  // RSVP Form States
-  const [guestName, setGuestName] = useState("");
-  const [guestCount, setGuestCount] = useState(1);
-  const [rsvpStatus, setRsvpStatus] = useState("attending");
-  const [guestMessage, setGuestMessage] = useState("");
-  const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
+
 
   // Countdown timer calculations
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -192,23 +185,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
     setIsPlaying(!isPlaying);
   };
 
-  // RSVP Form submission
-  const handleRSVPSubmit = (e) => {
-    e.preventDefault();
-    if (!guestName.trim()) return;
 
-    const rsvpObj = {
-      name: guestName,
-      count: Number(guestCount),
-      status: rsvpStatus,
-      message: guestMessage,
-    };
-
-    if (!isDemo && data.slug) {
-      addRSVPToExperience(data.slug, rsvpObj);
-    }
-    setRsvpSubmitted(true);
-  };
 
   // Sub-progress mapping for two-stage scroll animation:
   // Stage 1: Welcome text fades out from progress 0 to 0.3
@@ -437,86 +414,6 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
                   <span>Navigate with Maps</span>
                 </a>
               </div>
-            )}
-          </div>
-
-          {/* 4. RSVP Submission Form */}
-          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-4">
-            <div className="text-center">
-              <MessageSquare className="text-amber-700 mx-auto mb-1.5" size={24} />
-              <h3 className="text-lg font-bold text-amber-900 font-serif">Will You Join Us?</h3>
-              <p className="text-xs text-amber-700/80">Please register your attendance registry</p>
-            </div>
-
-            {rsvpSubmitted ? (
-              <div className="bg-emerald-950/40 border border-emerald-500/20 p-4 rounded-2xl text-center space-y-2">
-                <CheckCircle2 className="text-emerald-400 mx-auto" size={28} />
-                <h4 className="text-sm font-bold text-emerald-300">Attendance Registered!</h4>
-                <p className="text-xs text-emerald-400/80">Thank you for sharing your love with us.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleRSVPSubmit} className="space-y-3.5 text-xs text-amber-100">
-                <div className="space-y-1">
-                  <label className="block font-bold text-amber-300">Your Name / कुटुंबियांचे नाव</label>
-                  <input
-                    type="text"
-                    required
-                    value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
-                    placeholder="e.g. Ramesh Kulkarni"
-                    className="w-full px-3 py-2 border border-amber-500/20 rounded-xl bg-[#310202] focus:outline-none focus:border-amber-400 font-serif text-amber-100 placeholder:text-amber-200/30"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="block font-bold text-amber-300">Total Guests</label>
-                    <select
-                      value={guestCount}
-                      onChange={(e) => setGuestCount(e.target.value)}
-                      className="w-full px-3 py-2 border border-amber-500/20 rounded-xl bg-[#310202] focus:outline-none focus:border-amber-400 text-amber-100"
-                    >
-                      {[1, 2, 3, 4, 5, 6].map((num) => (
-                        <option key={num} value={num} className="bg-[#310202]">
-                          {num} {num === 1 ? "Person" : "People"}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="block font-bold text-amber-300">RSVP Status</label>
-                    <select
-                      value={rsvpStatus}
-                      onChange={(e) => setRsvpStatus(e.target.value)}
-                      className="w-full px-3 py-2 border border-amber-500/20 rounded-xl bg-[#310202] focus:outline-none focus:border-amber-400 text-amber-100"
-                    >
-                      <option value="attending" className="bg-[#310202]">Attending</option>
-                      <option value="maybe" className="bg-[#310202]">Maybe</option>
-                      <option value="declined" className="bg-[#310202]">Declined</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="block font-bold text-amber-300">Wishes Message (Optional)</label>
-                  <textarea
-                    value={guestMessage}
-                    onChange={(e) => setGuestMessage(e.target.value)}
-                    placeholder="Send your warm blessings..."
-                    rows={3}
-                    className="w-full px-3 py-2 border border-amber-500/20 rounded-xl bg-[#310202] focus:outline-none focus:border-amber-600 font-serif resize-none text-amber-100 placeholder:text-amber-200/30"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-[#540303] rounded-xl font-black flex items-center justify-center gap-1.5 shadow-md hover:scale-101 transition-all cursor-pointer border-0 text-xs"
-                >
-                  <Send size={12} />
-                  <span>Submit RSVP</span>
-                </button>
-              </form>
             )}
           </div>
 
