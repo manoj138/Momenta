@@ -12,6 +12,7 @@ const Home = () => {
       desc: "No boring PDF files. We create interactive, responsive, animated digital invitations and memory walls with countdowns, music playback, location mapping, and live RSVP.",
       isHero: true,
       tag: "Premium Interactive Card Platform",
+      gradient: "from-slate-100 via-slate-200 dark:from-slate-900 dark:via-slate-950",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates">
@@ -34,6 +35,7 @@ const Home = () => {
       desc: "Traditional, luxury, and cinematic designs. Features live guest RSVP registries, virtual envelope opening, couple timeline story walls, schedule trackers, and interactive location navigation maps.",
       tag: "Royal Gold Invitation Theme",
       image: "/landing page images/wedding.png",
+      gradient: "from-pink-500/20 via-amber-500/5 dark:from-pink-950/60 dark:via-amber-900/30",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=wedding">
@@ -56,6 +58,7 @@ const Home = () => {
       desc: "Vibrant and glowing celebration layouts. Features automated music loops, confetti pops on visitor arrival, image slide grids, and a customized neon wishes comments wall.",
       tag: "Neon Surprise Reveal Theme",
       image: "/landing page images/birthday.png",
+      gradient: "from-purple-500/20 via-indigo-500/5 dark:from-purple-950/60 dark:via-indigo-950/40",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=birthday">
@@ -78,6 +81,7 @@ const Home = () => {
       desc: "Express love in a beautiful storybook style. Features chronologically mapped relationship paths, sweet heart-shaped collage grids, and interactive 'Yes/No' prompts.",
       tag: "Sweet Proposal Reveal Theme",
       image: "/landing page images/proposal.png",
+      gradient: "from-pink-500/25 via-rose-500/5 dark:from-pink-900/60 dark:via-pink-950/40",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=proposal">
@@ -100,6 +104,7 @@ const Home = () => {
       desc: "Celebrate years of togetherness. Add timeline highlights, background music player blocks, sliding image displays, event timings, maps, and instant guest wishes lists.",
       tag: "Anniversary Love Timeline Theme",
       image: "/landing page images/anivarsary.png",
+      gradient: "from-indigo-500/20 via-blue-500/5 dark:from-indigo-950/60 dark:via-blue-950/40",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=anniversary">
@@ -122,6 +127,7 @@ const Home = () => {
       desc: "Mystery countdown clocks and virtual present boxes. Features virtual present boxes that guests tap to reveal custom cards, video links, or special event announcements.",
       tag: "Envelope Reveal Theme",
       image: "/landing page images/surprise.png",
+      gradient: "from-teal-500/20 via-emerald-500/5 dark:from-teal-950/60 dark:via-emerald-950/40",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=surprise">
@@ -144,6 +150,7 @@ const Home = () => {
       desc: "Premium digital invitations for house warmings, new car arrivals, poojas, and office openings. Modern templates to share with family on WhatsApp and social media.",
       tag: "Modern Vastu Shanti Theme",
       image: "/landing page images/invitation for new home new car vastu shanti.png",
+      gradient: "from-blue-500/20 via-orange-500/5 dark:from-blue-950/60 dark:via-orange-950/20",
       buttons: (
         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=company">
@@ -339,7 +346,7 @@ const Home = () => {
                       )}
                     </h1>
 
-                    <p className="text-slate-655 dark:text-gray-400 text-lg max-w-xl">
+                    <p className="text-slate-650 dark:text-gray-400 text-lg max-w-xl">
                       {item.desc}
                     </p>
 
@@ -355,12 +362,12 @@ const Home = () => {
             <div className="flex-1 flex justify-center w-full relative">
               <div className="absolute inset-0 bg-linear-to-tr from-brand-500/20 to-pink-500/20 rounded-full blur-[100px] opacity-60 pointer-events-none" />
               
-              <div className="w-[310px] h-[580px] border-[10px] border-slate-900 rounded-[38px] shadow-[0_30px_70px_rgba(0,0,0,0.15)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.7)] overflow-hidden relative bg-slate-900 flex flex-col">
+              <div className="w-[310px] h-[580px] border-[10px] border-slate-900 rounded-[38px] shadow-[0_35px_80px_rgba(0,0,0,0.22)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.8)] overflow-hidden relative bg-slate-900 flex flex-col">
                 {/* Camera notch */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-5 bg-slate-900 rounded-b-2xl z-50" />
                 
                 {/* Stacked contents inside the phone mockup */}
-                <div className="flex-1 w-full h-full relative overflow-hidden bg-slate-950">
+                <div className="flex-1 w-full h-full relative overflow-hidden bg-slate-50 dark:bg-slate-950">
                   {showcaseItems.map((item, index) => {
                     const isActive = index === activeIndex;
                     const isPrevious = index < activeIndex;
@@ -401,16 +408,27 @@ const Home = () => {
                             </div>
                           </div>
                         ) : (
-                          /* Category Illustration Image Slide-in */
-                          <div className="w-full h-full relative overflow-hidden bg-slate-950">
+                          /* Category Illustration Image Slide-in with themed gradient background */
+                          <div className="w-full h-full relative overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
+                            {/* Themed background gradient glow */}
+                            <div className={`absolute inset-0 bg-gradient-to-b ${item.gradient} to-white dark:to-slate-950 pointer-events-none z-0 opacity-85`} />
+                            
                             <img
                               src={item.image}
                               alt={item.name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-contain relative z-10 p-4"
                             />
-                            <div className="absolute inset-0 bg-linear-to-t from-slate-950 via-transparent to-transparent flex flex-col justify-end p-5">
-                              <span className="text-[10px] font-bold text-brand-400 uppercase tracking-widest mb-1">{item.tag}</span>
-                              <h4 className="text-base font-bold text-white font-serif">{item.name}</h4>
+
+                            {/* Floating pulsating heart icon on Proposal slide */}
+                            {item.id === "proposal" && (
+                              <div className="absolute inset-0 flex justify-center items-start pt-16 z-20 pointer-events-none">
+                                <Heart className="text-pink-500 fill-pink-500/40 animate-pulse drop-shadow-[0_0_12px_rgba(244,63,94,0.6)]" size={36} />
+                              </div>
+                            )}
+
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent p-5 z-20">
+                              <span className="text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-1">{item.tag}</span>
+                              <h4 className="text-base font-bold text-slate-800 dark:text-white font-serif">{item.name}</h4>
                             </div>
                           </div>
                         )}
@@ -449,7 +467,7 @@ const Home = () => {
                   <p className="text-slate-600 dark:text-gray-400 text-sm">Add background tunes, image galleries, and countdowns that build emotional anticipation for your guests.</p>
                 </AnimatedCard>
                 <AnimatedCard className="bg-white dark:bg-slate-900/40 border border-gray-150 dark:border-white/5 shadow-premium">
-                  <Globe className="text-pink-600 dark:text-pink-400 mb-4" size={32} />
+                  <Globe className="text-pink-650 dark:text-pink-400 mb-4" size={32} />
                   <h3 className="text-xl font-bold mb-2">No Installs, Just Web</h3>
                   <p className="text-slate-600 dark:text-gray-400 text-sm">Simple URL link that guests can open instantly in any browser. Works on WhatsApp, Instagram, and SMS.</p>
                 </AnimatedCard>
