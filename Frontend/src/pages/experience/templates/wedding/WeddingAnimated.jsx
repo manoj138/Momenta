@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Heart, Calendar, MapPin, Clock, ArrowDown, Volume2, VolumeX } from "lucide-react";
+import { Heart, Calendar, MapPin, Clock, ArrowDown, Volume2, VolumeX, Music, Sparkles, Utensils, Sun } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 import InteractiveMap from "../../../../components/common/InteractiveMap";
 
@@ -63,7 +63,95 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const audioRef = useRef(null);
   const audioUrl = data.bgMusic || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
+  // Helper to subtract days and format date
+  const getPreDate = (dateStr, daysBefore) => {
+    try {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      d.setDate(d.getDate() - daysBefore);
+      return d.toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    } catch (e) {
+      return dateStr;
+    }
+  };
 
+  // Helper to map title or custom string to Lucide icon
+  const getEventIcon = (title = "", iconHint = "") => {
+    const hint = (iconHint || title).toLowerCase();
+
+    if (hint.includes("haldi") || hint.includes("हळद") || hint.includes("sun") || hint.includes("morning")) {
+      return <Sun className="text-amber-400" size={16} />;
+    }
+    if (hint.includes("sangeet") || hint.includes("संगीत") || hint.includes("music") || hint.includes("dj") || hint.includes("dance") || hint.includes("singing")) {
+      return <Music className="text-amber-400 animate-pulse" size={16} style={{ animationDuration: "3s" }} />;
+    }
+    if (hint.includes("reception") || hint.includes("जेवण") || hint.includes("भोजन") || hint.includes("dinner") || hint.includes("lunch") || hint.includes("food") || hint.includes("feast")) {
+      return <Utensils className="text-amber-400" size={16} />;
+    }
+    if (hint.includes("spark") || hint.includes("ring") || hint.includes("engagement") || hint.includes("साखरपुडा")) {
+      return <Sparkles className="text-amber-400" size={16} />;
+    }
+    return <Heart className="text-amber-400 fill-amber-400/20" size={16} />;
+  };
+
+  // Main event list parser
+  const parsedEvents = (() => {
+    if (data.eventsList && data.eventsList.trim() !== "") {
+      return data.eventsList.split(";;").map((eventStr) => {
+        const parts = eventStr.split("|").map((p) => p.trim());
+        return {
+          title: parts[0] || "समारंभ",
+          time: parts[1] || "",
+          venue: parts[2] || "",
+          address: parts[3] || "",
+        };
+      });
+    }
+
+    // Default Marathi Traditional Wedding Timeline Fallback
+    const baseDateStr = data.weddingDate || "Nov 20, 2026";
+    const prevDateFormatted = getPreDate(baseDateStr, 1);
+    const mainDateFormatted = getPreDate(baseDateStr, 0);
+
+    return [
+      {
+        title: "हळदी समारंभ (Haldi Ceremony)",
+        date: prevDateFormatted,
+        time: "सकाळी ०९:०० वाजता",
+        venue: "वधू / वराच्या निवासस्थानी",
+        address: "आपल्या घरी आणि कौटुंबिक वातावरणात",
+        icon: "sun",
+      },
+      {
+        title: "मेहंदी व संगीत (Sangeet Ceremony)",
+        date: prevDateFormatted,
+        time: "संध्याकाळी ०६:०० वाजता",
+        venue: data.venueName || "मराठा दरबार हॉल",
+        address: data.venueAddress || "JM Road, Shivajinagar, Pune",
+        icon: "music",
+      },
+      {
+        title: "शुभ विवाह (Wedding Ceremony)",
+        date: mainDateFormatted,
+        time: data.weddingTime || "सकाळी ११:३० वाजता",
+        venue: data.venueName || "मराठा दरबार हॉल",
+        address: data.venueAddress || "JM Road, Shivajinagar, Pune",
+        icon: "heart",
+      },
+      {
+        title: "स्वागत समारंभ (Reception)",
+        date: mainDateFormatted,
+        time: "संध्याकाळी ०७:०० वाजता",
+        venue: data.venueName || "मराठा दरबार हॉल",
+        address: data.venueAddress || "JM Road, Shivajinagar, Pune",
+        icon: "utensils",
+      },
+    ];
+  })();
 
   // Countdown timer calculations
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -388,6 +476,60 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
                 <span className="text-amber-100 font-bold font-serif">{data.familyDetails}</span>
               </div>
             )}
+          </div>
+
+          {/* 2.5 Multi-Event Timeline Card */}
+          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6">
+            <div className="text-center space-y-1">
+              <Sparkles className="text-amber-400 mx-auto" size={24} />
+              <h3 className="text-lg font-bold text-amber-100 font-serif">कार्यक्रम पत्रिका</h3>
+              <p className="text-[10px] uppercase tracking-widest text-amber-400/80">Event Timeline</p>
+            </div>
+
+            <div className="relative pl-2 space-y-6">
+              {/* Vertical line connecting timeline events */}
+              <div className="absolute left-[15px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-amber-500/50 via-amber-500/30 to-amber-500/10 pointer-events-none" />
+
+              {parsedEvents.map((event, idx) => (
+                <div key={idx} className="relative pl-10 group transition-all duration-300">
+                  {/* Event Node Dot/Icon */}
+                  <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-[#310202] border border-amber-500/40 flex items-center justify-center shadow-md z-10 group-hover:scale-110 group-hover:border-amber-400 transition-all duration-300">
+                    {getEventIcon(event.title)}
+                  </div>
+
+                  {/* Event Details Card */}
+                  <div className="bg-[#310202]/50 border border-amber-500/10 rounded-2xl p-4 space-y-1.5 group-hover:bg-[#310202]/80 group-hover:border-amber-500/30 transition-all duration-300">
+                    <h4 className="text-sm font-bold text-amber-100 group-hover:text-amber-300 transition-colors duration-300">
+                      {event.title}
+                    </h4>
+                    
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs font-semibold text-amber-400">
+                      {event.date && (
+                        <span>{event.date}</span>
+                      )}
+                      {event.date && event.time && (
+                        <span className="hidden sm:inline text-amber-500/50">•</span>
+                      )}
+                      {event.time && (
+                        <span className="text-amber-300/90">{event.time}</span>
+                      )}
+                    </div>
+
+                    {event.venue && (
+                      <p className="text-xs text-amber-200/80 font-serif font-semibold mt-1">
+                        📍 {event.venue}
+                      </p>
+                    )}
+
+                    {event.address && (
+                      <p className="text-[11px] text-amber-200/50 font-serif leading-relaxed pl-4">
+                        {event.address}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* 3. Ceremony Details Card */}

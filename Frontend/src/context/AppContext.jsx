@@ -20,6 +20,7 @@ const seedData = () => {
         { name: "familyDetails", label: "Family Names (comma separated)", type: "text", required: false },
         { name: "welcomeMessage", label: "Invitation / Special Message", type: "textarea", required: false },
         { name: "bgMusic", label: "Background Music Link (MP3 URL)", type: "text", required: false },
+        { name: "eventsList", label: "Custom Events List (Optional)", type: "textarea", placeholder: "Format: Event Name | Time | Venue | Address. Separate multiple events with double semicolons (;;). For example: हळदी समारंभ | सकाळी ०९:०० वाजता | निवासस्थानी | JM Road, Pune;; संगीत व मेहंदी | संध्याकाळी ०६:०० वाजता | हॉल | Kothrud, Pune", required: false },
       ]
     },
     {
@@ -214,6 +215,7 @@ const seedData = () => {
         familyDetails: "Deshmukh & Patil Families",
         welcomeMessage: "We request the honor of your presence at our wedding celebration.",
         bgMusic: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        eventsList: "हळदी समारंभ | सकाळी ०९:०० वाजता | वधूच्या निवासस्थानी | JM Road, Pune;; संगीत व मेहंदी | संध्याकाळी ०६:०० वाजता | मराठा दरबार हॉल | Shivajinagar, Pune;; शुभ विवाह | सकाळी ११:३० वाजता | मराठा दरबार हॉल | Shivajinagar, Pune;; स्वागत समारंभ | संध्याकाळी ०७:०० वाजता | मराठा दरबार हॉल | Shivajinagar, Pune",
         rsvpList: []
       },
       createdAt: "2026-07-19T12:00:00Z"
