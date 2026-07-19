@@ -4,6 +4,7 @@ import TextArea from "../common/TextArea";
 import DatePicker from "../common/DatePicker";
 import Switch from "../common/Switch";
 import FileUpload from "../common/FileUpload";
+import Select from "../common/Select";
 
 const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {} }) => {
   const handleValueChange = (name, value) => {
@@ -82,6 +83,22 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
                   value={val}
                   onChange={(e) => handleValueChange(field.name, e.target.value)}
                   placeholder={field.placeholder || "Select date"}
+                  error={error}
+                  required={field.required}
+                />
+              </div>
+            );
+
+          case "select":
+            return (
+              <div key={field.name} className="col-span-1">
+                <Select
+                  label={field.label}
+                  name={field.name}
+                  value={val}
+                  onChange={(e) => handleValueChange(field.name, e.target.value)}
+                  options={field.options || []}
+                  placeholder={field.placeholder || `Select ${field.label.toLowerCase()}`}
                   error={error}
                   required={field.required}
                 />

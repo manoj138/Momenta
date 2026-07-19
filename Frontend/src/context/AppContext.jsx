@@ -10,6 +10,7 @@ const seedData = () => {
       name: "Wedding",
       description: "Traditional and cinematic wedding invitation cards.",
       fields: [
+        { name: "language", label: "भाषा / Language", type: "select", options: [{ label: "मराठी (Marathi)", value: "mr" }, { label: "English", value: "en" }], required: true },
         { name: "brideName", label: "Bride's Name", type: "text", required: true },
         { name: "groomName", label: "Groom's Name", type: "text", required: true },
         { name: "weddingDate", label: "Wedding Date", type: "date", required: true },
@@ -205,15 +206,16 @@ const seedData = () => {
       clientName: "Rahul & Priya (Animated)",
       status: "published",
       data: {
-        brideName: "Priya",
-        groomName: "Rahul",
+        language: "mr",
+        brideName: "प्रिया",
+        groomName: "राहुल",
         weddingDate: "2026-11-20",
         weddingTime: "11:30 AM",
         venueName: "Maratha Durbar Hall",
         venueAddress: "JM Road, Shivajinagar, Pune",
         mapsLink: "https://maps.google.com",
-        familyDetails: "Deshmukh & Patil Families",
-        welcomeMessage: "We request the honor of your presence at our wedding celebration.",
+        familyDetails: "देशमुख आणि पाटील कुटुंब",
+        welcomeMessage: "नव्या स्वप्नांसह, नव्या आशांसह, आम्ही आपल्या उपस्थितीच्या सन्मानाची विनंती करतो. आमच्या या शुभ विवाह सोहळ्यास आपले हार्दिक स्वागत आहे.",
         bgMusic: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
         eventsList: "हळदी समारंभ | सकाळी ०९:०० वाजता | वधूच्या निवासस्थानी | JM Road, Pune;; संगीत व मेहंदी | संध्याकाळी ०६:०० वाजता | मराठा दरबार हॉल | Shivajinagar, Pune;; शुभ विवाह | सकाळी ११:३० वाजता | मराठा दरबार हॉल | Shivajinagar, Pune;; स्वागत समारंभ | संध्याकाळी ०७:०० वाजता | मराठा दरबार हॉल | Shivajinagar, Pune",
         rsvpList: []

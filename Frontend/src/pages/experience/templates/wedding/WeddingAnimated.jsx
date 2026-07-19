@@ -51,8 +51,165 @@ const BrideIllustration = () => (
   />
 );
 
+// Translation Dictionary for Marathi & English
+const translations = {
+  mr: {
+    invitationTitle: "निमंत्रणपत्रिका",
+    welcome: "स्वागतम्",
+    welcomeSubtitle: "प्रेम आणि एकत्वाच्या उत्सवात",
+    gettingMarried: "यांचा शुभविवाह",
+    loveQuote: "\"\u0926\u094b\u0928 \u0939\u0943\u0926\u092f\u0947, \u090f\u0915 \u0938\u0941\u0902\u0926\u0930 \u092a\u094d\u0930\u0935\u093e\u0938, \u0906\u0923\u093f \u090f\u0915\u0924\u094d\u0930 \u0932\u093f\u0939\u093f\u0932\u0947 \u091c\u093e\u0923\u093e\u0930\u0947 \u0906\u092f\u0941\u0937\u094d\u092f...\"",
+    scrollDown: "खाली स्क्रोल करा",
+    celebrationIn: "सोहळा सुरू होण्यास",
+    days: "दिवस",
+    hours: "तास",
+    mins: "मिनिटे",
+    secs: "सेकंद",
+    greetings: "शुभेच्छा",
+    defaultWelcomeMsg: "नव्या स्वप्नांसह, नव्या आशांसह, आम्ही आपल्या उपस्थितीच्या सन्मानाची विनंती करतो.",
+    withLoveFrom: "प्रेमपूर्वक",
+    eventTimeline: "कार्यक्रम पत्रिका",
+    eventTimelineSub: "सोहळ्याचे वेळापत्रक",
+    ceremonyDetails: "समारंभ तपशील",
+    time: "वेळ",
+    navigateMaps: "नकाशावर शोधा",
+    poweredBy: "सादरकर्ता",
+    haldiTitle: "हळदी समारंभ",
+    sangeetTitle: "मेहंदी व संगीत",
+    weddingTitle: "शुभ विवाह",
+    receptionTitle: "स्वागत समारंभ",
+  },
+  en: {
+    invitationTitle: "WEDDING INVITATION",
+    welcome: "WELCOME",
+    welcomeSubtitle: "To the Celebration of Love & Togetherness",
+    gettingMarried: "Are Getting Married",
+    loveQuote: "\"Two hearts, one beautiful journey, and a lifetime of love waiting to be written together.\"",
+    scrollDown: "Scroll Down",
+    celebrationIn: "Celebration Starts In",
+    days: "Days",
+    hours: "Hours",
+    mins: "Mins",
+    secs: "Secs",
+    greetings: "Greetings",
+    defaultWelcomeMsg: "With new dreams, new hopes, and a new desire, we request the honor of your presence to witness the celebration of our union.",
+    withLoveFrom: "With Love From",
+    eventTimeline: "Event Timeline",
+    eventTimelineSub: "Celebration Schedule",
+    ceremonyDetails: "Ceremony Details",
+    time: "Time",
+    navigateMaps: "Navigate with Maps",
+    poweredBy: "Powered By",
+    haldiTitle: "Haldi Ceremony",
+    sangeetTitle: "Sangeet & Mehendi",
+    weddingTitle: "Wedding Ceremony",
+    receptionTitle: "Reception",
+  },
+};
+
 const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const containerRef = useRef(null);
+
+  // Language & Font resolution
+  const [currentLang, setCurrentLang] = useState(data.language || "mr");
+  const lang = currentLang;
+  const t = translations[lang] || translations.mr;
+  const fontClasses = lang === "mr" ? {
+    heading: "font-['Yatra_One']",
+    body: "font-['Tiro_Devanagari_Marathi']",
+    quote: "font-['Kalam']",
+  } : {
+    heading: "font-serif",
+    body: "font-serif",
+    quote: "italic font-serif",
+  };
+
+  // Synchronize dynamic language state if data changes
+  useEffect(() => {
+    if (data.language) {
+      setCurrentLang(data.language);
+    }
+  }, [data.language]);
+
+  // Name translation helpers for seamless toggles
+  const getGroomName = () => {
+    const raw = data.groomName || "";
+    if (lang === "mr") {
+      if (raw.toLowerCase() === "rahul") return "राहुल";
+      return raw;
+    } else {
+      if (raw === "राहुल") return "Rahul";
+      return raw;
+    }
+  };
+
+  const getBrideName = () => {
+    const raw = data.brideName || "";
+    if (lang === "mr") {
+      if (raw.toLowerCase() === "priya") return "प्रिया";
+      return raw;
+    } else {
+      if (raw === "प्रिया") return "Priya";
+      return raw;
+    }
+  };
+
+  // Translation helpers for default values
+  const getWelcomeMessage = () => {
+    const raw = data.welcomeMessage || "";
+    if (lang === "mr") {
+      if (raw.includes("We request the honor of your presence") || raw.includes("request the honor of your presence")) {
+        return t.defaultWelcomeMsg;
+      }
+      return raw;
+    } else {
+      if (raw.includes("नव्या स्वप्नांसह") || raw.includes("शुभ विवाह सोहळ्यास")) {
+        return t.defaultWelcomeMsg;
+      }
+      return raw;
+    }
+  };
+
+  const getFamilyDetails = () => {
+    const raw = data.familyDetails || "";
+    if (lang === "mr") {
+      if (raw.toLowerCase().includes("deshmukh") && raw.toLowerCase().includes("patil")) {
+        return "देशमुख आणि पाटील कुटुंब";
+      }
+      return raw;
+    } else {
+      if (raw.includes("देशमुख") && raw.includes("पाटील")) {
+        return "Deshmukh & Patil Families";
+      }
+      return raw;
+    }
+  };
+
+  const getVenueName = () => {
+    const raw = data.venueName || "";
+    if (lang === "mr") {
+      if (raw.toLowerCase() === "maratha durbar hall") return "मराठा दरबार हॉल";
+      return raw;
+    } else {
+      if (raw === "मराठा दरबार हॉल") return "Maratha Durbar Hall";
+      return raw;
+    }
+  };
+
+  const getVenueAddress = () => {
+    const raw = data.venueAddress || "";
+    if (lang === "mr") {
+      if (raw.toLowerCase().includes("jm road") || raw.toLowerCase().includes("shivajinagar")) {
+        return "जे. एम. रोड, शिवाजीनगर, पुणे";
+      }
+      return raw;
+    } else {
+      if (raw.includes("जे. एम. रोड") || raw.includes("शिवाजीनगर")) {
+        return "JM Road, Shivajinagar, Pune";
+      }
+      return raw;
+    }
+  };
 
   // Animation Control States
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -123,35 +280,35 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
     return [
       {
-        title: "हळदी समारंभ (Haldi Ceremony)",
+        title: `${t.haldiTitle}`,
         date: prevDateFormatted,
-        time: "सकाळी ०९:०० वाजता",
-        venue: "वधू / वराच्या निवासस्थानी",
-        address: "आपल्या घरी आणि कौटुंबिक वातावरणात",
+        time: lang === "mr" ? "सकाळी ०९:०० वाजता" : "9:00 AM",
+        venue: lang === "mr" ? "वधू / वराच्या निवासस्थानी" : "Bride / Groom's Residence",
+        address: lang === "mr" ? "आपल्या घरी आणि कौटुंबिक वातावरणात" : "At home in a family gathering",
         icon: "sun",
       },
       {
-        title: "मेहंदी व संगीत (Sangeet Ceremony)",
+        title: `${t.sangeetTitle}`,
         date: prevDateFormatted,
-        time: "संध्याकाळी ०६:०० वाजता",
-        venue: data.venueName || "मराठा दरबार हॉल",
-        address: data.venueAddress || "JM Road, Shivajinagar, Pune",
+        time: lang === "mr" ? "संध्याकाळी ०६:०० वाजता" : "6:00 PM",
+        venue: getVenueName() || (lang === "mr" ? "मराठा दरबार हॉल" : "Maratha Durbar Hall"),
+        address: getVenueAddress() || "JM Road, Shivajinagar, Pune",
         icon: "music",
       },
       {
-        title: "शुभ विवाह (Wedding Ceremony)",
+        title: `${t.weddingTitle}`,
         date: mainDateFormatted,
-        time: data.weddingTime || "सकाळी ११:३० वाजता",
-        venue: data.venueName || "मराठा दरबार हॉल",
-        address: data.venueAddress || "JM Road, Shivajinagar, Pune",
+        time: data.weddingTime || (lang === "mr" ? "सकाळी ११:३० वाजता" : "11:30 AM"),
+        venue: getVenueName() || (lang === "mr" ? "मराठा दरबार हॉल" : "Maratha Durbar Hall"),
+        address: getVenueAddress() || "JM Road, Shivajinagar, Pune",
         icon: "heart",
       },
       {
-        title: "स्वागत समारंभ (Reception)",
+        title: `${t.receptionTitle}`,
         date: mainDateFormatted,
-        time: "संध्याकाळी ०७:०० वाजता",
-        venue: data.venueName || "मराठा दरबार हॉल",
-        address: data.venueAddress || "JM Road, Shivajinagar, Pune",
+        time: lang === "mr" ? "संध्याकाळी ०७:०० वाजता" : "7:00 PM",
+        venue: getVenueName() || (lang === "mr" ? "मराठा दरबार हॉल" : "Maratha Durbar Hall"),
+        address: getVenueAddress() || "JM Road, Shivajinagar, Pune",
         icon: "utensils",
       },
     ];
@@ -278,6 +435,10 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
     setIsPlaying(!isPlaying);
   };
 
+  const toggleLanguage = () => {
+    setCurrentLang((prev) => (prev === "mr" ? "en" : "mr"));
+  };
+
 
   // Akshata colors: golden yellow, saffron, vermilion red, gulal pink, rice cream
   const akshataColors = ["#fcd34d", "#f59e0b", "#ef4444", "#ec4899", "#fef3c7"];
@@ -349,10 +510,19 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       <FloralCorner className="absolute top-4 right-4 rotate-90 z-20" />
       <FloralCorner className="absolute bottom-4 left-4 -rotate-90 z-20" />
 
+      {/* Floating Language Switcher */}
+      <button
+        onClick={toggleLanguage}
+        className="absolute top-6 left-6 z-50 w-9 h-9 rounded-full bg-amber-500 text-[#540303] shadow-lg cursor-pointer hover:bg-amber-400 hover:scale-105 transition-all border border-amber-300/30 flex items-center justify-center font-sans font-bold text-xs"
+        title="Toggle Language / भाषा बदला"
+      >
+        {lang === "mr" ? "EN" : "म"}
+      </button>
+
       {/* Floating Audio Trigger */}
       <button
         onClick={toggleMusic}
-        className="fixed top-6 right-6 z-50 p-2.5 rounded-full bg-amber-500 text-[#540303] shadow-lg cursor-pointer hover:bg-amber-400 hover:scale-105 transition-all border border-amber-300/30"
+        className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-amber-500 text-[#540303] shadow-lg cursor-pointer hover:bg-amber-400 hover:scale-105 transition-all border border-amber-300/30"
         title="Toggle Music"
       >
         {isPlaying ? <Volume2 size={16} className="animate-bounce" /> : <VolumeX size={16} />}
@@ -409,14 +579,14 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
               />
             </div>
 
-            <span className="text-[10px] uppercase font-bold tracking-widest text-amber-300 border-y border-amber-400/30 py-1.5 px-6">
-              निमंत्रणपत्रिका
+            <span className={`text-[10px] uppercase font-bold tracking-widest text-amber-300 border-y border-amber-400/30 py-1.5 px-6 ${fontClasses.body}`}>
+              {t.invitationTitle}
             </span>
-            <h2 className="text-5xl md:text-6xl font-extrabold text-amber-100 mt-2 leading-tight tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-              WELCOME
+            <h2 className={`text-5xl md:text-6xl font-extrabold text-amber-100 mt-2 leading-tight tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] ${fontClasses.heading}`}>
+              {t.welcome}
             </h2>
-            <p className="text-xs text-amber-200/85 italic">
-              To the Celebration of Love & Togetherness
+            <p className={`text-xs text-amber-200/85 ${fontClasses.quote}`}>
+              {t.welcomeSubtitle}
             </p>
           </div>
         </div>
@@ -472,19 +642,19 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
             }}
             className="text-center space-y-3"
           >
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-amber-100 border-b border-amber-400/25 pb-2 px-4 sm:px-8 whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
-              {data.groomName || "Rahul"} & {data.brideName || "Priya"}
+            <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-amber-100 border-b border-amber-400/25 pb-2 px-4 sm:px-8 whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] ${fontClasses.heading}`}>
+              {getGroomName()} & {getBrideName()}
             </h1>
             
-            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] text-amber-300/90 font-serif mt-2 animate-pulse" style={{ animationDuration: '4s' }}>
-              Are Getting Married
+            <p className={`text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] text-amber-300/90 mt-2 animate-pulse ${fontClasses.body}`} style={{ animationDuration: '4s' }}>
+              {t.gettingMarried}
             </p>
             
-            <p className="text-[10px] sm:text-[11px] text-amber-200/75 italic font-serif max-w-[280px] mx-auto leading-relaxed">
-              "Two hearts, one beautiful journey, and a lifetime of love waiting to be written together."
+            <p className={`text-[10px] sm:text-[11px] text-amber-200/75 max-w-[280px] mx-auto leading-relaxed ${fontClasses.quote}`}>
+              {t.loveQuote}
             </p>
             
-            <div className="flex items-center justify-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest pt-1">
+            <div className={`flex items-center justify-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest pt-1 ${fontClasses.body}`}>
               <Calendar size={14} className="text-amber-400" />
               <span>{data.weddingDate || "Nov 20, 2026"}</span>
             </div>
@@ -494,8 +664,8 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         {/* Navigation Indicator Row */}
         <div className="h-12 flex items-center justify-center mb-6 z-20">
           {!isUnlocked && (
-            <div className="text-[10px] text-amber-300 font-bold uppercase tracking-widest flex flex-col items-center gap-1.5 animate-bounce">
-              <span>Scroll Down</span>
+            <div className={`text-[10px] text-amber-300 font-bold uppercase tracking-widest flex flex-col items-center gap-1.5 animate-bounce ${fontClasses.body}`}>
+              <span>{t.scrollDown}</span>
               <ArrowDown size={12} className="text-amber-400" />
             </div>
           )}
@@ -510,24 +680,24 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           {/* 1. Saved The Date Countdown Card */}
           <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 text-center shadow-xl">
             <Clock className="text-amber-400 mx-auto mb-2" size={24} />
-            <h3 className="text-xs uppercase font-bold tracking-widest text-amber-300 mb-4">Celebration Starts In</h3>
+            <h3 className={`text-xs uppercase font-bold tracking-widest text-amber-300 mb-4 ${fontClasses.body}`}>{t.celebrationIn}</h3>
             
-            <div className="grid grid-cols-4 gap-2">
+            <div className={`grid grid-cols-4 gap-2 ${fontClasses.body}`}>
               <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
                 <span className="block text-xl font-bold text-amber-200">{timeLeft.days}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">Days</span>
+                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.days}</span>
               </div>
               <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
                 <span className="block text-xl font-bold text-amber-200">{timeLeft.hours}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">Hours</span>
+                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.hours}</span>
               </div>
               <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
                 <span className="block text-xl font-bold text-amber-200">{timeLeft.minutes}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">Mins</span>
+                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.mins}</span>
               </div>
               <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
                 <span className="block text-xl font-bold text-amber-200">{timeLeft.seconds}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">Secs</span>
+                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.secs}</span>
               </div>
             </div>
           </div>
@@ -535,15 +705,14 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           {/* 2. Welcome Message Card */}
           <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-8 text-center shadow-xl space-y-4">
             <Heart className="text-amber-400 fill-amber-400/5 mx-auto" size={24} />
-            <h3 className="text-lg font-bold text-amber-100 font-serif">Greetings</h3>
-            <p className="text-sm text-amber-200 leading-relaxed font-serif">
-              {data.welcomeMessage ||
-                "With new dreams, new hopes, and a new desire, we request the honor of your presence to witness the celebration of our union."}
+            <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.greetings}</h3>
+            <p className={`text-sm text-amber-200 leading-relaxed ${fontClasses.body}`}>
+              {getWelcomeMessage() || t.defaultWelcomeMsg}
             </p>
-            {data.familyDetails && (
+            {getFamilyDetails() && (
               <div className="pt-4 border-t border-amber-500/15 text-xs">
-                <span className="block text-amber-600 font-bold uppercase tracking-wider mb-1">With Love From</span>
-                <span className="text-amber-100 font-bold font-serif">{data.familyDetails}</span>
+                <span className={`block text-amber-600 font-bold uppercase tracking-wider mb-1 ${fontClasses.body}`}>{t.withLoveFrom}</span>
+                <span className={`text-amber-100 font-bold ${fontClasses.heading}`}>{getFamilyDetails()}</span>
               </div>
             )}
           </div>
@@ -552,8 +721,8 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6">
             <div className="text-center space-y-1">
               <Sparkles className="text-amber-400 mx-auto" size={24} />
-              <h3 className="text-lg font-bold text-amber-100 font-serif">कार्यक्रम पत्रिका</h3>
-              <p className="text-[10px] uppercase tracking-widest text-amber-400/80">Event Timeline</p>
+              <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.eventTimeline}</h3>
+              <p className={`text-[10px] uppercase tracking-widest text-amber-400/80 ${fontClasses.body}`}>{t.eventTimelineSub}</p>
             </div>
 
             <div className="relative pl-2 space-y-6">
@@ -569,11 +738,11 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
                   {/* Event Details Card */}
                   <div className="bg-[#310202]/50 border border-amber-500/10 rounded-2xl p-4 space-y-1.5 group-hover:bg-[#310202]/80 group-hover:border-amber-500/30 transition-all duration-300">
-                    <h4 className="text-sm font-bold text-amber-100 group-hover:text-amber-300 transition-colors duration-300">
+                    <h4 className={`text-sm font-bold text-amber-100 group-hover:text-amber-300 transition-colors duration-300 ${fontClasses.heading}`}>
                       {event.title}
                     </h4>
                     
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs font-semibold text-amber-400">
+                    <div className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs font-semibold text-amber-400 ${fontClasses.body}`}>
                       {event.date && (
                         <span>{event.date}</span>
                       )}
@@ -586,13 +755,13 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
                     </div>
 
                     {event.venue && (
-                      <p className="text-xs text-amber-200/80 font-serif font-semibold mt-1">
+                      <p className={`text-xs text-amber-200/80 font-semibold mt-1 ${fontClasses.body}`}>
                         📍 {event.venue}
                       </p>
                     )}
 
                     {event.address && (
-                      <p className="text-[11px] text-amber-200/50 font-serif leading-relaxed pl-4">
+                      <p className={`text-[11px] text-amber-200/50 leading-relaxed pl-4 ${fontClasses.body}`}>
                         {event.address}
                       </p>
                     )}
@@ -605,20 +774,20 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           {/* 3. Ceremony Details Card */}
           <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl text-center space-y-4">
             <MapPin className="text-amber-400 mx-auto" size={24} />
-            <h3 className="text-lg font-bold text-amber-100 font-serif">Ceremony Details</h3>
+            <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.ceremonyDetails}</h3>
             
-            <div className="space-y-1 text-sm text-amber-200">
-              <p className="font-bold text-amber-300">Time: {data.weddingTime || "11:30 AM onwards"}</p>
-              <p className="font-serif mt-1 font-semibold">{data.venueName || "Maratha Durbar Hall"}</p>
-              <p className="text-xs text-amber-300/80 font-serif px-4">
-                {data.venueAddress || "JM Road, Shivajinagar, Pune"}
+            <div className={`space-y-1 text-sm text-amber-200 ${fontClasses.body}`}>
+              <p className="font-bold text-amber-300">{t.time}: {data.weddingTime || (lang === "mr" ? "सकाळी ११:३० वाजता" : "11:30 AM onwards")}</p>
+              <p className="mt-1 font-semibold">{getVenueName() || (lang === "mr" ? "मराठा दरबार हॉल" : "Maratha Durbar Hall")}</p>
+              <p className="text-xs text-amber-300/80 px-4">
+                {getVenueAddress() || "JM Road, Shivajinagar, Pune"}
               </p>
             </div>
 
             <div className="pt-2 border-t border-amber-500/10 mt-4">
               <InteractiveMap
-                destinationAddress={data.venueAddress || "JM Road, Shivajinagar, Pune"}
-                destinationName={data.venueName || "Maratha Durbar Hall"}
+                destinationAddress={getVenueAddress() || "JM Road, Shivajinagar, Pune"}
+                destinationName={getVenueName() || "Maratha Durbar Hall"}
               />
             </div>
 
@@ -628,10 +797,10 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
                   href={data.mapsLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-[#540303] rounded-full text-xs font-black transition-all shadow-md cursor-pointer border-0"
+                  className={`inline-flex items-center gap-1.5 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-[#540303] rounded-full text-xs font-black transition-all shadow-md cursor-pointer border-0 ${fontClasses.body}`}
                 >
                   <MapPin size={12} />
-                  <span>Navigate with Maps</span>
+                  <span>{t.navigateMaps}</span>
                 </a>
               </div>
             )}
@@ -639,8 +808,8 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
           {/* Footer Logo */}
           <div className="text-center pt-8 space-y-1">
-            <span className="text-[9px] uppercase font-bold tracking-widest text-amber-300/40">Powered By</span>
-            <h4 className="text-xs font-bold text-amber-200 tracking-wider">Momenta Experiences</h4>
+            <span className={`text-[9px] uppercase font-bold tracking-widest text-amber-300/40 ${fontClasses.body}`}>{t.poweredBy}</span>
+            <h4 className={`text-xs font-bold text-amber-200 tracking-wider ${fontClasses.body}`}>Momenta Experiences</h4>
           </div>
 
         </div>
