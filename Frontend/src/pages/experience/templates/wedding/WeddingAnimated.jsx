@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Heart, Calendar, MapPin, Clock, ArrowDown, Volume2, VolumeX } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
+import InteractiveMap from "../../../../components/common/InteractiveMap";
 
 // Intricate Golden Indian Wedding Floral Corner Motif
 const FloralCorner = ({ className = "" }) => (
@@ -400,6 +401,13 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
               <p className="text-xs text-amber-300/80 font-serif px-4">
                 {data.venueAddress || "JM Road, Shivajinagar, Pune"}
               </p>
+            </div>
+
+            <div className="pt-2 border-t border-amber-500/10 mt-4">
+              <InteractiveMap
+                destinationAddress={data.venueAddress || "JM Road, Shivajinagar, Pune"}
+                destinationName={data.venueName || "Maratha Durbar Hall"}
+              />
             </div>
 
             {data.mapsLink && (
