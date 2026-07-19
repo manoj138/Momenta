@@ -89,7 +89,7 @@ const TemplateDemo = () => {
         </div>
 
         {/* Device Preview Section */}
-        <div className="flex-1 min-h-[600px] h-[800px]">
+        <div className="flex-1 min-h-[580px] h-[700px]">
           <DevicePreviewMock>
             {renderTemplatePreview()}
           </DevicePreviewMock>

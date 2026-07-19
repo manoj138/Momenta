@@ -48,7 +48,7 @@ const DevicePreviewMock = ({ children }) => {
       <div className="flex-1 overflow-auto p-4 md:p-8 flex items-start justify-center">
         {device === "mobile" ? (
           /* Mobile Phone Mockup */
-          <div className="w-[375px] h-[780px] border-[12px] border-slate-900 rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] bg-white dark:bg-slate-900 overflow-hidden relative flex flex-col">
+          <div className="w-[375px] h-[660px] border-[12px] border-slate-900 rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] bg-white dark:bg-slate-900 overflow-hidden relative flex flex-col">
             {/* Speaker & Camera notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-slate-900 rounded-b-2xl z-50 flex items-center justify-center">
               <span className="w-12 h-1 bg-slate-750 rounded-full mb-1" />
@@ -61,7 +61,7 @@ const DevicePreviewMock = ({ children }) => {
           </div>
         ) : (
           /* Desktop Browser Mockup */
-          <div className="w-full max-w-5xl h-[780px] bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl shadow-premium overflow-auto">
+          <div className="w-full max-w-5xl h-[660px] bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl shadow-premium overflow-auto">
             {children}
           </div>
         )}

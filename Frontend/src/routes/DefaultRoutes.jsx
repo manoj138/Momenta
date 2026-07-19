@@ -82,12 +82,7 @@ const DefaultRoutes = () => {
       />
       <Route
         path="/templates/:category/:slug"
-        element={
-          <>
-            <PublicHeader />
-            <TemplateDemo />
-          </>
-        }
+        element={<TemplateDemo />}
       />
       <Route
         path="/enquiry"
