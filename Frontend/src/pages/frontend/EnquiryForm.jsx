@@ -25,7 +25,6 @@ const EnquiryForm = () => {
   const [dynamicValues, setDynamicValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
-  const [submittedLink, setSubmittedLink] = useState("");
 
   // Get active fields schema
   const activeCategoryObj = categories.find(c => c.id === selectedCategory);
@@ -76,7 +75,7 @@ const EnquiryForm = () => {
       notes: presetTemplateId ? `Preselected Theme: ${presetTemplate.name}` : "General category enquiry",
     };
 
-    const newEnq = addEnquiry(enquiryPayload);
+    addEnquiry(enquiryPayload);
     setIsSuccess(true);
   };
 
@@ -87,38 +86,36 @@ const EnquiryForm = () => {
 
   if (isSuccess) {
     return (
-      <div className="bg-slate-950 text-white min-h-screen flex items-center justify-center py-20 px-6 relative overflow-hidden">
+      <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen flex items-center justify-center py-20 px-6 relative overflow-hidden transition-colors">
         <div className="absolute inset-0 bg-brand-500/5 blur-[100px] pointer-events-none" />
-        <div className="max-w-md w-full bg-slate-900 border border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-premium relative z-10">
-          <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+        <div className="max-w-md w-full bg-white dark:bg-slate-900 border border-gray-250 dark:border-white/10 rounded-3xl p-8 text-center space-y-6 shadow-premium relative z-10">
+          <div className="mx-auto w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
             <CheckCircle2 size={36} />
           </div>
           <div className="space-y-2">
             <h2 className="text-2xl font-bold">Request Submitted!</h2>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-slate-655 dark:text-gray-400 text-sm leading-relaxed">
               Hey {clientName}, thank you for choosing Momenta! Our experience admins will review your request, assign it to a Creator, and generate your live preview link soon.
             </p>
           </div>
           <div className="pt-4 flex flex-col gap-3">
             <button
               onClick={() => {
-                // Redirect back home
                 navigate("/");
               }}
-              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition-all cursor-pointer"
+              className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl transition-all cursor-pointer border-0"
             >
               Back to Home
             </button>
             <button
               onClick={() => {
-                // Reset form
                 setClientName("");
                 setClientEmail("");
                 setClientPhone("");
                 setDynamicValues({});
                 setIsSuccess(false);
               }}
-              className="w-full bg-white/5 border border-white/10 hover:bg-white/10 text-white font-semibold py-3 rounded-xl transition-all cursor-pointer text-xs"
+              className="w-full bg-slate-100 dark:bg-white/5 border border-gray-255 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-white font-semibold py-3 rounded-xl transition-all cursor-pointer text-xs"
             >
               Submit Another Enquiry
             </button>
@@ -129,26 +126,26 @@ const EnquiryForm = () => {
   }
 
   return (
-    <div className="bg-slate-950 text-white min-h-screen py-16 relative overflow-hidden">
+    <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen py-16 relative overflow-hidden transition-colors duration-300">
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-brand-500/5 blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-6 max-w-4xl relative z-10">
         <div className="space-y-4 text-center max-w-2xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-brand-400">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-200/50 dark:bg-white/5 border border-gray-300 dark:border-white/10 rounded-full text-xs text-brand-650 dark:text-brand-400 font-semibold">
             <Sparkles size={12} />
             <span>Interactive Form Wizard</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold">Request Your Experience</h1>
-          <p className="text-gray-400 text-sm">
+          <p className="text-slate-650 dark:text-gray-400 text-sm">
             Provide details below. Selecting a category will dynamically generate corresponding data inputs.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-slate-900/60 border border-white/5 rounded-3xl p-6 md:p-10 shadow-premium space-y-8">
+        <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900/60 border border-gray-200 dark:border-white/5 rounded-3xl p-6 md:p-10 shadow-premium space-y-8">
           
           {/* Section 1: Customer Contact details */}
           <div className="space-y-6">
-            <h3 className="text-lg font-bold border-b border-white/5 pb-2 text-brand-400">1. Contact Information</h3>
+            <h3 className="text-lg font-bold border-b border-gray-200 dark:border-white/5 pb-2 text-brand-650 dark:text-brand-400">1. Contact Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Input
                 label="Full Name"
@@ -189,7 +186,7 @@ const EnquiryForm = () => {
 
           {/* Section 2: Choose category */}
           <div className="space-y-6">
-            <h3 className="text-lg font-bold border-b border-white/5 pb-2 text-brand-400">2. Select Experience Category</h3>
+            <h3 className="text-lg font-bold border-b border-gray-200 dark:border-white/5 pb-2 text-brand-650 dark:text-brand-400">2. Select Experience Category</h3>
             <div className="max-w-md">
               <Select
                 label="Experience Category"
@@ -198,7 +195,7 @@ const EnquiryForm = () => {
                 options={categoryOptions}
               />
               {presetTemplate && (
-                <p className="text-xs text-brand-400 mt-2 font-medium">
+                <p className="text-xs text-brand-650 dark:text-brand-400 mt-2 font-medium">
                   Applying preset layout: <span className="font-bold">{presetTemplate.name}</span>
                 </p>
               )}
@@ -208,7 +205,7 @@ const EnquiryForm = () => {
           {/* Section 3: Dynamic Category Fields */}
           {fields.length > 0 && (
             <div className="space-y-6">
-              <h3 className="text-lg font-bold border-b border-white/5 pb-2 text-brand-400">
+              <h3 className="text-lg font-bold border-b border-gray-200 dark:border-white/5 pb-2 text-brand-650 dark:text-brand-400">
                 3. Customize Experience Details ({activeCategoryObj?.name})
               </h3>
               <DynamicFormRenderer
@@ -222,21 +219,21 @@ const EnquiryForm = () => {
 
           {/* Errors Summary */}
           {Object.keys(errors).length > 0 && (
-            <div className="bg-red-950/20 border border-red-500/25 p-4 rounded-2xl flex items-start gap-3">
-              <AlertCircle className="text-red-400 shrink-0 mt-0.5" size={18} />
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-500/25 p-4 rounded-2xl flex items-start gap-3">
+              <AlertCircle className="text-red-500 dark:text-red-400 shrink-0 mt-0.5" size={18} />
               <div className="space-y-1">
-                <h4 className="text-sm font-bold text-red-300">Validation Failures</h4>
-                <p className="text-xs text-red-200">Please review highlight fields marked in red above before submitting.</p>
+                <h4 className="text-sm font-bold text-red-700 dark:text-red-300">Validation Failures</h4>
+                <p className="text-xs text-red-600 dark:text-red-200">Please review highlight fields marked in red above before submitting.</p>
               </div>
             </div>
           )}
 
           {/* Submit Button */}
-          <div className="pt-4 border-t border-white/5 flex items-center justify-between">
+          <div className="pt-4 border-t border-gray-205 dark:border-white/5 flex items-center justify-between">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="text-xs font-bold text-gray-400 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
+              className="text-xs font-bold text-gray-500 hover:text-slate-800 dark:text-gray-400 dark:hover:text-white flex items-center gap-1.5 transition-all cursor-pointer bg-transparent border-0"
             >
               <ArrowLeft size={14} />
               <span>Cancel & Back</span>

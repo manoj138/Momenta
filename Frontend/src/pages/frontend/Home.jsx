@@ -15,25 +15,25 @@ const Home = () => {
   ];
 
   return (
-    <div className="bg-slate-950 text-white min-h-screen relative overflow-hidden">
+    <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen relative overflow-hidden transition-colors duration-300">
       {/* Background Gradients */}
-      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-brand-500/10 blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/10 blur-[150px] pointer-events-none" />
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-brand-500/5 dark:bg-brand-500/10 blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-[150px] pointer-events-none" />
 
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-20 md:py-32 flex flex-col lg:flex-row items-center gap-12 relative z-10">
         <div className="flex-1 space-y-6 text-center lg:text-left">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-xs font-semibold text-brand-400">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-200/50 dark:bg-white/5 border border-gray-300 dark:border-white/10 backdrop-blur-md text-xs font-semibold text-brand-600 dark:text-brand-400">
             <Sparkles size={14} />
             <span>Premium Interactive Card Platform</span>
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
             Turn Your Special Moments Into <br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-400 via-indigo-400 to-pink-400">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-600 via-indigo-650 to-pink-600 dark:from-brand-400 dark:via-indigo-400 dark:to-pink-400">
               Animated Digital Experiences
             </span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto lg:mx-0">
+          <p className="text-slate-600 dark:text-gray-400 text-lg max-w-xl mx-auto lg:mx-0">
             No boring PDF files. We create interactive, responsive, animated digital invitations and memory walls with countdowns, music playback, location mapping, and live RSVP.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -44,7 +44,7 @@ const Home = () => {
               </Button>
             </Link>
             <Link to="/enquiry">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white/5 border-white/10 text-white hover:bg-white/10 cursor-pointer">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
                 Create Your Experience
               </Button>
             </Link>
@@ -86,28 +86,28 @@ const Home = () => {
       </section>
 
       {/* Platform Concept Info */}
-      <section className="bg-slate-900/60 border-y border-white/5 py-20 relative z-10">
+      <section className="bg-slate-100/80 dark:bg-slate-900/60 border-y border-gray-200 dark:border-white/5 py-20 relative z-10">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
             <h2 className="text-3xl md:text-4xl font-bold">Why Momenta Experiences?</h2>
-            <p className="text-gray-400">Traditional invites are lost in chats. Momenta experiences are remembered forever.</p>
+            <p className="text-slate-650 dark:text-gray-400">Traditional invites are lost in chats. Momenta experiences are remembered forever.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <AnimatedCard className="bg-slate-900/40">
-              <Smartphone className="text-brand-400 mb-4" size={32} />
+            <AnimatedCard className="bg-white dark:bg-slate-900/40 border border-gray-150 dark:border-white/5">
+              <Smartphone className="text-brand-500 dark:text-brand-400 mb-4" size={32} />
               <h3 className="text-xl font-bold mb-2">Mobile Friendly First</h3>
-              <p className="text-gray-400 text-sm">Every template matches perfectly to mobile viewports, enabling fast touch interactions and messaging-app sharing.</p>
+              <p className="text-slate-600 dark:text-gray-400 text-sm">Every template matches perfectly to mobile viewports, enabling fast touch interactions and messaging-app sharing.</p>
             </AnimatedCard>
-            <AnimatedCard className="bg-slate-900/40">
-              <Music className="text-indigo-400 mb-4" size={32} />
+            <AnimatedCard className="bg-white dark:bg-slate-900/40 border border-gray-150 dark:border-white/5">
+              <Music className="text-indigo-600 dark:text-indigo-400 mb-4" size={32} />
               <h3 className="text-xl font-bold mb-2">Background Music & Media</h3>
-              <p className="text-gray-400 text-sm">Add background tunes, image galleries, and countdowns that build emotional anticipation for your guests.</p>
+              <p className="text-slate-600 dark:text-gray-400 text-sm">Add background tunes, image galleries, and countdowns that build emotional anticipation for your guests.</p>
             </AnimatedCard>
-            <AnimatedCard className="bg-slate-900/40">
-              <Globe className="text-pink-400 mb-4" size={32} />
+            <AnimatedCard className="bg-white dark:bg-slate-900/40 border border-gray-150 dark:border-white/5">
+              <Globe className="text-pink-600 dark:text-pink-400 mb-4" size={32} />
               <h3 className="text-xl font-bold mb-2">No Installs, Just Web</h3>
-              <p className="text-gray-400 text-sm">Simple URL link that guests can open instantly in any browser. Works on WhatsApp, Instagram, and SMS.</p>
+              <p className="text-slate-600 dark:text-gray-400 text-sm">Simple URL link that guests can open instantly in any browser. Works on WhatsApp, Instagram, and SMS.</p>
             </AnimatedCard>
           </div>
         </div>
@@ -117,19 +117,19 @@ const Home = () => {
       <section className="container mx-auto px-6 py-20 relative z-10">
         <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
           <h2 className="text-3xl md:text-4xl font-bold">Experiences For Every Milestone</h2>
-          <p className="text-gray-400">Choose a category matching your upcoming event to explore customizable layouts.</p>
+          <p className="text-slate-650 dark:text-gray-400">Choose a category matching your upcoming event to explore customizable layouts.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((cat, idx) => (
             <Link key={cat.id} to={`/templates?category=${cat.id}`} className="block">
-              <AnimatedCard className="bg-slate-900/20 border-white/5 hover:border-brand-500/40 flex items-start gap-4">
-                <div className="p-3 bg-white/5 rounded-xl">
+              <AnimatedCard className="bg-white dark:bg-slate-900/20 border border-gray-150 dark:border-white/5 hover:border-brand-500/40 flex items-start gap-4">
+                <div className="p-3 bg-slate-100 dark:bg-white/5 rounded-xl">
                   {cat.icon}
                 </div>
                 <div className="space-y-1">
-                  <h4 className="font-bold text-lg text-white group-hover:text-brand-400 transition-colors">{cat.name}</h4>
-                  <p className="text-gray-400 text-xs">{cat.desc}</p>
+                  <h4 className="font-bold text-lg text-slate-800 dark:text-white group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors">{cat.name}</h4>
+                  <p className="text-slate-500 dark:text-gray-400 text-xs">{cat.desc}</p>
                 </div>
               </AnimatedCard>
             </Link>
@@ -138,13 +138,13 @@ const Home = () => {
       </section>
 
       {/* Showcase Callout */}
-      <section className="bg-linear-to-r from-brand-600 to-indigo-600 py-16 relative z-10 text-center">
+      <section className="bg-linear-to-r from-brand-600 to-indigo-650 py-16 relative z-10 text-center text-white">
         <div className="container mx-auto px-6 space-y-6">
           <h2 className="text-3xl md:text-4xl font-bold max-w-2xl mx-auto leading-tight">Ready to create a memorable interactive digital card?</h2>
           <p className="text-brand-100 max-w-lg mx-auto">Fill the inquiry form, select a template theme, and our experience admin will craft your layout instantly.</p>
           <div className="pt-2">
             <Link to="/enquiry">
-              <Button className="bg-white text-brand-700 hover:bg-gray-100 shadow-xl cursor-pointer font-bold px-8 py-3 rounded-full">
+              <Button className="bg-white text-brand-700 hover:bg-gray-100 shadow-xl cursor-pointer font-bold px-8 py-3 rounded-full border-0">
                 Get Started Now
               </Button>
             </Link>

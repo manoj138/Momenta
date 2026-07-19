@@ -24,19 +24,19 @@ const TemplateShowcase = () => {
     : templates.filter(t => t.category === activeCategory);
 
   return (
-    <div className="bg-slate-950 text-white min-h-screen py-16 relative overflow-hidden">
+    <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen py-16 relative overflow-hidden transition-colors duration-300">
       {/* Background elements */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-brand-500/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 blur-[120px] pointer-events-none" />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center max-w-2xl mx-auto space-y-4 mb-12">
-          <div className="inline-flex items-center gap-1 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs text-brand-400">
+          <div className="inline-flex items-center gap-1 bg-slate-200/60 dark:bg-white/5 border border-gray-300 dark:border-white/10 px-3 py-1 rounded-full text-xs text-brand-650 dark:text-brand-400 font-semibold">
             <Sparkles size={12} />
             <span>Interactive Template Library</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-extrabold">Discover Premium Designs</h1>
-          <p className="text-gray-400">Select an animated design theme for your celebration. All templates can be customized with your details, photographs, and audio tracks.</p>
+          <p className="text-slate-600 dark:text-gray-400 text-sm">Select an animated design theme for your celebration. All templates can be customized with your details, photographs, and audio tracks.</p>
         </div>
 
         {/* Filter Navigation */}
@@ -46,7 +46,7 @@ const TemplateShowcase = () => {
             className={`px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200 cursor-pointer ${
               activeCategory === "all"
                 ? "bg-brand-600 border-brand-500 text-white shadow-lg shadow-brand-500/10"
-                : "bg-white/5 border-white/10 hover:bg-white/10 text-gray-300"
+                : "bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300"
             }`}
           >
             All Themes
@@ -59,7 +59,7 @@ const TemplateShowcase = () => {
               className={`px-5 py-2.5 rounded-full text-sm font-semibold border transition-all duration-200 cursor-pointer ${
                 activeCategory === cat.id
                   ? "bg-brand-600 border-brand-500 text-white shadow-lg shadow-brand-500/10"
-                  : "bg-white/5 border-white/10 hover:bg-white/10 text-gray-300"
+                  : "bg-white dark:bg-white/5 border-gray-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300"
               }`}
             >
               {cat.name}
@@ -69,8 +69,8 @@ const TemplateShowcase = () => {
 
         {/* Grid List */}
         {filteredTemplates.length === 0 ? (
-          <div className="text-center py-20 bg-slate-900/40 rounded-2xl border border-white/5 max-w-md mx-auto">
-            <p className="text-gray-400 mb-4">No templates found in this category yet.</p>
+          <div className="text-center py-20 bg-white dark:bg-slate-900/40 rounded-2xl border border-gray-200 dark:border-white/5 max-w-md mx-auto shadow-premium">
+            <p className="text-slate-500 dark:text-gray-400 mb-4">No templates found in this category yet.</p>
             <Link to="/enquiry">
               <Button variant="primary" className="cursor-pointer">Request Custom Design</Button>
             </Link>
@@ -78,7 +78,7 @@ const TemplateShowcase = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredTemplates.map((tpl) => (
-              <AnimatedCard key={tpl.id} className="bg-slate-900/40 border-white/5 p-0 flex flex-col h-full overflow-hidden">
+              <AnimatedCard key={tpl.id} className="bg-white dark:bg-slate-900/40 border-gray-200 dark:border-white/5 p-0 flex flex-col h-full overflow-hidden shadow-premium">
                 {/* Thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden bg-slate-850">
                   <img
@@ -88,7 +88,7 @@ const TemplateShowcase = () => {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <Link to={`/templates/${tpl.category}/${tpl.demoSlug}`} className="w-full">
-                      <Button className="w-full bg-white text-slate-900 hover:bg-gray-100 flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold py-2 rounded-lg">
+                      <Button className="w-full bg-white text-slate-900 hover:bg-gray-100 flex items-center justify-center gap-1.5 cursor-pointer text-xs font-bold py-2 rounded-lg border-0">
                         <Eye size={14} />
                         <span>Live Preview Demo</span>
                       </Button>
@@ -102,17 +102,17 @@ const TemplateShowcase = () => {
                 {/* Details */}
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-bold text-white group-hover:text-brand-400 transition-colors">{tpl.name}</h3>
-                    <p className="text-gray-400 text-xs line-clamp-2 leading-relaxed">{tpl.description}</p>
+                    <h3 className="text-lg font-bold text-slate-800 dark:text-white group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors">{tpl.name}</h3>
+                    <p className="text-slate-500 dark:text-gray-400 text-xs line-clamp-2 leading-relaxed">{tpl.description}</p>
                   </div>
                   
-                  <div className="pt-5 border-t border-white/5 flex items-center justify-between mt-4">
-                    <Link to={`/templates/${tpl.category}/${tpl.demoSlug}`} className="text-brand-400 hover:text-brand-300 font-semibold text-xs flex items-center gap-1">
+                  <div className="pt-5 border-t border-gray-200 dark:border-white/5 flex items-center justify-between mt-4">
+                    <Link to={`/templates/${tpl.category}/${tpl.demoSlug}`} className="text-brand-600 dark:text-brand-400 hover:text-brand-705 font-semibold text-xs flex items-center gap-1">
                       <span>View Specifications</span>
                       <ArrowRight size={12} />
                     </Link>
                     <Link to={`/enquiry?template=${tpl.id}`}>
-                      <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-white cursor-pointer text-xs">
+                      <Button variant="outline" size="sm" className="bg-slate-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-slate-700 dark:text-white hover:bg-slate-205 cursor-pointer text-xs">
                         Use Theme
                       </Button>
                     </Link>
