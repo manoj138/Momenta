@@ -19,9 +19,10 @@ const TemplateShowcase = () => {
     setSearchParams(searchParams);
   };
 
-  const filteredTemplates = activeCategory === "all"
+  const filteredTemplates = (activeCategory === "all"
     ? templates
-    : templates.filter(t => t.category === activeCategory);
+    : templates.filter(t => t.category === activeCategory)
+  ).filter(t => t.status === "published");
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen py-16 relative overflow-hidden transition-colors duration-300">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useApp } from "../../../context/AppContext";
+import { useApp } from "../../../../context/AppContext";
 import { Heart, Calendar, MapPin, Music, Send, CheckCircle2, MessageSquare, Clock } from "lucide-react";
-import PremiumAudioPlayer from "../../../components/common/PremiumAudioPlayer";
+import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 
 const WeddingRoyalGold = ({ data = {}, isDemo = false }) => {
   const { addRSVPToExperience } = useApp();

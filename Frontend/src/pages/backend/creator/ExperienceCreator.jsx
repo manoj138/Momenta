@@ -9,8 +9,9 @@ import DynamicFormRenderer from "../../../components/features/DynamicFormRendere
 import DevicePreviewMock from "../../../components/common/DevicePreviewMock";
 
 // Template Components
-import WeddingRoyalGold from "../../experience/templates/WeddingRoyalGold";
-import BirthdayNeonSurprise from "../../experience/templates/BirthdayNeonSurprise";
+import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGold";
+import WeddingAnimated from "../../experience/templates/wedding/WeddingAnimated";
+import BirthdayNeonSurprise from "../../experience/templates/birthday/BirthdayNeonSurprise";
 
 const ExperienceCreator = () => {
   const { enquiryId } = useParams();
@@ -90,6 +91,8 @@ const ExperienceCreator = () => {
       case "wedding-royal-gold":
       case "wedding-modern-minimal":
         return <WeddingRoyalGold data={formData} isDemo={true} />;
+      case "wedding-animated":
+        return <WeddingAnimated data={formData} isDemo={true} />;
       case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={formData} isDemo={true} />;
       default:

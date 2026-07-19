@@ -100,6 +100,15 @@ const seedData = () => {
       status: "published"
     },
     {
+      id: "wedding-animated",
+      name: "Wedding Animated Journey",
+      category: "wedding",
+      description: "Interactive wedding invite with scroll-locked groom & bride meetings, gold sparkles, live countdown, and RSVP.",
+      thumbnail: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=600",
+      demoSlug: "wedding-animated-demo",
+      status: "published"
+    },
+    {
       id: "wedding-modern-minimal",
       name: "Modern Minimalist",
       category: "wedding",
@@ -188,6 +197,28 @@ const seedData = () => {
 
   const defaultExperiences = [
     {
+      id: "exp_demo_wedding_animated",
+      slug: "wedding-animated-demo",
+      templateId: "wedding-animated",
+      category: "wedding",
+      clientName: "Rahul & Priya (Animated)",
+      status: "published",
+      data: {
+        brideName: "Priya",
+        groomName: "Rahul",
+        weddingDate: "2026-11-20",
+        weddingTime: "11:30 AM",
+        venueName: "Maratha Durbar Hall",
+        venueAddress: "JM Road, Shivajinagar, Pune",
+        mapsLink: "https://maps.google.com",
+        familyDetails: "Deshmukh & Patil Families",
+        welcomeMessage: "We request the honor of your presence at our wedding celebration.",
+        bgMusic: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        rsvpList: []
+      },
+      createdAt: "2026-07-19T12:00:00Z"
+    },
+    {
       id: "exp_demo_wedding",
       slug: "royal-gold-demo",
       templateId: "wedding-royal-gold",
@@ -238,16 +269,40 @@ const seedData = () => {
   if (!localStorage.getItem("momenta_categories")) {
     localStorage.setItem("momenta_categories", JSON.stringify(defaultCategories));
   }
-  if (!localStorage.getItem("momenta_templates")) {
+  const existingTemplatesRaw = localStorage.getItem("momenta_templates");
+  if (existingTemplatesRaw) {
+    try {
+      const existing = JSON.parse(existingTemplatesRaw);
+      const missing = defaultTemplates.filter(dt => !existing.some(et => et.id === dt.id));
+      if (missing.length > 0) {
+        localStorage.setItem("momenta_templates", JSON.stringify([...existing, ...missing]));
+      }
+    } catch (e) {
+      localStorage.setItem("momenta_templates", JSON.stringify(defaultTemplates));
+    }
+  } else {
     localStorage.setItem("momenta_templates", JSON.stringify(defaultTemplates));
   }
+
   if (!localStorage.getItem("momenta_admins")) {
     localStorage.setItem("momenta_admins", JSON.stringify(defaultAdmins));
   }
   if (!localStorage.getItem("momenta_enquiries")) {
     localStorage.setItem("momenta_enquiries", JSON.stringify(defaultEnquiries));
   }
-  if (!localStorage.getItem("momenta_experiences")) {
+
+  const existingExperiencesRaw = localStorage.getItem("momenta_experiences");
+  if (existingExperiencesRaw) {
+    try {
+      const existing = JSON.parse(existingExperiencesRaw);
+      const missing = defaultExperiences.filter(de => !existing.some(ee => ee.id === de.id));
+      if (missing.length > 0) {
+        localStorage.setItem("momenta_experiences", JSON.stringify([...existing, ...missing]));
+      }
+    } catch (e) {
+      localStorage.setItem("momenta_experiences", JSON.stringify(defaultExperiences));
+    }
+  } else {
     localStorage.setItem("momenta_experiences", JSON.stringify(defaultExperiences));
   }
 };

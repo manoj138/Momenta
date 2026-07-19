@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useApp } from "../../../context/AppContext";
+import { useApp } from "../../../../context/AppContext";
 import { Sparkles, Calendar, MapPin, Gift, Gift as RevealBox, MessageSquare, Send, CheckCircle2 } from "lucide-react";
-import PremiumAudioPlayer from "../../../components/common/PremiumAudioPlayer";
+import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 
 const BirthdayNeonSurprise = ({ data = {}, isDemo = false }) => {
   const { addRSVPToExperience } = useApp();

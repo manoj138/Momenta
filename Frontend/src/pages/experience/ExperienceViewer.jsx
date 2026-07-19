@@ -5,8 +5,9 @@ import { Sparkles } from "lucide-react";
 import Button from "../../components/common/Button";
 
 // Import Templates
-import WeddingRoyalGold from "./templates/WeddingRoyalGold";
-import BirthdayNeonSurprise from "./templates/BirthdayNeonSurprise";
+import WeddingRoyalGold from "./templates/wedding/WeddingRoyalGold";
+import WeddingAnimated from "./templates/wedding/WeddingAnimated";
+import BirthdayNeonSurprise from "./templates/birthday/BirthdayNeonSurprise";
 
 const ExperienceViewer = () => {
   const { slug } = useParams();
@@ -45,6 +46,8 @@ const ExperienceViewer = () => {
       case "wedding-royal-gold":
       case "wedding-modern-minimal":
         return <WeddingRoyalGold data={experience.data} isDemo={false} />;
+      case "wedding-animated":
+        return <WeddingAnimated data={experience.data} isDemo={false} />;
       case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={experience.data} isDemo={false} />;
       default:

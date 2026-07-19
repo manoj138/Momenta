@@ -6,8 +6,9 @@ import DevicePreviewMock from "../../components/common/DevicePreviewMock";
 import Button from "../../components/common/Button";
 
 // Import template components
-import WeddingRoyalGold from "../experience/templates/WeddingRoyalGold";
-import BirthdayNeonSurprise from "../experience/templates/BirthdayNeonSurprise";
+import WeddingRoyalGold from "../experience/templates/wedding/WeddingRoyalGold";
+import WeddingAnimated from "../experience/templates/wedding/WeddingAnimated";
+import BirthdayNeonSurprise from "../experience/templates/birthday/BirthdayNeonSurprise";
 
 const TemplateDemo = () => {
   const { category, slug } = useParams();
@@ -39,6 +40,8 @@ const TemplateDemo = () => {
       case "wedding-royal-gold":
       case "wedding-modern-minimal":
         return <WeddingRoyalGold data={mockData} isDemo={true} />;
+      case "wedding-animated":
+        return <WeddingAnimated data={mockData} isDemo={true} />;
       case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={mockData} isDemo={true} />;
       default:
