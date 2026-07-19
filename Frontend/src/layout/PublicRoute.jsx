@@ -6,8 +6,12 @@ const PublicRoute = () => {
   const { user } = useAuth();
 
   if (user) {
-    // If authenticated, redirect to dashboard (or wherever)
-    return <Navigate to="/admin/dashboard" replace />;
+    // Redirect to appropriate admin or creator dashboard depending on role
+    if (user.role === "super_admin") {
+      return <Navigate to="/superadmin" replace />;
+    } else {
+      return <Navigate to="/creator" replace />;
+    }
   }
 
   // If not authenticated, render the child routes (like Login)
