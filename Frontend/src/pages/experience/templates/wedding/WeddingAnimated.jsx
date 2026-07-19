@@ -33,21 +33,21 @@ const FloralCorner = ({ className = "" }) => (
   </svg>
 );
 
-// Groom Illustration using public assets (no circular frame, balanced height)
+// Groom Illustration using public assets (no circular frame, balanced height with scale)
 const GroomIllustration = () => (
   <img
     src="/wedding/groom.png"
     alt="Groom"
-    className="h-[260px] md:h-[340px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]"
+    className="h-[180px] md:h-[240px] object-contain scale-[1.2] origin-bottom drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]"
   />
 );
 
-// Bride Illustration using public assets (no circular frame, balanced height)
+// Bride Illustration using public assets (no circular frame, balanced height with scale)
 const BrideIllustration = () => (
   <img
     src="/wedding/bride.png"
     alt="Bride"
-    className="h-[260px] md:h-[340px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]"
+    className="h-[180px] md:h-[240px] object-contain scale-[1.2] origin-bottom drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]"
   />
 );
 
@@ -225,7 +225,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         overflowY: isUnlocked ? "auto" : "hidden",
         height: "100%",
       }}
-      className="w-full bg-[#6b0606] text-amber-100 font-serif relative scroll-smooth flex flex-col overflow-x-hidden selection:bg-amber-500 selection:text-[#6b0606]"
+      className="w-full bg-[#6b0606] text-amber-100 font-serif relative scroll-smooth flex flex-col overflow-x-hidden select-none selection:bg-amber-500 selection:text-[#6b0606]"
     >
       {/* Background Floral Gold Ornament Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(#fcd34d_0.8px,transparent_0.8px)] [background-size:24px_24px] opacity-5 pointer-events-none" />
@@ -247,7 +247,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       </button>
 
       {/* STAGE 1: The Pinned Meeting Animation Fold */}
-      <div className="w-full h-full min-h-screen shrink-0 relative flex flex-col justify-between items-center p-6 pb-12">
+      <div className="w-full h-full shrink-0 relative flex flex-col justify-between items-center p-6 pb-12">
         
         {/* Welcome Section (Centered absolutely in the viewport) */}
         <div
@@ -258,6 +258,21 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 pointer-events-none z-10 transition-all duration-350"
         >
           <div className="space-y-4">
+            {/* Rotating Ganesh Banner */}
+            <div className="relative w-24 h-24 md:w-28 md:h-28 flex items-center justify-center mx-auto mb-2">
+              <img
+                src="/wedding/back.png"
+                alt="Mandala Background"
+                className="absolute inset-0 w-full h-full object-contain pointer-events-none"
+                style={{ animation: "spin 20s linear infinite" }}
+              />
+              <img
+                src="/wedding/ganesh.png"
+                alt="Ganesh"
+                className="w-12 h-12 md:w-14 md:h-14 object-contain z-10 relative pointer-events-none"
+              />
+            </div>
+
             <span className="text-[10px] uppercase font-bold tracking-widest text-amber-300 border-y border-amber-400/30 py-1.5 px-6">
               निमंत्रणपत्रिका
             </span>
@@ -271,59 +286,69 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         </div>
 
         {/* Meeting Illustrative Zone (Flex element in the middle of Stage 1) */}
-        <div className="flex-1 w-full flex items-center justify-center relative overflow-hidden my-4 mt-20">
+        <div className="flex-1 w-full flex items-center justify-center relative my-4 mt-20">
           
-          {/* Groom Container (slides from right to 3.5vw relative to center) */}
+          {/* Groom Container (slides from right to 1.5vw relative to center) */}
           <div
             style={{
               transition: "transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease",
-              transform: `translateX(${35 - 31.5 * slideProgress}vw)`,
+              transform: `translateX(${35 - 32.5 * slideProgress}vw)`,
               opacity: coupleOpacity,
             }}
-            className="absolute"
+            className="absolute bottom-0"
           >
             <GroomIllustration />
           </div>
 
-          {/* Bride Container (slides from left to -3.5vw relative to center) */}
+          {/* Bride Container (slides from left to -1.5vw relative to center) */}
           <div
             style={{
               transition: "transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease",
-              transform: `translateX(${-35 + 31.5 * slideProgress}vw)`,
+              transform: `translateX(${-35 + 32.5 * slideProgress}vw)`,
               opacity: coupleOpacity,
             }}
-            className="absolute"
+            className="absolute bottom-0"
           >
             <BrideIllustration />
           </div>
 
-          {/* Meeting Hearts effect */}
+          {/* Meeting Hearts effect (Above the couple's heads) */}
           <div
             style={{
               transition: "opacity 0.5s ease, transform 0.5s ease",
               opacity: slideProgress >= 0.95 ? 1 : 0,
               transform: `scale(${slideProgress >= 0.95 ? 1 : 0.5})`,
             }}
-            className="absolute z-30 animate-ping text-amber-400"
+            className="absolute bottom-[100px] md:bottom-[220px] z-30 text-amber-400 flex items-center justify-center"
           >
-            <Heart fill="currentColor" size={28} />
+           
+            <Heart fill="currentColor" size={26} className="absolute animate-ping opacity-75" />
           </div>
         </div>
 
         {/* Revealed Names Section (Positioned stable BELOW the couple) */}
-        <div className="w-full max-w-sm flex flex-col items-center justify-center min-h-[140px] mb-4 z-20">
+        <div className="w-full max-w-md flex flex-col items-center justify-center min-h-[140px] mb-4 z-20">
           <div
             style={{
               transition: "opacity 0.6s ease, transform 0.6s ease",
               opacity: slideProgress >= 0.95 ? 1 : 0,
               transform: `translateY(${slideProgress >= 0.95 ? 0 : 15}px)`,
             }}
-            className="text-center space-y-4"
+            className="text-center space-y-3"
           >
-            <h1 className="text-3xl md:text-4xl font-bold font-serif text-amber-100 border-b border-amber-400/25 pb-2 px-8 inline-block drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-amber-100 border-b border-amber-400/25 pb-2 px-4 sm:px-8 whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
               {data.groomName || "Rahul"} & {data.brideName || "Priya"}
             </h1>
-            <div className="flex items-center justify-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest">
+            
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.25em] text-amber-300/90 font-serif mt-2 animate-pulse" style={{ animationDuration: '4s' }}>
+              Are Getting Married
+            </p>
+            
+            <p className="text-[10px] sm:text-[11px] text-amber-200/75 italic font-serif max-w-[280px] mx-auto leading-relaxed">
+              "Two hearts, one beautiful journey, and a lifetime of love waiting to be written together."
+            </p>
+            
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-amber-300 uppercase tracking-widest pt-1">
               <Calendar size={14} className="text-amber-400" />
               <span>{data.weddingDate || "Nov 20, 2026"}</span>
             </div>
