@@ -24,7 +24,7 @@ export const authService = {
         return response.data;
     },
     getCurrentUser: () => {
-        const user = sessionStorage.getItem('users');
+        const user = localStorage.getItem('users');
         return user ? JSON.parse(user) : null;
     }
 };

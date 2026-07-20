@@ -20,17 +20,15 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Serve static uploaded files (kept for backward compatibility, although Cloudinary is now active)
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
-// Root Route
-app.get('/', (req, res) => {
-  res.json({
-    status: true,
-    message: 'Momenta Digital Experience Platform API is active and running.'
-  });
-});
-
 // API Routes Aggregator
 app.use('/api', apiRoutes);
 
+// Serve frontend static build files from dist folder
+app.use(express.static(path.join(__dirname, 'dist')));
+// Fallback to index.html for React Router SPA (placed after API routes)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
 const initSuperAdmin = require('./src/config/initSuperAdmin');
 
 // Connect DB and start server

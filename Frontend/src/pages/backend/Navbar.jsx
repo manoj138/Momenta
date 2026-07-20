@@ -21,7 +21,7 @@ const Navbar = () => {
       {/* Left side */}
       <div className="flex items-center gap-4">
         <h2 className="text-base font-extrabold tracking-tight text-white">
-          <span className="text-gradient capitalize">{user?.role === "super_admin" ? "Super Admin Panel" : "Creator Panel"}</span>
+          <span className="text-gradient capitalize">{(user?.role === "super_admin" || user?.role === "superadmin") ? "Super Admin Panel" : "Creator Panel"}</span>
         </h2>
       </div>
 
@@ -36,7 +36,7 @@ const Navbar = () => {
               {user?.name || "Admin"}
             </span>
             <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">
-              {user?.role === "super_admin" ? "Super Administrator" : "Experience Creator"}
+              {(user?.role === "super_admin" || user?.role === "superadmin") ? "Super Administrator" : "Experience Creator"}
             </span>
           </div>
           

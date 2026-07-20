@@ -133,7 +133,7 @@ const TemplateManager = () => {
 
                   {/* Hover Overlay with Direct New Tab Link */}
                   <div 
-                    onClick={() => window.open(`/e/${tpl.demoSlug}`, "_blank")}
+                    onClick={() => window.open(tpl.previewUrl || `/e/${tpl.demoSlug}`, "_blank")}
                     className="absolute inset-0 bg-slate-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer z-40 backdrop-blur-[2px]"
                   >
                     <button className="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-xl cursor-pointer">
@@ -149,13 +149,13 @@ const TemplateManager = () => {
                 <div className="space-y-2">
                   <h4 className="font-bold text-base text-white">{tpl.name}</h4>
                   <p className="text-gray-400 text-xs line-clamp-2 leading-relaxed">{tpl.description}</p>
-                  <div className="text-[10px] text-gray-500 font-mono">Direct Link: /e/{tpl.demoSlug}</div>
+                  <div className="text-[10px] text-gray-500 font-mono">Direct Link: {tpl.previewUrl || `/e/${tpl.demoSlug}`}</div>
                 </div>
 
                 <div className="pt-4 border-t border-white/5 flex items-center justify-between mt-4">
                   <div className="flex gap-2">
                     <button
-                      onClick={() => window.open(`/e/${tpl.demoSlug}`, "_blank")}
+                      onClick={() => window.open(tpl.previewUrl || `/e/${tpl.demoSlug}`, "_blank")}
                       className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-300 hover:text-white transition-colors cursor-pointer flex items-center gap-1 text-[11px]"
                       title="Preview Demo Directly"
                     >

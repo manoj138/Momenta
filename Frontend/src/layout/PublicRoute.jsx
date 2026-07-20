@@ -7,7 +7,7 @@ const PublicRoute = () => {
 
   if (user) {
     // Redirect to appropriate admin or creator dashboard depending on role
-    if (user.role === "super_admin") {
+    if (user.role === "super_admin" || user.role === "superadmin") {
       return <Navigate to="/superadmin" replace />;
     } else {
       return <Navigate to="/creator" replace />;

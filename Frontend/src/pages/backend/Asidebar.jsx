@@ -33,7 +33,7 @@ const Asidebar = () => {
 
   // Define links based on user role
   const getLinks = () => {
-    if (user?.role === "super_admin") {
+    if (user?.role === "super_admin" || user?.role === "superadmin") {
       return [
         { to: "/superadmin", label: "Dashboard", icon: <Home size={20} /> },
         { to: "/superadmin/categories", label: "Category Schemas", icon: <Layers size={20} /> },

@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // ✅ Backend base URLs
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:3000" : "");
 
 
 const Api = axios.create({
@@ -14,7 +14,7 @@ const Api = axios.create({
 
 Api.interceptors.request.use(
     (config) => {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -80,8 +80,8 @@ Api.interceptors.response.use(
         if (error.response) {
             // 401 - Token invalid / expired
             if (error.response.status === 401) {
-                sessionStorage.removeItem("token");
-                sessionStorage.removeItem("users");
+                localStorage.removeItem("token");
+                localStorage.removeItem("users");
                 // Only redirect to login if currently trying to access an admin workspace
                 const path = window.location.pathname;
                 if (path.startsWith("/superadmin") || path.startsWith("/creator")) {
@@ -95,13 +95,13 @@ Api.interceptors.response.use(
 );
 
 const sessionStore = (token, user) => {
-    sessionStorage.setItem("token", token);
-    sessionStorage.setItem("users", JSON.stringify(user));
+    localStorage.setItem("token", token);
+    localStorage.setItem("users", JSON.stringify(user));
 }
 
 const sessionRemove = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("users");
+    localStorage.removeItem("token");
+    localStorage.removeItem("users");
 }
 
 const handleApiError = (error, setError = null, addToast = null) => {

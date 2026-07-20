@@ -5,11 +5,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const sessionUser = authService.getCurrentUser();
-    if (sessionUser) return sessionUser;
-
-    const savedUser = localStorage.getItem("momenta_user");
-    return savedUser ? JSON.parse(savedUser) : null;
+    return authService.getCurrentUser();
   });
 
   const login = async (email, password) => {
@@ -18,13 +14,12 @@ export const AuthProvider = ({ children }) => {
       if (response.status && response.data && response.data.user) {
         const loggedInUser = response.data.user;
         setUser(loggedInUser);
-        localStorage.setItem("momenta_user", JSON.stringify(loggedInUser));
         return { success: true, user: loggedInUser };
       } else {
         return { success: false, message: response.message || "Invalid credentials" };
       }
     } catch (error) {
-      console.warn("API Auth Login Failed, trying fallback check:", error);
+      console.warn("API Auth Login Failed:", error);
       const errMsg = error.response?.data?.errors?.auth || error.response?.data?.errors?.email || "Invalid email or password";
       return { success: false, message: errMsg };
     }
@@ -32,7 +27,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("momenta_user");
     authService.logout();
   };
 

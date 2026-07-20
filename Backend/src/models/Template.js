@@ -48,5 +48,13 @@ TemplateSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
+// Virtual for category to support .populate('category')
+TemplateSchema.virtual('category', {
+    ref: 'Category',
+    localField: 'category_id',
+    foreignField: '_id',
+    justOne: true
+});
+
 const Template = mongoose.model('Template', TemplateSchema);
 module.exports = Template;

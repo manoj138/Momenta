@@ -45,5 +45,21 @@ EnquirySchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
+// Virtual for category to support .populate('category')
+EnquirySchema.virtual('category', {
+    ref: 'Category',
+    localField: 'category_id',
+    foreignField: '_id',
+    justOne: true
+});
+
+// Virtual for template to support .populate('template')
+EnquirySchema.virtual('template', {
+    ref: 'Template',
+    localField: 'template_id',
+    foreignField: '_id',
+    justOne: true
+});
+
 const Enquiry = mongoose.model('Enquiry', EnquirySchema);
 module.exports = Enquiry;

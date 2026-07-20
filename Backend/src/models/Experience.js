@@ -55,6 +55,30 @@ ExperienceSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
+// Virtual for category to support .populate('category')
+ExperienceSchema.virtual('category', {
+    ref: 'Category',
+    localField: 'category_id',
+    foreignField: '_id',
+    justOne: true
+});
+
+// Virtual for template to support .populate('template')
+ExperienceSchema.virtual('template', {
+    ref: 'Template',
+    localField: 'template_id',
+    foreignField: '_id',
+    justOne: true
+});
+
+// Virtual for creator to support .populate('creator')
+ExperienceSchema.virtual('creator', {
+    ref: 'User',
+    localField: 'created_by_user_id',
+    foreignField: '_id',
+    justOne: true
+});
+
 // Virtual populates to match hasMany associations
 ExperienceSchema.virtual('rsvps', {
     ref: 'Rsvp',

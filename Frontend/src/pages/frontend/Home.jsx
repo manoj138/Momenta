@@ -191,7 +191,12 @@ const Home = () => {
   const touchStartY = useRef(0);
 
   const handleTemplateClick = (category, demoSlug) => {
-    window.open(`/e/${demoSlug}`, "_blank");
+    const tpl = templates.find(t => t.demoSlug === demoSlug);
+    if (tpl && tpl.previewUrl) {
+      window.open(tpl.previewUrl, "_blank");
+    } else {
+      window.open(`/e/${demoSlug}`, "_blank");
+    }
   };
 
   const renderCardPreview = (demoSlug) => {
