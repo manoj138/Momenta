@@ -502,8 +502,12 @@ const Home = () => {
       {isUnlocked && (
         <>
           {/* Featured Templates Preview Section */}
-          <section className="py-12 sm:py-20 relative z-10 bg-slate-100/50 dark:bg-slate-900/30 border-t border-gray-200 dark:border-white/5">
-            <div className="container mx-auto px-4 sm:px-6">
+          <section className="py-12 sm:py-20 relative z-10 bg-slate-100/50 dark:bg-slate-900/30 border-t border-gray-200 dark:border-white/5 overflow-hidden">
+            {/* Background Ambient Glow Orbs floating way behind the cards in the section background */}
+            <div className="absolute top-[-10%] left-[-5%] w-[600px] sm:w-[750px] h-[600px] sm:h-[750px] rounded-full bg-gradient-to-br from-amber-500/20 via-rose-500/15 to-purple-500/15 blur-[140px] opacity-75 dark:opacity-50 pointer-events-none z-0" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[600px] sm:w-[750px] h-[600px] sm:h-[750px] rounded-full bg-gradient-to-tl from-indigo-500/20 via-brand-500/15 to-pink-500/15 blur-[140px] opacity-75 dark:opacity-50 pointer-events-none z-0" />
+
+            <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
                 <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-semibold">
                   <Sparkles size={14} />
