@@ -3,6 +3,34 @@ import { useApp } from "../../../../context/AppContext";
 import { Sparkles, Calendar, MapPin, Gift, Gift as RevealBox, MessageSquare, Send, CheckCircle2 } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 
+// Helper to select birthday character image based on person's age & gender (Boy/Girl/Man/Woman)
+const getAgeImage = (ageVal, genderVal = "", personName = "") => {
+  const age = parseInt(ageVal) || 1;
+  const combinedStr = `${genderVal} ${personName}`.toLowerCase();
+  
+  // Detect female/girl keywords
+  const isGirl = combinedStr.includes("girl") || 
+                 combinedStr.includes("female") || 
+                 combinedStr.includes("woman") || 
+                 combinedStr.includes("lady") || 
+                 combinedStr.includes("priya") || 
+                 combinedStr.includes("ananya") || 
+                 combinedStr.includes("riya") || 
+                 combinedStr.includes("sneha") || 
+                 combinedStr.includes("pooja") || 
+                 combinedStr.includes("neha");
+
+  if (age <= 5) {
+    return isGirl ? "/birthday/birthday baby girl.png" : "/birthday/birthday baby boy.png";
+  } else if (age <= 12) {
+    return isGirl ? "/birthday/birthday kid girl.png" : "/birthday/birthday kid boy.png";
+  } else if (age <= 19) {
+    return isGirl ? "/birthday/birthday teen girl.png" : "/birthday/birthday teen boy.png";
+  } else {
+    return isGirl ? "/birthday/birthday adult woman.png" : "/birthday/birthday adult man.png";
+  }
+};
+
 const BirthdayNeonSurprise = ({ data = {}, isDemo = false }) => {
   const { addRSVPToExperience } = useApp();
   const [isRevealed, setIsRevealed] = useState(false);
@@ -57,6 +85,21 @@ const BirthdayNeonSurprise = ({ data = {}, isDemo = false }) => {
             {data.age || "25"}th Celebration
           </span>
         </h1>
+
+        {/* Age-Based Birthday Character Illustration */}
+        <div className="my-2 relative group">
+          <div className="absolute inset-0 bg-pink-500/20 blur-2xl rounded-full pointer-events-none group-hover:bg-cyan-500/30 transition-all duration-500" />
+          <img
+            src={getAgeImage(data.age, data.gender, data.personName)}
+            onError={(e) => {
+              // Fallback to birthday baby boy.png or birthday baby.png if specific PNG is not found
+              e.target.src = "/birthday/birthday baby boy.png";
+            }}
+            alt="Birthday Person Character"
+            className="h-52 sm:h-64 md:h-72 w-auto mx-auto object-contain relative z-10 drop-shadow-[0_15px_30px_rgba(236,72,153,0.35)] animate-pulse"
+            style={{ animationDuration: '4s' }}
+          />
+        </div>
 
         <p className="text-gray-400 text-sm max-w-sm mx-auto leading-relaxed">
           "{data.message || "Join us for a night of neon lights, awesome beats, and great company."}"
