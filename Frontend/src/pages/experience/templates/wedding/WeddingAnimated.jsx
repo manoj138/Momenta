@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Heart, Calendar, MapPin, Clock, ArrowDown, Volume2, VolumeX, Music, Sparkles, Utensils, Sun } from "lucide-react";
-import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 import InteractiveMap from "../../../../components/common/InteractiveMap";
+import TemplateControls from "../../../../components/common/TemplateControls";
 
 // Intricate Golden Indian Wedding Floral Corner Motif
 const FloralCorner = ({ className = "" }) => (
@@ -544,9 +544,6 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const [showAkshata, setShowAkshata] = useState(false);
   const [akshataGrains, setAkshataGrains] = useState([]);
 
-  // Audio Control States
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef(null);
   const audioUrl = data.bgMusic || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
 
   // Helper to subtract days and format date
@@ -749,20 +746,6 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
     };
   }, [isUnlocked]);
 
-  // Audio Playback toggler
-  const toggleMusic = () => {
-    if (!audioRef.current) {
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.loop = true;
-    }
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play().catch((err) => console.log("Audio block: " + err));
-    }
-    setIsPlaying(!isPlaying);
-  };
-
   const toggleLanguage = () => {
     setCurrentLang((prev) => (prev === "mr" ? "en" : "mr"));
   };
@@ -893,23 +876,16 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       <FloralCorner className="absolute top-4 right-4 rotate-90 z-20" />
       <FloralCorner className="absolute bottom-4 left-4 -rotate-90 z-20" />
 
-      {/* Floating Language Switcher */}
-      <button
-        onClick={toggleLanguage}
-        className="absolute top-6 left-6 z-50 w-9 h-9 rounded-full bg-amber-500 text-[#540303] shadow-lg cursor-pointer hover:bg-amber-400 hover:scale-105 transition-all border border-amber-300/30 flex items-center justify-center font-sans font-bold text-xs"
-        title="Toggle Language / भाषा बदला"
-      >
-        {lang === "mr" ? "EN" : "म"}
-      </button>
-
-      {/* Floating Audio Trigger */}
-      <button
-        onClick={toggleMusic}
-        className="absolute top-6 right-6 z-50 p-2.5 rounded-full bg-amber-500 text-[#540303] shadow-lg cursor-pointer hover:bg-amber-400 hover:scale-105 transition-all border border-amber-300/30"
-        title="Toggle Music"
-      >
-        {isPlaying ? <Volume2 size={16} className="animate-bounce" /> : <VolumeX size={16} />}
-      </button>
+      {/* Floating Controls (Language & Music) */}
+      <TemplateControls
+        currentLang={currentLang}
+        onToggleLanguage={toggleLanguage}
+        audioUrl={audioUrl}
+        bgClass="bg-amber-500"
+        textClass="text-[#540303]"
+        hoverClass="hover:bg-amber-400 hover:scale-105"
+        borderClass="border-amber-300/30"
+      />
 
       {/* STAGE 1: The Pinned Meeting Animation Fold */}
       <div className="w-full min-h-screen h-screen shrink-0 relative flex flex-col justify-between items-center p-6 pb-12">

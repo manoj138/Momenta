@@ -10,8 +10,8 @@ const port = process.env.PORT || 3000;
 
 // Enable CORS for Frontend
 app.use(cors({
-    origin: '*',
-    credentials: true
+  origin: '*',
+  credentials: true
 }));
 
 app.use(express.json({ limit: '50mb' }));
@@ -22,10 +22,10 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
 // Root Route
 app.get('/', (req, res) => {
-    res.json({
-        status: true,
-        message: 'Momenta Digital Experience Platform API is active and running.'
-    });
+  res.json({
+    status: true,
+    message: 'Momenta Digital Experience Platform API is active and running.'
+  });
 });
 
 // API Routes Aggregator
@@ -35,14 +35,14 @@ const initSuperAdmin = require('./src/config/initSuperAdmin');
 
 // Sync Database and start server
 sequelize.sync()
-    .then(async () => {
-        console.log('SQLite Database models synced successfully.');
-        await initSuperAdmin();
-        app.listen(port, () => {
-            console.log(`Momenta Express server listening at http://localhost:${port}`);
-        });
-    })
-    .catch((error) => {
-        console.error('Failed to sync SQLite database:', error.message);
+  .then(async () => {
+    console.log('SQLite Database models synced successfully.');
+    await initSuperAdmin();
+    app.listen(port, () => {
+      console.log(`Momenta Express server listening at http://localhost:${port}`);
     });
+  })
+  .catch((error) => {
+    console.error('Failed to sync SQLite database:', error.message);
+  });
 
