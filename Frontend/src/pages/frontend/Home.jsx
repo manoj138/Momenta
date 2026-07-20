@@ -1,8 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart, Sparkles, Gift, Flame, Send, ArrowRight, CheckCircle2, Music, Smartphone, Globe, Eye, Home as HomeIcon } from "lucide-react";
 import AnimatedCard from "../../components/common/AnimatedCard";
 import Button from "../../components/common/Button";
+import { useApp } from "../../context/AppContext";
+
+// Import Templates for native mockup rendering
+import WeddingRoyalGold from "../experience/templates/wedding/WeddingRoyalGold";
+import WeddingAnimated from "../experience/templates/wedding/WeddingAnimated";
+import BirthdayNeonSurprise from "../experience/templates/birthday/BirthdayNeonSurprise";
 
 const Home = () => {
   const showcaseItems = [
@@ -169,10 +175,44 @@ const Home = () => {
     }
   ];
 
+  const navigate = useNavigate();
+  const { templates } = useApp();
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const isAnimatingRef = useRef(false);
   const touchStartY = useRef(0);
+
+  const handleTemplateClick = (category, demoSlug) => {
+    window.open(`/e/${demoSlug}`, "_blank");
+  };
+
+  const renderCardPreview = (demoSlug) => {
+    const mockData = {
+      brideName: "Priya",
+      groomName: "Rahul",
+      weddingDate: "2026-11-20",
+      weddingTime: "11:30 AM",
+      venueName: "Maratha Durbar Hall",
+      venueAddress: "JM Road, Shivajinagar, Pune",
+      personName: "Sneha Shinde",
+      age: 25,
+      birthdayDate: "2026-08-15",
+      venue: "Sky Lounge, Kothrud",
+      message: "Join me as I celebrate 25 years of awesome!",
+    };
+
+    switch (demoSlug) {
+      case "royal-gold-demo":
+        return <WeddingRoyalGold data={mockData} isDemo={true} />;
+      case "wedding-animated-demo":
+        return <WeddingAnimated data={mockData} isDemo={true} />;
+      case "neon-surprise-demo":
+        return <BirthdayNeonSurprise data={mockData} isDemo={true} />;
+      default:
+        return null;
+    }
+  };
 
   // Manage body overflow based on lock state
   useEffect(() => {
@@ -447,6 +487,86 @@ const Home = () => {
       {/* Render the remaining page contents ONLY when the showcase is unlocked */}
       {isUnlocked && (
         <>
+          {/* Featured Templates Preview Section */}
+          <section className="py-20 relative z-10 bg-slate-100/50 dark:bg-slate-900/30 border-t border-gray-200 dark:border-white/5">
+            <div className="container mx-auto px-6">
+              <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-semibold">
+                  <Sparkles size={14} />
+                  <span>Interactive Live Mockups</span>
+                </div>
+                <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+                Featured Templates
+                </h2>
+                <p className="text-slate-650 dark:text-gray-400 text-base max-w-xl mx-auto">
+                  Explore our live interactive templates on mobile frames. Click preview to experience full screen.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                {templates
+                  .filter((tpl) => ["royal-gold-demo", "wedding-animated-demo", "neon-surprise-demo"].includes(tpl.demoSlug))
+                  .map((tpl) => (
+                    <div
+                      key={tpl.id}
+                      onClick={() => handleTemplateClick(tpl.category, tpl.demoSlug)}
+                      className="group bg-white dark:bg-slate-900/60 border border-gray-200 dark:border-white/10 rounded-3xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                    >
+                      {/* Phone Container Box with Center Alignment */}
+                      <div className="w-full h-[500px] flex items-center justify-center relative overflow-hidden mb-2">
+                        {/* Scaled 375px x 660px Physical Phone Mockup (DevicePreviewMock standard) */}
+                        <div 
+                          style={{
+                            width: "375px",
+                            height: "660px",
+                            transform: "scale(0.74)",
+                            transformOrigin: "center center"
+                          }}
+                          className="border-[12px] border-slate-900 rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] bg-white dark:bg-slate-900 overflow-hidden relative flex flex-col shrink-0 group-hover:border-brand-500 transition-colors duration-300"
+                        >
+                          {/* Speaker & Camera notch */}
+                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-slate-900 rounded-b-2xl z-50 flex items-center justify-center">
+                            <span className="w-12 h-1 bg-slate-750 rounded-full mb-1" />
+                            <span className="w-2.5 h-2.5 bg-slate-800 rounded-full mb-1 ml-3" />
+                          </div>
+
+                          {/* Viewport Content */}
+                          <div className="flex-1 overflow-y-auto no-scrollbar h-full w-full pointer-events-none select-none">
+                            {renderCardPreview(tpl.demoSlug)}
+                          </div>
+
+                          {/* Hover Overlay with Preview Trigger */}
+                          <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-40 backdrop-blur-[2px]">
+                            <Button 
+                              variant="primary" 
+                              size="sm"
+                              className="flex items-center gap-1.5 shadow-xl font-bold rounded-full px-5 py-2.5 text-xs pointer-events-auto"
+                            >
+                              <Eye size={14} />
+                              <span>Live Preview</span>
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Template Details below mobile mockup */}
+                      <div className="w-full text-center space-y-2">
+                        <span className="text-[10px] uppercase tracking-widest font-extrabold text-brand-600 dark:text-brand-400 bg-brand-500/10 px-2.5 py-1 rounded-md">
+                          {tpl.category}
+                        </span>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white group-hover:text-brand-500 transition-colors">
+                          {tpl.name}
+                        </h3>
+                        <p className="text-slate-500 dark:text-gray-400 text-xs line-clamp-2 px-2">
+                          {tpl.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </section>
+
           {/* Platform Concept Info */}
           <section className="bg-slate-100/80 dark:bg-slate-900/60 border-y border-gray-200 dark:border-white/5 py-20 relative z-10">
             <div className="container mx-auto px-6">
