@@ -60,7 +60,11 @@ const ExperienceViewer = () => {
     }
   };
 
-  return <>{renderTemplate()}</>;
+  return (
+    <div className="min-h-screen w-full bg-slate-950 flex flex-col overflow-x-hidden">
+      {renderTemplate()}
+    </div>
+  );
 };
 
 export default ExperienceViewer;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Heart, Calendar, MapPin, Clock, ArrowDown, Volume2, VolumeX, Music, Sparkles, Utensils, Sun } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
 import InteractiveMap from "../../../../components/common/InteractiveMap";
@@ -38,7 +38,7 @@ const GroomIllustration = () => (
   <img
     src="/wedding/groom.png"
     alt="Groom"
-    className="h-[180px] md:h-[240px] object-contain scale-[1.2] origin-bottom drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]"
+    className="h-[340px] sm:h-[400px] md:h-[460px] object-contain scale-[1.55] origin-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
   />
 );
 
@@ -47,7 +47,7 @@ const BrideIllustration = () => (
   <img
     src="/wedding/bride.png"
     alt="Bride"
-    className="h-[180px] md:h-[240px] object-contain scale-[1.2] origin-bottom drop-shadow-[0_15px_30px_rgba(0,0,0,0.22)]"
+    className="h-[340px] sm:h-[400px] md:h-[460px] object-contain scale-[1.55] origin-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
   />
 );
 
@@ -316,12 +316,15 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
   // Countdown timer calculations
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const eventDate = data.weddingDate ? new Date(data.weddingDate) : new Date(Date.now() + 1000 * 60 * 60 * 24 * 45); // Default 45 days out
+
+  const targetTime = useMemo(() => {
+    return data.weddingDate ? new Date(data.weddingDate).getTime() : Date.now() + 1000 * 60 * 60 * 24 * 45;
+  }, [data.weddingDate]);
 
   // Handle countdown tick
   useEffect(() => {
     const calculateTime = () => {
-      const difference = +eventDate - +new Date();
+      const difference = targetTime - Date.now();
       if (difference <= 0) return;
 
       setTimeLeft({
@@ -335,7 +338,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
     calculateTime();
     const interval = setInterval(calculateTime, 1000);
     return () => clearInterval(interval);
-  }, [eventDate]);
+  }, [targetTime]);
 
   // Handle custom scroll locking and kinetic scrollProgress tracking
   useEffect(() => {
@@ -477,7 +480,8 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       ref={containerRef}
       style={{
         overflowY: isUnlocked ? "auto" : "hidden",
-        height: "100%",
+        minHeight: "100vh",
+        height: isUnlocked ? "auto" : "100vh",
       }}
       className="w-full bg-[#6b0606] text-amber-100 font-serif relative scroll-smooth flex flex-col overflow-x-hidden select-none selection:bg-amber-500 selection:text-[#6b0606]"
     >
@@ -529,7 +533,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
       </button>
 
       {/* STAGE 1: The Pinned Meeting Animation Fold */}
-      <div className="w-full h-full shrink-0 relative flex flex-col justify-between items-center p-6 pb-12">
+      <div className="w-full min-h-screen h-screen shrink-0 relative flex flex-col justify-between items-center p-6 pb-12">
         
         {/* Akshata (Colored Rice) Shower Overlay - Full Stage 1 coverage */}
         {showAkshata && (
@@ -592,28 +596,28 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         </div>
 
         {/* Meeting Illustrative Zone (Flex element in the middle of Stage 1) */}
-        <div className="flex-1 w-full flex items-center justify-center relative my-4 mt-20">
+        <div className="flex-1 w-full flex items-center justify-center relative my-2 mt-28 pt-12 sm:pt-16">
           
-          {/* Groom Container (slides from right to 1.5vw relative to center) */}
+          {/* Groom Container (slides from right to 13.5vw relative to center for subtle side-by-side spacing) */}
           <div
             style={{
               transition: "transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease",
-              transform: `translateX(${35 - 32.5 * slideProgress}vw)`,
+              transform: `translateX(${35 - 21.5 * slideProgress}vw)`,
               opacity: coupleOpacity,
             }}
-            className="absolute bottom-0"
+            className="absolute bottom-[-115px] sm:bottom-[-95px]"
           >
             <GroomIllustration />
           </div>
 
-          {/* Bride Container (slides from left to -1.5vw relative to center) */}
+          {/* Bride Container (slides from left to -13.5vw relative to center for subtle side-by-side spacing) */}
           <div
             style={{
               transition: "transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease",
-              transform: `translateX(${-35 + 32.5 * slideProgress}vw)`,
+              transform: `translateX(${-35 + 21.5 * slideProgress}vw)`,
               opacity: coupleOpacity,
             }}
-            className="absolute bottom-0"
+            className="absolute bottom-[-115px] sm:bottom-[-95px]"
           >
             <BrideIllustration />
           </div>
@@ -625,7 +629,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
               opacity: slideProgress >= 0.95 ? 1 : 0,
               transform: `scale(${slideProgress >= 0.95 ? 1 : 0.5})`,
             }}
-            className="absolute bottom-[100px] md:bottom-[220px] z-30 text-amber-400 flex items-center justify-center"
+            className="absolute bottom-[300px] sm:bottom-[230px] md:bottom-[290px] z-30 text-amber-400 flex items-center justify-center"
           >
            
             <Heart fill="currentColor" size={26} className="absolute animate-ping opacity-75" />
@@ -633,7 +637,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         </div>
 
         {/* Revealed Names Section (Positioned stable BELOW the couple) */}
-        <div className="w-full max-w-md flex flex-col items-center justify-center min-h-[140px] mb-4 z-20">
+        <div className="w-full max-w-md flex flex-col items-center justify-center min-h-[140px] mt-2 mb-2 z-20">
           <div
             style={{
               transition: "opacity 0.6s ease, transform 0.6s ease",
@@ -642,7 +646,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
             }}
             className="text-center space-y-3"
           >
-            <h1 className={`text-2xl sm:text-3xl md:text-4xl font-bold text-amber-100 border-b border-amber-400/25 pb-2 px-4 sm:px-8 whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] ${fontClasses.heading}`}>
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl font-black text-amber-100 border-b-2 border-amber-400/40 pb-3 px-2 sm:px-8 whitespace-nowrap drop-shadow-[0_6px_16px_rgba(0,0,0,0.6)] tracking-wide leading-tight ${fontClasses.heading}`}>
               {getGroomName()} & {getBrideName()}
             </h1>
             
@@ -662,7 +666,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         </div>
 
         {/* Navigation Indicator Row */}
-        <div className="h-12 flex items-center justify-center mb-6 z-20">
+        <div className="h-10 flex items-center justify-center mb-2 z-20">
           {!isUnlocked && (
             <div className={`text-[10px] text-amber-300 font-bold uppercase tracking-widest flex flex-col items-center gap-1.5 animate-bounce ${fontClasses.body}`}>
               <span>{t.scrollDown}</span>
