@@ -33,6 +33,179 @@ const FloralCorner = ({ className = "" }) => (
   </svg>
 );
 
+// Canvas-based Transparent & Amber Tinted Namaste Hands Component using user asset (/comman/namaskarm hand.png)
+const TransparentNamasteImage = ({ className = "h-20 sm:h-24 w-auto mx-auto" }) => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/comman/namaskarm hand.png";
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      // 3x HD Retina Pixel Scaling for crisp high-DPI rendering
+      const scale = 3;
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        // If pixel is near white (R, G, B all > 210), set alpha to transparent
+        if (r > 210 && g > 210 && b > 210) {
+          data[i + 3] = 0;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className={className}
+      style={{ display: "block", imageRendering: "-webkit-optimize-contrast" }}
+    />
+  );
+};
+
+// Next-Level Animated Countdown Card (Mechanical 3D Unfold & Flip Board)
+const AnimatedCountdownCard = ({ timeLeft, t, fontClasses }) => {
+  const cardRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      style={{
+        animation: isVisible ? "cardUnfold3D 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards" : "none",
+        opacity: isVisible ? 1 : 0,
+      }}
+      className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 text-center shadow-xl"
+    >
+      <Clock
+        style={{
+          animation: isVisible ? "clockSpin 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards" : "none",
+        }}
+        className="text-amber-400 mx-auto mb-2"
+        size={26}
+      />
+      <h3 className={`text-xs uppercase font-bold tracking-widest text-amber-300 mb-4 ${fontClasses.body}`}>{t.celebrationIn}</h3>
+      
+      <div className={`grid grid-cols-4 gap-2 ${fontClasses.body}`}>
+        {[
+          { val: timeLeft.days, label: t.days, delay: "0.1s" },
+          { val: timeLeft.hours, label: t.hours, delay: "0.2s" },
+          { val: timeLeft.minutes, label: t.mins, delay: "0.3s" },
+          { val: timeLeft.seconds, label: t.secs, delay: "0.4s" },
+        ].map((item, i) => (
+          <div
+            key={i}
+            style={{
+              animation: isVisible ? `boxFlipDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${item.delay} forwards` : "none",
+              opacity: isVisible ? 1 : 0,
+            }}
+            className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/20 shadow-md"
+          >
+            <span className="block text-xl font-bold text-amber-200">{item.val}</span>
+            <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{item.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Next-Level Animated Greetings Card (Royal Pranam & Border Draw)
+const AnimatedGreetingsCard = ({ t, getWelcomeMessage, getFamilyDetails, fontClasses }) => {
+  const cardRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (cardRef.current) {
+      observer.observe(cardRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      style={{
+        animation: isVisible ? "cardUnfold3D 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards" : "none",
+        opacity: isVisible ? 1 : 0,
+      }}
+      className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-8 text-center shadow-xl space-y-4"
+    >
+      <div
+        style={{
+          animation: isVisible ? "namastePranam 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards" : "none",
+        }}
+      >
+        <TransparentNamasteImage className="h-20 sm:h-24 w-auto mx-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.65)]" />
+      </div>
+
+      <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.greetings}</h3>
+      <p className={`text-sm text-amber-200 leading-relaxed ${fontClasses.body}`}>
+        {getWelcomeMessage() || t.defaultWelcomeMsg}
+      </p>
+      
+      {getFamilyDetails() && (
+        <div className="pt-4 border-t border-amber-500/15 text-xs relative">
+          <div
+            style={{
+              animation: isVisible ? "borderDraw 0.8s ease-out 0.4s forwards" : "none",
+              transformOrigin: "center",
+            }}
+            className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-amber-400/50 to-transparent"
+          />
+          <span className={`block text-amber-600 font-bold uppercase tracking-wider mb-1 ${fontClasses.body}`}>{t.withLoveFrom}</span>
+          <span className={`text-amber-100 font-bold ${fontClasses.heading}`}>{getFamilyDetails()}</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Groom Illustration using public assets (no circular frame, balanced height with scale)
 const GroomIllustration = () => (
   <img
@@ -582,6 +755,28 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           0% { transform: translateX(-60px); opacity: 0; }
           100% { transform: translateX(0); opacity: 1; }
         }
+        @keyframes cardUnfold3D {
+          0% { transform: translateY(35px) scale(0.96); opacity: 0; }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes clockSpin {
+          0% { transform: rotate(-360deg) scale(0.6); opacity: 0; }
+          100% { transform: rotate(0deg) scale(1); opacity: 1; }
+        }
+        @keyframes boxFlipDown {
+          0% { transform: translateY(15px) scale(0.92); opacity: 0; }
+          100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes namastePranam {
+          0% { transform: translateY(-20px) scale(0.7); opacity: 0; }
+          40% { transform: translateY(8px) rotate(-5deg) scale(1.05); opacity: 1; }
+          70% { transform: translateY(-4px) rotate(2deg) scale(0.98); opacity: 1; }
+          100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+        }
+        @keyframes borderDraw {
+          0% { transform: scaleX(0); opacity: 0; }
+          100% { transform: scaleX(1); opacity: 1; }
+        }
       `}</style>
 
       {/* Background Floral Gold Ornament Overlay */}
@@ -762,44 +957,19 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         <div className="w-full flex-1 flex flex-col space-y-12 py-12 px-6 max-w-md mx-auto z-10 relative">
 
           {/* 1. Saved The Date Countdown Card */}
-          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 text-center shadow-xl">
-            <Clock className="text-amber-400 mx-auto mb-2" size={24} />
-            <h3 className={`text-xs uppercase font-bold tracking-widest text-amber-300 mb-4 ${fontClasses.body}`}>{t.celebrationIn}</h3>
-            
-            <div className={`grid grid-cols-4 gap-2 ${fontClasses.body}`}>
-              <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
-                <span className="block text-xl font-bold text-amber-200">{timeLeft.days}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.days}</span>
-              </div>
-              <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
-                <span className="block text-xl font-bold text-amber-200">{timeLeft.hours}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.hours}</span>
-              </div>
-              <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
-                <span className="block text-xl font-bold text-amber-200">{timeLeft.minutes}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.mins}</span>
-              </div>
-              <div className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/15">
-                <span className="block text-xl font-bold text-amber-200">{timeLeft.seconds}</span>
-                <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{t.secs}</span>
-              </div>
-            </div>
-          </div>
+          <AnimatedCountdownCard
+            timeLeft={timeLeft}
+            t={t}
+            fontClasses={fontClasses}
+          />
 
           {/* 2. Welcome Message Card */}
-          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-8 text-center shadow-xl space-y-4">
-            <Heart className="text-amber-400 fill-amber-400/5 mx-auto" size={24} />
-            <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.greetings}</h3>
-            <p className={`text-sm text-amber-200 leading-relaxed ${fontClasses.body}`}>
-              {getWelcomeMessage() || t.defaultWelcomeMsg}
-            </p>
-            {getFamilyDetails() && (
-              <div className="pt-4 border-t border-amber-500/15 text-xs">
-                <span className={`block text-amber-600 font-bold uppercase tracking-wider mb-1 ${fontClasses.body}`}>{t.withLoveFrom}</span>
-                <span className={`text-amber-100 font-bold ${fontClasses.heading}`}>{getFamilyDetails()}</span>
-              </div>
-            )}
-          </div>
+          <AnimatedGreetingsCard
+            t={t}
+            getWelcomeMessage={getWelcomeMessage}
+            getFamilyDetails={getFamilyDetails}
+            fontClasses={fontClasses}
+          />
 
           {/* 2.5 Multi-Event Timeline Card */}
           <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6">
