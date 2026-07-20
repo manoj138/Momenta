@@ -11,7 +11,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const InteractiveMap = ({ destinationAddress, destinationName }) => {
+const InteractiveMap = ({ destinationAddress, destinationName, renderDesktopSearch = null }) => {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const routeLayer = useRef(null);
@@ -152,20 +152,10 @@ const InteractiveMap = ({ destinationAddress, destinationName }) => {
     }
   };
 
-  return (
+  // 4. Search form JSX generator
+  const searchFormContent = (
     <div className="w-full space-y-3.5">
-      {/* Map view container */}
-      <div 
-        ref={mapRef} 
-        className="w-full h-48 sm:h-56 rounded-2xl overflow-hidden relative shadow-inner border border-amber-500/15"
-        style={{
-          // Apply custom golden-sepia theme filter on top of tile layer
-          filter: "sepia(80%) saturate(140%) hue-rotate(340deg) brightness(85%) contrast(90%)"
-        }}
-      />
-
-      {/* Start search field */}
-      <form onSubmit={handleGetRoute} className="flex gap-2">
+      <form onSubmit={handleGetRoute} className="flex gap-2 w-full">
         <div className="relative flex-1">
           <input
             type="text"
@@ -191,7 +181,6 @@ const InteractiveMap = ({ destinationAddress, destinationName }) => {
         </button>
       </form>
 
-      {/* Route distance/duration info */}
       {routeInfo && (
         <div className="p-3 bg-[#310202] border border-amber-500/15 rounded-xl flex justify-around text-center text-xs font-serif">
           <div>
@@ -205,6 +194,32 @@ const InteractiveMap = ({ destinationAddress, destinationName }) => {
           </div>
         </div>
       )}
+    </div>
+  );
+
+  // Sync search form to desktop left column callback if provided
+  useEffect(() => {
+    if (typeof renderDesktopSearch === "function") {
+      renderDesktopSearch(searchFormContent);
+    }
+  }, [startQuery, loading, routeInfo, renderDesktopSearch]);
+
+  return (
+    <div className="w-full space-y-3.5">
+      {/* Map view container */}
+      <div 
+        ref={mapRef} 
+        className="w-full h-48 sm:h-56 md:h-64 rounded-2xl overflow-hidden relative shadow-inner border border-amber-500/15"
+        style={{
+          // Apply custom golden-sepia theme filter on top of tile layer
+          filter: "sepia(80%) saturate(140%) hue-rotate(340deg) brightness(85%) contrast(90%)"
+        }}
+      />
+
+      {/* Start search field for Mobile View (Hidden on desktop if renderDesktopSearch is active) */}
+      <div className={renderDesktopSearch ? "block md:hidden" : "block"}>
+        {searchFormContent}
+      </div>
     </div>
   );
 };

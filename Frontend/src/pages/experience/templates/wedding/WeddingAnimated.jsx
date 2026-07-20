@@ -187,18 +187,18 @@ const AnimatedCountdownCard = ({ timeLeft, t, fontClasses }) => {
         animation: isVisible ? "cardUnfold3D 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards" : "none",
         opacity: isVisible ? 1 : 0,
       }}
-      className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 text-center shadow-xl"
+      className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 md:p-10 md:min-h-[310px] md:flex md:flex-col md:justify-center text-center shadow-xl"
     >
       <Clock
         style={{
           animation: isVisible ? "clockSpin 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards" : "none",
         }}
-        className="text-amber-400 mx-auto mb-2"
+        className="text-amber-400 mx-auto mb-2 md:mb-3 md:w-8 md:h-8"
         size={26}
       />
-      <h3 className={`text-xs uppercase font-bold tracking-widest text-amber-300 mb-4 ${fontClasses.body}`}>{t.celebrationIn}</h3>
+      <h3 className={`text-xs md:text-sm uppercase font-bold tracking-widest md:tracking-[0.2em] text-amber-300 mb-4 md:mb-6 ${fontClasses.body}`}>{t.celebrationIn}</h3>
       
-      <div className={`grid grid-cols-4 gap-2 ${fontClasses.body}`}>
+      <div className={`grid grid-cols-4 gap-2 md:gap-4 ${fontClasses.body}`}>
         {[
           { val: timeLeft.days, label: t.days, delay: "0.1s" },
           { val: timeLeft.hours, label: t.hours, delay: "0.2s" },
@@ -211,10 +211,10 @@ const AnimatedCountdownCard = ({ timeLeft, t, fontClasses }) => {
               animation: isVisible ? `boxFlipDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${item.delay} forwards` : "none",
               opacity: isVisible ? 1 : 0,
             }}
-            className="bg-[#310202] p-2.5 rounded-xl border border-amber-500/20 shadow-md"
+            className="bg-[#310202] p-2.5 md:p-5 rounded-xl md:rounded-2xl border border-amber-500/20 shadow-md flex flex-col justify-center"
           >
-            <span className="block text-xl font-bold text-amber-200">{item.val}</span>
-            <span className="text-[9px] uppercase tracking-wider text-amber-400/70">{item.label}</span>
+            <span className="block text-xl md:text-3xl font-bold md:font-black text-amber-200">{item.val}</span>
+            <span className="text-[9px] md:text-[11px] uppercase tracking-wider text-amber-400/70 md:mt-1">{item.label}</span>
           </div>
         ))}
       </div>
@@ -288,7 +288,7 @@ const GroomIllustration = () => (
   <img
     src="/wedding/groom.png"
     alt="Groom"
-    className="h-[340px] sm:h-[400px] md:h-[460px] object-contain scale-[1.55] origin-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
+    className="h-[340px] sm:h-[400px] md:h-[360px] lg:h-[400px] object-contain scale-[1.55] md:scale-[1.1] origin-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
   />
 );
 
@@ -297,7 +297,7 @@ const BrideIllustration = () => (
   <img
     src="/wedding/bride.png"
     alt="Bride"
-    className="h-[340px] sm:h-[400px] md:h-[460px] object-contain scale-[1.55] origin-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
+    className="h-[340px] sm:h-[400px] md:h-[360px] lg:h-[400px] object-contain scale-[1.55] md:scale-[1.1] origin-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,0.4)]"
   />
 );
 
@@ -536,6 +536,9 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   // Animation Control States
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isUnlocked, setIsUnlocked] = useState(false);
+
+  // Desktop Route Map Form State
+  const [desktopMapForm, setDesktopMapForm] = useState(null);
 
   // Akshata Shower States
   const [showAkshata, setShowAkshata] = useState(false);
@@ -776,6 +779,21 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const slideProgress = scrollProgress < 0.3 ? 0 : (scrollProgress - 0.3) / 0.7;
   const coupleOpacity = Math.min(1, slideProgress / 0.15);
 
+  // Responsive couple spacing (1 for mobile <768px, 0.42 for desktop >=768px)
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
+  }, []);
+
+  const desktopRatio = isDesktop ? 0.42 : 1;
+  const groomX = (35 - 21.5 * slideProgress) * desktopRatio;
+  const brideX = (-35 + 21.5 * slideProgress) * desktopRatio;
+
   // Generate akshata grains when couple meets
   useEffect(() => {
     if (slideProgress >= 0.95 && !showAkshata) {
@@ -957,16 +975,16 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
         </div>
 
         {/* Meeting Illustrative Zone (Flex element in the middle of Stage 1) */}
-        <div className="flex-1 w-full flex items-center justify-center relative my-2 mt-28 pt-12 sm:pt-16">
+        <div className="flex-1 w-full flex items-center justify-center relative my-2 mt-28 md:mt-12 pt-12 sm:pt-16 md:pt-4">
           
           {/* Groom Container (slides from right to 13.5vw relative to center for subtle side-by-side spacing) */}
           <div
             style={{
               transition: "transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease",
-              transform: `translateX(${35 - 21.5 * slideProgress}vw)`,
+              transform: `translateX(${groomX}vw)`,
               opacity: coupleOpacity,
             }}
-            className="absolute bottom-[-115px] sm:bottom-[-95px]"
+            className="absolute bottom-[-115px] sm:bottom-[-95px] md:bottom-[-40px] lg:bottom-[-30px]"
           >
             <GroomIllustration />
           </div>
@@ -975,10 +993,10 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           <div
             style={{
               transition: "transform 0.25s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.4s ease",
-              transform: `translateX(${-35 + 21.5 * slideProgress}vw)`,
+              transform: `translateX(${brideX}vw)`,
               opacity: coupleOpacity,
             }}
-            className="absolute bottom-[-115px] sm:bottom-[-95px]"
+            className="absolute bottom-[-115px] sm:bottom-[-95px] md:bottom-[-40px] lg:bottom-[-30px]"
           >
             <BrideIllustration />
           </div>
@@ -990,7 +1008,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
               opacity: slideProgress >= 0.95 ? 1 : 0,
               transform: `scale(${slideProgress >= 0.95 ? 1 : 0.5})`,
             }}
-            className="absolute bottom-[300px] sm:bottom-[230px] md:bottom-[290px] z-30 text-amber-400 flex items-center justify-center"
+            className="absolute bottom-[300px] sm:bottom-[230px] md:bottom-[280px] z-30 text-amber-400 flex items-center justify-center"
           >
            
             <Heart fill="currentColor" size={26} className="absolute animate-ping opacity-75" />
@@ -1040,84 +1058,100 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
       {/* STAGE 2: Unlocked Invitation Contents */}
       {isUnlocked && (
-        <div className="w-full flex-1 flex flex-col space-y-12 py-12 px-6 max-w-md mx-auto z-10 relative">
+        <div className="w-full flex-1 py-12 px-6 max-w-md md:max-w-5xl lg:max-w-6xl mx-auto z-10 relative flex flex-col md:grid md:grid-cols-2 md:gap-8 items-start space-y-12 md:space-y-0">
 
-          {/* 1. Saved The Date Countdown Card */}
-          <AnimatedCountdownCard
-            timeLeft={timeLeft}
-            t={t}
-            fontClasses={fontClasses}
-          />
+          {/* Left Column (Desktop / Tablet) */}
+          <div className="w-full flex flex-col space-y-12 md:space-y-8">
+            {/* 1. Saved The Date Countdown Card */}
+            <AnimatedCountdownCard
+              timeLeft={timeLeft}
+              t={t}
+              fontClasses={fontClasses}
+            />
 
-          {/* 2. Welcome Message Card */}
-          <AnimatedGreetingsCard
-            t={t}
-            getWelcomeMessage={getWelcomeMessage}
-            getFamilyDetails={getFamilyDetails}
-            fontClasses={fontClasses}
-          />
+            {/* 2. Welcome Message Card */}
+            <AnimatedGreetingsCard
+              t={t}
+              getWelcomeMessage={getWelcomeMessage}
+              getFamilyDetails={getFamilyDetails}
+              fontClasses={fontClasses}
+            />
+          </div>
 
-          {/* 2.5 Multi-Event Timeline Card */}
-          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6 overflow-hidden">
-            <div className="text-center space-y-0.5">
-              <TransparentSanaiVadhak className="h-32 sm:h-40 md:h-44 w-auto mx-auto object-contain -mt-2 -mb-4 sm:-mb-6 drop-shadow-[0_8px_20px_rgba(0,0,0,0.6)]" />
-              <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.eventTimeline}</h3>
-              <p className={`text-[10px] uppercase tracking-widest text-amber-400/80 ${fontClasses.body}`}>{t.eventTimelineSub}</p>
-            </div>
+          {/* Right Column (Desktop / Tablet) */}
+          <div className="w-full flex flex-col space-y-12 md:space-y-8">
+            {/* 2.5 Multi-Event Timeline Card */}
+            <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6 overflow-hidden">
+              <div className="text-center space-y-0.5">
+                <TransparentSanaiVadhak className="h-32 sm:h-40 md:h-44 w-auto mx-auto object-contain -mt-2 -mb-4 sm:-mb-6 drop-shadow-[0_8px_20px_rgba(0,0,0,0.6)]" />
+                <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.eventTimeline}</h3>
+                <p className={`text-[10px] uppercase tracking-widest text-amber-400/80 ${fontClasses.body}`}>{t.eventTimelineSub}</p>
+              </div>
 
-            <div className="relative pl-2 space-y-6">
-              {/* Vertical line connecting timeline events */}
-              <div className="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-amber-400/60 via-amber-500/40 to-amber-700/20 pointer-events-none" />
+              <div className="relative pl-2 space-y-6">
+                {/* Vertical line connecting timeline events */}
+                <div className="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-amber-400/60 via-amber-500/40 to-amber-700/20 pointer-events-none" />
 
-              {parsedEvents.map((event, idx) => (
-                <AnimatedTimelineItem
-                  key={idx}
-                  event={event}
-                  idx={idx}
-                  fontClasses={fontClasses}
-                  getEventIcon={getEventIcon}
-                />
-              ))}
+                {parsedEvents.map((event, idx) => (
+                  <AnimatedTimelineItem
+                    key={idx}
+                    event={event}
+                    idx={idx}
+                    fontClasses={fontClasses}
+                    getEventIcon={getEventIcon}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* 3. Ceremony Details Card */}
-          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl text-center space-y-4">
-            <MapPin className="text-amber-400 mx-auto" size={24} />
-            <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.ceremonyDetails}</h3>
-            
-            <div className={`space-y-1 text-sm text-amber-200 ${fontClasses.body}`}>
-              <p className="font-bold text-amber-300">{t.time}: {data.weddingTime || (lang === "mr" ? "सकाळी ११:३० वाजता" : "11:30 AM onwards")}</p>
-              <p className="mt-1 font-semibold">{getVenueName() || (lang === "mr" ? "मराठा दरबार हॉल" : "Maratha Durbar Hall")}</p>
-              <p className="text-xs text-amber-300/80 px-4">
-                {getVenueAddress() || "JM Road, Shivajinagar, Pune"}
-              </p>
+          {/* 3. Ceremony Details Card (Full Width Row 2 on Desktop & Tablet) */}
+          <div className="w-full bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 md:p-8 lg:p-10 shadow-xl text-center md:text-left md:col-span-2 space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-8 md:items-center">
+            {/* Left Side: Info & Navigate Button */}
+            <div className="space-y-4 flex flex-col justify-center">
+              <MapPin className="text-amber-400 mx-auto md:mx-0" size={28} />
+              <h3 className={`text-lg md:text-xl font-bold text-amber-100 ${fontClasses.heading}`}>{t.ceremonyDetails}</h3>
+              
+              <div className={`space-y-1.5 text-sm md:text-base text-amber-200 ${fontClasses.body}`}>
+                <p className="font-bold text-amber-300">{t.time}: {data.weddingTime || (lang === "mr" ? "सकाळी ११:३० वाजता" : "11:30 AM onwards")}</p>
+                <p className="mt-1 font-semibold">{getVenueName() || (lang === "mr" ? "मराठा दरबार हॉल" : "Maratha Durbar Hall")}</p>
+                <p className="text-xs md:text-sm text-amber-300/80">
+                  {getVenueAddress() || "JM Road, Shivajinagar, Pune"}
+                </p>
+              </div>
+
+              {data.mapsLink && (
+                <div className="pt-2">
+                  <a
+                    href={data.mapsLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-1.5 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-[#540303] rounded-full text-xs md:text-sm font-black transition-all shadow-md cursor-pointer border-0 ${fontClasses.body}`}
+                  >
+                    <MapPin size={14} />
+                    <span>{t.navigateMaps}</span>
+                  </a>
+                </div>
+              )}
+
+              {/* Desktop Route Search Form (Visible on Left Column on Desktop / Tablet) */}
+              <div className="hidden md:block pt-3">
+                {desktopMapForm}
+              </div>
             </div>
 
-            <div className="pt-2 border-t border-amber-500/10 mt-4">
+            {/* Right Side: Interactive Map */}
+            <div className="pt-2 md:pt-0 border-t md:border-t-0 md:border-l border-amber-500/10 md:pl-8 w-full min-h-[260px] md:min-h-[300px]">
               <InteractiveMap
                 destinationAddress={getVenueAddress() || "JM Road, Shivajinagar, Pune"}
                 destinationName={getVenueName() || "Maratha Durbar Hall"}
+                renderDesktopSearch={setDesktopMapForm}
               />
             </div>
-
-            {data.mapsLink && (
-              <div className="pt-2">
-                <a
-                  href={data.mapsLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-1.5 px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-[#540303] rounded-full text-xs font-black transition-all shadow-md cursor-pointer border-0 ${fontClasses.body}`}
-                >
-                  <MapPin size={12} />
-                  <span>{t.navigateMaps}</span>
-                </a>
-              </div>
-            )}
           </div>
 
-          {/* Footer Logo */}
-          <div className="text-center pt-8 space-y-1">
+          {/* Footer Logo (Full Span on Desktop) */}
+          <div className="text-center pt-8 space-y-1 md:col-span-2 w-full">
             <span className={`text-[9px] uppercase font-bold tracking-widest text-amber-300/40 ${fontClasses.body}`}>{t.poweredBy}</span>
             <h4 className={`text-xs font-bold text-amber-200 tracking-wider ${fontClasses.body}`}>Momenta Experiences</h4>
           </div>
