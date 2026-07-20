@@ -51,6 +51,78 @@ const BrideIllustration = () => (
   />
 );
 
+// Individual Scroll-Triggered Timeline Item using Intersection Observer
+const AnimatedTimelineItem = ({ event, idx, fontClasses, getEventIcon }) => {
+  const itemRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (itemRef.current) {
+      observer.observe(itemRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const isEven = idx % 2 === 0;
+
+  return (
+    <div
+      ref={itemRef}
+      style={{
+        animation: isVisible ? `${isEven ? "slideFromRight" : "slideFromLeft"} 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards` : "none",
+        opacity: isVisible ? 1 : 0,
+      }}
+      className="relative pl-10 group transition-all duration-300"
+    >
+      {/* Event Node Dot/Icon */}
+      <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-[#310202] border border-amber-400/50 flex items-center justify-center shadow-md z-10 group-hover:scale-110 group-hover:border-amber-300 transition-all duration-300">
+        {getEventIcon(event.title)}
+      </div>
+
+      {/* Event Details Card */}
+      <div className="bg-[#310202]/60 border border-amber-500/15 rounded-2xl p-4 space-y-1.5 group-hover:bg-[#310202]/90 group-hover:border-amber-400/40 transition-all duration-300 shadow-md">
+        <h4 className={`text-sm font-bold text-amber-100 group-hover:text-amber-300 transition-colors duration-300 ${fontClasses.heading}`}>
+          {event.title}
+        </h4>
+        
+        <div className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs font-semibold text-amber-400 ${fontClasses.body}`}>
+          {event.date && (
+            <span>{event.date}</span>
+          )}
+          {event.date && event.time && (
+            <span className="hidden sm:inline text-amber-500/50">•</span>
+          )}
+          {event.time && (
+            <span className="text-amber-300/90">{event.time}</span>
+          )}
+        </div>
+
+        {event.venue && (
+          <p className={`text-xs text-amber-200/80 font-semibold mt-1 ${fontClasses.body}`}>
+            📍 {event.venue}
+          </p>
+        )}
+
+        {event.address && (
+          <p className={`text-[11px] text-amber-200/50 leading-relaxed pl-4 ${fontClasses.body}`}>
+            {event.address}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Translation Dictionary for Marathi & English
 const translations = {
   mr: {
@@ -111,9 +183,9 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   const containerRef = useRef(null);
 
   // Language & Font resolution
-  const [currentLang, setCurrentLang] = useState(data.language || "mr");
+  const [currentLang, setCurrentLang] = useState(data.language || "en");
   const lang = currentLang;
-  const t = translations[lang] || translations.mr;
+  const t = translations[lang] || translations.en;
   const fontClasses = lang === "mr" ? {
     heading: "font-['Yatra_One']",
     body: "font-['Tiro_Devanagari_Marathi']",
@@ -133,7 +205,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
   // Name translation helpers for seamless toggles
   const getGroomName = () => {
-    const raw = data.groomName || "";
+    const raw = data.groomName || "Rahul";
     if (lang === "mr") {
       if (raw.toLowerCase() === "rahul") return "राहुल";
       return raw;
@@ -144,7 +216,7 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
   };
 
   const getBrideName = () => {
-    const raw = data.brideName || "";
+    const raw = data.brideName || "Priya";
     if (lang === "mr") {
       if (raw.toLowerCase() === "priya") return "प्रिया";
       return raw;
@@ -502,6 +574,14 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           25% { margin-left: 15px; }
           75% { margin-left: -10px; }
         }
+        @keyframes slideFromRight {
+          0% { transform: translateX(60px); opacity: 0; }
+          100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideFromLeft {
+          0% { transform: translateX(-60px); opacity: 0; }
+          100% { transform: translateX(0); opacity: 1; }
+        }
       `}</style>
 
       {/* Background Floral Gold Ornament Overlay */}
@@ -731,46 +811,16 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
 
             <div className="relative pl-2 space-y-6">
               {/* Vertical line connecting timeline events */}
-              <div className="absolute left-[15px] top-2 bottom-2 w-[1px] bg-gradient-to-b from-amber-500/50 via-amber-500/30 to-amber-500/10 pointer-events-none" />
+              <div className="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-amber-400/60 via-amber-500/40 to-amber-700/20 pointer-events-none" />
 
               {parsedEvents.map((event, idx) => (
-                <div key={idx} className="relative pl-10 group transition-all duration-300">
-                  {/* Event Node Dot/Icon */}
-                  <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-[#310202] border border-amber-500/40 flex items-center justify-center shadow-md z-10 group-hover:scale-110 group-hover:border-amber-400 transition-all duration-300">
-                    {getEventIcon(event.title)}
-                  </div>
-
-                  {/* Event Details Card */}
-                  <div className="bg-[#310202]/50 border border-amber-500/10 rounded-2xl p-4 space-y-1.5 group-hover:bg-[#310202]/80 group-hover:border-amber-500/30 transition-all duration-300">
-                    <h4 className={`text-sm font-bold text-amber-100 group-hover:text-amber-300 transition-colors duration-300 ${fontClasses.heading}`}>
-                      {event.title}
-                    </h4>
-                    
-                    <div className={`flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs font-semibold text-amber-400 ${fontClasses.body}`}>
-                      {event.date && (
-                        <span>{event.date}</span>
-                      )}
-                      {event.date && event.time && (
-                        <span className="hidden sm:inline text-amber-500/50">•</span>
-                      )}
-                      {event.time && (
-                        <span className="text-amber-300/90">{event.time}</span>
-                      )}
-                    </div>
-
-                    {event.venue && (
-                      <p className={`text-xs text-amber-200/80 font-semibold mt-1 ${fontClasses.body}`}>
-                        📍 {event.venue}
-                      </p>
-                    )}
-
-                    {event.address && (
-                      <p className={`text-[11px] text-amber-200/50 leading-relaxed pl-4 ${fontClasses.body}`}>
-                        {event.address}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                <AnimatedTimelineItem
+                  key={idx}
+                  event={event}
+                  idx={idx}
+                  fontClasses={fontClasses}
+                  getEventIcon={getEventIcon}
+                />
               ))}
             </div>
           </div>
