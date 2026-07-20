@@ -104,4 +104,16 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;  /* Chrome, Safari, Opera */
   }
+
+  /* Override viewport heights of template components inside mockup previews */
+  .preview-frame-content > div {
+    min-height: 100% !important;
+    height: 100% !important;
+  }
+  .preview-frame-content .min-h-screen {
+    min-height: 100% !important;
+  }
+  .preview-frame-content .h-screen {
+    height: 100% !important;
+  }
 }

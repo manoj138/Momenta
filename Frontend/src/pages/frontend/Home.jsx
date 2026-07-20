@@ -545,7 +545,7 @@ const Home = () => {
                           </div>
 
                           {/* Viewport Content */}
-                          <div className="flex-1 overflow-y-auto no-scrollbar h-full w-full pointer-events-none select-none">
+                          <div className="flex-1 overflow-y-auto no-scrollbar h-full w-full pointer-events-none select-none preview-frame-content">
                             {renderCardPreview(tpl.demoSlug)}
                           </div>
 
