@@ -81,6 +81,83 @@ const TransparentNamasteImage = ({ className = "h-20 sm:h-24 w-auto mx-auto" }) 
   );
 };
 
+// Canvas-based Transparent Sanai & Dholak Players Component (/wedding/Sanai dhol vadhk.png)
+const TransparentSanaiVadhak = ({ className = "h-32 sm:h-40 md:h-44 w-auto mx-auto" }) => {
+  const canvasRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/wedding/Sanai dhol vadhk.png";
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const scale = 2;
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        // If pixel is near white (R, G, B all > 230), set alpha to transparent
+        if (r > 230 && g > 230 && b > 230) {
+          data[i + 3] = 0;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        animation: isVisible
+          ? "sanaiVadhakEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards, sanaiMusicalSway 4s ease-in-out 0.8s infinite"
+          : "none",
+        opacity: isVisible ? 1 : 0,
+      }}
+      className="inline-block"
+    >
+      <canvas
+        ref={canvasRef}
+        className={className}
+        style={{ display: "block", imageRendering: "-webkit-optimize-contrast" }}
+      />
+    </div>
+  );
+};
+
 // Next-Level Animated Countdown Card (Mechanical 3D Unfold & Flip Board)
 const AnimatedCountdownCard = ({ timeLeft, t, fontClasses }) => {
   const cardRef = useRef(null);
@@ -755,6 +832,15 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           0% { transform: translateX(-60px); opacity: 0; }
           100% { transform: translateX(0); opacity: 1; }
         }
+        @keyframes sanaiVadhakEntrance {
+          0% { transform: scale(0.6) translateY(20px); opacity: 0; }
+          100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        @keyframes sanaiMusicalSway {
+          0%, 100% { transform: rotate(0deg) translateY(0); }
+          25% { transform: rotate(-2.5deg) translateY(-3px); }
+          75% { transform: rotate(2.5deg) translateY(2px); }
+        }
         @keyframes cardUnfold3D {
           0% { transform: translateY(35px) scale(0.96); opacity: 0; }
           100% { transform: translateY(0) scale(1); opacity: 1; }
@@ -972,9 +1058,9 @@ const WeddingAnimated = ({ data = {}, isDemo = false }) => {
           />
 
           {/* 2.5 Multi-Event Timeline Card */}
-          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6">
-            <div className="text-center space-y-1">
-              <Sparkles className="text-amber-400 mx-auto" size={24} />
+          <div className="bg-[#4d0404]/95 border border-amber-500/25 rounded-3xl p-6 shadow-xl space-y-6 overflow-hidden">
+            <div className="text-center space-y-0.5">
+              <TransparentSanaiVadhak className="h-32 sm:h-40 md:h-44 w-auto mx-auto object-contain -mt-2 -mb-4 sm:-mb-6 drop-shadow-[0_8px_20px_rgba(0,0,0,0.6)]" />
               <h3 className={`text-lg font-bold text-amber-100 ${fontClasses.heading}`}>{t.eventTimeline}</h3>
               <p className={`text-[10px] uppercase tracking-widest text-amber-400/80 ${fontClasses.body}`}>{t.eventTimelineSub}</p>
             </div>
