@@ -3,6 +3,7 @@ import { useApp } from "../../../context/AppContext";
 import { Search, FileText, Calendar, Edit3, X, User, Check, RefreshCw } from "lucide-react";
 import Select from "../../../components/common/Select";
 import Modal from "../../../components/common/Modal";
+import { enquiryService } from "../../../services/enquiryService";
 
 const EnquiryManager = () => {
   const { enquiries, categories, admins, updateEnquiryStatus } = useApp();
@@ -11,7 +12,12 @@ const EnquiryManager = () => {
   const [search, setSearch] = useState("");
 
   // Handler to assign and change status
-  const handleUpdate = (id, status, assignedTo, notes = "") => {
+  const handleUpdate = async (id, status, assignedTo, notes = "") => {
+    try {
+      await enquiryService.updateStatus(id, { status, assigned_to_user_id: assignedTo, notes });
+    } catch (err) {
+      console.warn("Failed to update enquiry on backend:", err);
+    }
     updateEnquiryStatus(id, status, notes, assignedTo);
     if (selectedEnquiry && selectedEnquiry.id === id) {
       setSelectedEnquiry(prev => ({ ...prev, status, assignedTo, notes }));

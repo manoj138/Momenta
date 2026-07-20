@@ -82,7 +82,11 @@ Api.interceptors.response.use(
             if (error.response.status === 401) {
                 sessionStorage.removeItem("token");
                 sessionStorage.removeItem("users");
-                window.location.href = "/";
+                // Only redirect to login if currently trying to access an admin workspace
+                const path = window.location.pathname;
+                if (path.startsWith("/superadmin") || path.startsWith("/creator")) {
+                    window.location.href = "/login";
+                }
             }
         }
 

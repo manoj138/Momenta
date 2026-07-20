@@ -6,6 +6,7 @@ import Input from "../../components/common/Input";
 import Select from "../../components/common/Select";
 import Button from "../../components/common/Button";
 import DynamicFormRenderer from "../../components/features/DynamicFormRenderer";
+import { enquiryService } from "../../services/enquiryService";
 
 const EnquiryForm = () => {
   const { categories, templates, addEnquiry } = useApp();
@@ -62,21 +63,29 @@ const EnquiryForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     const enquiryPayload = {
-      clientName,
-      clientEmail,
-      clientPhone,
-      category: selectedCategory,
-      submittedDetails: dynamicValues,
-      notes: presetTemplateId ? `Preselected Theme: ${presetTemplate.name}` : "General category enquiry",
+      client_name: clientName,
+      client_email: clientEmail,
+      client_phone: clientPhone,
+      category_id: typeof selectedCategory === 'number' ? selectedCategory : null,
+      form_data: dynamicValues,
+      notes: presetTemplateId ? `Preselected Theme: ${presetTemplate?.name || presetTemplateId}` : "General category enquiry",
     };
 
-    addEnquiry(enquiryPayload);
-    setIsSuccess(true);
+    try {
+      await enquiryService.create(enquiryPayload);
+      addEnquiry(enquiryPayload);
+      setIsSuccess(true);
+    } catch (err) {
+      console.error("Failed to submit enquiry to backend:", err);
+      // Fallback
+      addEnquiry(enquiryPayload);
+      setIsSuccess(true);
+    }
   };
 
   const categoryOptions = categories.map((c) => ({

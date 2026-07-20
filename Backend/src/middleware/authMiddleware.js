@@ -1,4 +1,3 @@
-// middleware/authMiddleware.js
 const { verifyToken } = require('../helper/authHelper');
 const { handle401 } = require('../helper/errorHandler');
 
@@ -25,6 +24,23 @@ const authenticateToken = (req, res, next) => {
   next();
 };
 
+/**
+ * Role Authorization Middleware
+ * Verifies if logged in user has one of the allowed roles
+ */
+const requireRole = (allowedRoles = []) => {
+  return (req, res, next) => {
+    if (!req.user || !allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({
+        status: false,
+        message: 'Access Denied: You do not have permission to access this resource.'
+      });
+    }
+    next();
+  };
+};
+
 module.exports = {
   authenticateToken,
+  requireRole,
 };

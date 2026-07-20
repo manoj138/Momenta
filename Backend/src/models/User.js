@@ -1,0 +1,40 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/sqliteDB');
+
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.STRING,
+        defaultValue: 'creator'
+    },
+    status: {
+        type: DataTypes.STRING,
+        defaultValue: 'active'
+    },
+    category_permissions: {
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: []
+    }
+}, {
+    timestamps: true
+});
+
+module.exports = User;

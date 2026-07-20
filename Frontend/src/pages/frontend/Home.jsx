@@ -19,17 +19,18 @@ const Home = () => {
       isHero: true,
       tag: "Premium Interactive Card Platform",
       gradient: "from-slate-100 via-slate-200 dark:from-slate-900 dark:via-slate-950",
+      glow: "from-brand-500/40 via-indigo-500/35 to-purple-500/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
               <span>Explore Templates</span>
-              <ArrowRight size={18} />
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
-              Create Your Experience
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              Create Experience
             </Button>
           </Link>
         </div>
@@ -42,16 +43,17 @@ const Home = () => {
       tag: "Royal Gold Invitation Theme",
       image: "/landing page images/wedding.png",
       gradient: "from-pink-500/20 via-amber-500/5 dark:from-pink-950/60 dark:via-amber-900/30",
+      glow: "from-amber-500/50 via-rose-500/40 to-yellow-500/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=wedding">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
-              <span>Explore Wedding Themes</span>
-              <ArrowRight size={18} />
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              <span>Explore Themes</span>
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry?template=wedding-royal-gold">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
               Choose Wedding
             </Button>
           </Link>
@@ -65,16 +67,17 @@ const Home = () => {
       tag: "Neon Surprise Reveal Theme",
       image: "/landing page images/birthday.png",
       gradient: "from-purple-500/20 via-indigo-500/5 dark:from-purple-950/60 dark:via-indigo-950/40",
+      glow: "from-purple-500/50 via-pink-500/40 to-indigo-500/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=birthday">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
-              <span>Explore Birthday Themes</span>
-              <ArrowRight size={18} />
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              <span>Explore Themes</span>
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry?template=birthday-neon-surprise">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
               Choose Birthday
             </Button>
           </Link>
@@ -88,16 +91,17 @@ const Home = () => {
       tag: "Sweet Proposal Reveal Theme",
       image: "/landing page images/proposal.png",
       gradient: "from-pink-500/25 via-rose-500/5 dark:from-pink-900/60 dark:via-pink-950/40",
+      glow: "from-pink-500/55 via-rose-500/40 to-red-400/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=proposal">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
-              <span>Explore Proposal Themes</span>
-              <ArrowRight size={18} />
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              <span>Explore Themes</span>
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry?template=proposal-romantic">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
               Choose Proposal
             </Button>
           </Link>
@@ -110,17 +114,18 @@ const Home = () => {
       desc: "Celebrate years of togetherness. Add timeline highlights, background music player blocks, sliding image displays, event timings, maps, and instant guest wishes lists.",
       tag: "Anniversary Love Timeline Theme",
       image: "/landing page images/anivarsary.png",
-      gradient: "from-indigo-500/20 via-blue-500/5 dark:from-indigo-950/60 dark:via-blue-950/40",
+      gradient: "from-rose-500/20 via-purple-500/10 dark:from-rose-950/60 dark:via-purple-950/40",
+      glow: "from-rose-600/50 via-purple-600/40 to-pink-500/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=anniversary">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
-              <span>Explore Anniversary Themes</span>
-              <ArrowRight size={18} />
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              <span>Explore Themes</span>
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry?template=anniversary-timeline">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
               Choose Anniversary
             </Button>
           </Link>
@@ -134,16 +139,17 @@ const Home = () => {
       tag: "Envelope Reveal Theme",
       image: "/landing page images/surprise.png",
       gradient: "from-teal-500/20 via-emerald-500/5 dark:from-teal-950/60 dark:via-emerald-950/40",
+      glow: "from-teal-500/50 via-emerald-500/40 to-cyan-500/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=surprise">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
-              <span>Explore Surprise Themes</span>
-              <ArrowRight size={18} />
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              <span>Explore Themes</span>
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry?template=surprise-reveal">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
               Choose Surprise
             </Button>
           </Link>
@@ -157,17 +163,18 @@ const Home = () => {
       tag: "Modern Vastu Shanti Theme",
       image: "/landing page images/invitation for new home new car vastu shanti.png",
       gradient: "from-blue-500/20 via-orange-500/5 dark:from-blue-950/60 dark:via-orange-950/20",
+      glow: "from-amber-500/50 via-orange-500/40 to-blue-500/35",
       buttons: (
-        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+        <div className="flex flex-row gap-2 sm:gap-4 justify-center lg:justify-start">
           <Link to="/templates?category=company">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-brand-500/20 border-0">
-              <span>Explore Vastu Themes</span>
-              <ArrowRight size={18} />
+            <Button variant="primary" className="flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-brand-500/20 border-0 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              <span>Explore Vastu</span>
+              <ArrowRight size={15} />
             </Button>
           </Link>
           <Link to="/enquiry">
-            <Button variant="outline" size="lg" className="w-full sm:w-auto bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer">
-              Send Enquiry Form
+            <Button variant="outline" className="bg-slate-200/80 dark:bg-white/5 border-gray-300 dark:border-white/10 text-slate-800 dark:text-white hover:bg-slate-300/80 dark:hover:bg-white/10 cursor-pointer px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-bold">
+              Send Enquiry
             </Button>
           </Link>
         </div>
@@ -294,13 +301,13 @@ const Home = () => {
       const touchEndY = e.touches[0].clientY;
       const deltaY = touchStartY.current - touchEndY; // Positive is swipe up (scroll down)
 
-      if (!isUnlocked && Math.abs(deltaY) > 10) {
+      if (!isUnlocked && Math.abs(deltaY) > 8) {
         if (isAnimatingRef.current) {
           e.preventDefault();
           return;
         }
 
-        if (deltaY > 40) {
+        if (deltaY > 25) {
           // Swipe Up -> Next Slide
           if (activeIndex < showcaseItems.length - 1) {
             e.preventDefault();
@@ -312,7 +319,7 @@ const Home = () => {
           } else {
             setIsUnlocked(true);
           }
-        } else if (deltaY < -40) {
+        } else if (deltaY < -25) {
           // Swipe Down -> Previous Slide
           if (activeIndex > 0) {
             e.preventDefault();
@@ -350,47 +357,50 @@ const Home = () => {
       >
         <div style={{ height: "calc(100vh - 72px)" }} className="w-full flex items-center overflow-hidden">
           
-          <div className="container mx-auto px-6 flex flex-col lg:flex-row items-center gap-12 relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center gap-2 sm:gap-6 lg:gap-12 relative z-10 pt-1 sm:pt-4 lg:py-0">
             
             {/* LEFT SIDE: Morphing Hero Text (Maintains exactly same font sizes and structure) */}
-            <div className="flex-1 relative h-[380px] md:h-[340px] flex items-center">
+            <div className="flex-1 relative h-[160px] xs:h-[180px] sm:h-[210px] lg:h-[340px] flex items-center w-full">
               {showcaseItems.map((item, index) => {
                 const isActive = index === activeIndex;
 
                 return (
                   <div
                     key={item.id}
-                    className={`absolute inset-0 w-full h-full flex flex-col justify-center space-y-6 transition-all duration-700 ease-in-out ${
+                    className={`absolute inset-0 w-full h-full flex flex-col justify-center space-y-1.5 sm:space-y-4 transition-all duration-700 ease-in-out ${
                       isActive
                         ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
                         : "opacity-0 translate-y-12 scale-95 pointer-events-none"
                     }`}
                   >
-                    <div className="inline-flex self-start items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-200/50 dark:bg-white/5 border border-gray-300 dark:border-white/10 backdrop-blur-md text-xs font-semibold text-brand-600 dark:text-brand-400">
-                      <Sparkles size={14} />
+                    <div className="hidden sm:inline-flex self-start items-center gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-slate-200/50 dark:bg-white/5 border border-gray-300 dark:border-white/10 backdrop-blur-md text-[10px] sm:text-xs font-semibold text-brand-600 dark:text-brand-400">
+                      <Sparkles size={12} />
                       <span>{item.tag}</span>
                     </div>
 
-                    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                    <h1 className="leading-snug sm:leading-tight">
                       {item.isHero ? (
-                        <>
-                          Turn Your Special Moments Into <br />
-                          <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-600 via-indigo-650 to-pink-600 dark:from-brand-400 dark:via-indigo-400 dark:to-pink-400">
+                        <span className="flex flex-col space-y-0.5 sm:space-y-1">
+                          <span className="text-xs xs:text-sm sm:text-2xl font-bold text-slate-700 dark:text-gray-300">
+                            Turn Your Special Moments Into
+                          </span>
+                          <span className="text-lg xs:text-xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-brand-600 via-indigo-650 to-pink-600 dark:from-brand-400 dark:via-indigo-400 dark:to-pink-400">
                             Animated Digital Experiences
                           </span>
-                        </>
+                        </span>
                       ) : (
-                        <span className="text-transparent bg-clip-text bg-linear-to-r from-brand-600 via-indigo-650 to-pink-600 dark:from-brand-400 dark:via-indigo-400 dark:to-pink-400">
+                        <span className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-brand-600 via-indigo-650 to-pink-600 dark:from-brand-400 dark:via-indigo-400 dark:to-pink-400">
                           {item.name}
                         </span>
                       )}
                     </h1>
 
-                    <p className="text-slate-650 dark:text-gray-400 text-lg max-w-xl">
+                    <p className="text-slate-650 dark:text-gray-400 text-[11px] sm:text-base md:text-lg max-w-xl line-clamp-2 sm:line-clamp-none">
                       {item.desc}
                     </p>
 
-                    <div className="pt-2">
+                    {/* Desktop Only Buttons */}
+                    <div className="hidden lg:block pt-1 sm:pt-2">
                       {item.buttons}
                     </div>
                   </div>
@@ -398,13 +408,14 @@ const Home = () => {
               })}
             </div>
 
-            {/* RIGHT SIDE: Mockup frame displaying preview screen or category image slide-in */}
-            <div className="flex-1 flex justify-center w-full relative">
-              <div className="absolute inset-0 bg-linear-to-tr from-brand-500/20 to-pink-500/20 rounded-full blur-[100px] opacity-60 pointer-events-none" />
+            {/* RIGHT SIDE: Responsive Mockup frame + Mobile Only Buttons below frame */}
+            <div className="flex-1 flex flex-col items-center justify-center w-full relative mt-4 sm:mt-6 lg:mt-0">
+              {/* Dynamic Ambient Glow matching the active slide theme */}
+              <div className={`absolute inset-[-10%] bg-gradient-to-tr ${showcaseItems[activeIndex]?.glow || "from-brand-500/40 to-pink-500/40"} rounded-full blur-[70px] sm:blur-[110px] opacity-80 transition-all duration-1000 ease-in-out pointer-events-none`} />
               
-              <div className="w-[310px] h-[580px] border-[10px] border-slate-900 rounded-[38px] shadow-[0_35px_80px_rgba(0,0,0,0.22)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.8)] overflow-hidden relative bg-slate-900 flex flex-col">
+              <div className="w-[240px] xs:w-[260px] sm:w-[290px] lg:w-[310px] h-[420px] xs:h-[450px] sm:h-[500px] lg:h-[580px] border-[6px] sm:border-[8px] lg:border-[10px] border-slate-900 rounded-[28px] sm:rounded-[34px] lg:rounded-[38px] shadow-[0_25px_60px_rgba(0,0,0,0.35)] dark:shadow-[0_30px_70px_rgba(0,0,0,0.9)] overflow-hidden relative bg-slate-900 flex flex-col transition-all duration-300">
                 {/* Camera notch */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-5 bg-slate-900 rounded-b-2xl z-50" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 sm:w-32 h-3.5 sm:h-5 bg-slate-900 rounded-b-2xl z-50" />
                 
                 {/* Stacked contents inside the phone mockup */}
                 <div className="flex-1 w-full h-full relative overflow-hidden bg-slate-50 dark:bg-slate-950">
@@ -425,50 +436,48 @@ const Home = () => {
                       >
                         {item.isHero ? (
                           /* Original Live Preview Mockup Screen */
-                          <div className="w-full h-full bg-cream-50 flex flex-col p-4 pt-8 text-center text-slate-800">
-                            <div className="flex-1 flex flex-col justify-center items-center py-6 border border-amber-200/40 rounded-2xl bg-amber-50/10 shadow-xs">
-                              <Heart className="text-amber-600 animate-pulse mb-3" size={32} />
-                              <span className="text-xs uppercase tracking-widest text-amber-800 font-bold mb-1">Save The Date</span>
-                              <h3 className="font-serif text-2xl font-bold text-amber-950 mb-1">Rahul & Priya</h3>
-                              <div className="w-12 h-[1px] bg-amber-300 my-2" />
-                              <p className="text-[10px] text-amber-900 max-w-[180px] mb-4">Are getting married. Please join us to celebrate our love.</p>
-                              <div className="bg-amber-900 text-amber-100 text-[10px] px-3 py-1 rounded-full uppercase tracking-wider font-bold mb-4">
+                          <div className="w-full h-full bg-cream-50 flex flex-col p-3 sm:p-4 pt-6 sm:pt-8 text-center text-slate-800">
+                            <div className="flex-1 flex flex-col justify-center items-center py-4 sm:py-6 border border-amber-200/40 rounded-2xl bg-amber-50/10 shadow-xs">
+                              <Heart className="text-amber-600 animate-pulse mb-2 sm:mb-3" size={28} />
+                              <span className="text-[10px] sm:text-xs uppercase tracking-widest text-amber-800 font-bold mb-1">Save The Date</span>
+                              <h3 className="font-serif text-xl sm:text-2xl font-bold text-amber-950 mb-1">Rahul & Priya</h3>
+                              <div className="w-10 sm:w-12 h-[1px] bg-amber-300 my-1.5 sm:my-2" />
+                              <p className="text-[9px] sm:text-[10px] text-amber-900 max-w-[160px] sm:max-w-[180px] mb-3 sm:mb-4">Are getting married. Please join us to celebrate our love.</p>
+                              <div className="bg-amber-900 text-amber-100 text-[9px] sm:text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider font-bold mb-3 sm:mb-4">
                                 Nov 20, 2026
                               </div>
-                              <div className="flex items-center gap-1.5 bg-amber-100/60 px-3 py-1.5 rounded-xl border border-amber-200/50">
+                              <div className="flex items-center gap-1 bg-amber-100/60 px-2.5 py-1 rounded-xl border border-amber-200/50">
                                 <Music className="text-amber-800 animate-spin" size={10} style={{ animationDuration: '3s' }} />
-                                <span className="text-[9px] font-bold text-amber-900">Background Tune Playing</span>
+                                <span className="text-[8px] sm:text-[9px] font-bold text-amber-900">Background Tune Playing</span>
                               </div>
                             </div>
-                            <div className="mt-4 bg-white/60 backdrop-blur-sm border border-slate-200/50 p-2.5 rounded-xl shadow-xs">
-                              <div className="flex justify-between items-center text-[10px] font-bold text-slate-700">
+                            <div className="mt-3 sm:mt-4 bg-white/60 backdrop-blur-sm border border-slate-200/50 p-2 sm:p-2.5 rounded-xl shadow-xs">
+                              <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-bold text-slate-700">
                                 <span>RSVP Status</span>
                                 <span className="text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-full">122 Attending</span>
                               </div>
                             </div>
                           </div>
                         ) : (
-                          /* Category Illustration Image Slide-in with themed gradient background */
+                          /* Category Illustration Image Slide-in */
                           <div className="w-full h-full relative overflow-hidden bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
-                            {/* Themed background gradient glow */}
                             <div className={`absolute inset-0 bg-gradient-to-b ${item.gradient} to-white dark:to-slate-950 pointer-events-none z-0 opacity-85`} />
                             
                             <img
                               src={item.image}
                               alt={item.name}
-                              className="w-full h-full object-contain relative z-10 p-4"
+                              className="w-full h-full object-contain relative z-10 p-3 sm:p-4"
                             />
 
-                            {/* Floating pulsating heart icon on Proposal slide */}
                             {item.id === "proposal" && (
-                              <div className="absolute inset-0 flex justify-center items-start pt-16 z-20 pointer-events-none">
-                                <Heart className="text-pink-500 fill-pink-500/40 animate-pulse drop-shadow-[0_0_12px_rgba(244,63,94,0.6)]" size={36} />
+                              <div className="absolute inset-0 flex justify-center items-start pt-12 sm:pt-16 z-20 pointer-events-none">
+                                <Heart className="text-pink-500 fill-pink-500/40 animate-pulse drop-shadow-[0_0_12px_rgba(244,63,94,0.6)]" size={32} />
                               </div>
                             )}
 
-                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent p-5 z-20">
-                              <span className="text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-1">{item.tag}</span>
-                              <h4 className="text-base font-bold text-slate-800 dark:text-white font-serif">{item.name}</h4>
+                            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-white via-white/90 to-transparent dark:from-slate-950 dark:via-slate-950/90 dark:to-transparent p-4 sm:p-5 z-20">
+                              <span className="text-[9px] sm:text-[10px] font-bold text-brand-600 dark:text-brand-400 uppercase tracking-widest mb-0.5 block">{item.tag}</span>
+                              <h4 className="text-sm sm:text-base font-bold text-slate-800 dark:text-white font-serif">{item.name}</h4>
                             </div>
                           </div>
                         )}
@@ -476,6 +485,11 @@ const Home = () => {
                     );
                   })}
                 </div>
+              </div>
+
+              {/* Mobile Only Buttons Positioned Below Phone Mockup with Clear Top Margin */}
+              <div className="block lg:hidden mt-4 sm:mt-6 w-full relative z-30 flex justify-center">
+                {showcaseItems[activeIndex]?.buttons}
               </div>
             </div>
 
@@ -488,46 +502,42 @@ const Home = () => {
       {isUnlocked && (
         <>
           {/* Featured Templates Preview Section */}
-          <section className="py-20 relative z-10 bg-slate-100/50 dark:bg-slate-900/30 border-t border-gray-200 dark:border-white/5">
-            <div className="container mx-auto px-6">
-              <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
+          <section className="py-12 sm:py-20 relative z-10 bg-slate-100/50 dark:bg-slate-900/30 border-t border-gray-200 dark:border-white/5">
+            <div className="container mx-auto px-4 sm:px-6">
+              <div className="max-w-3xl mx-auto text-center space-y-3 sm:space-y-4 mb-10 sm:mb-16">
                 <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-semibold">
                   <Sparkles size={14} />
                   <span>Interactive Live Mockups</span>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
-                Featured Templates
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight">
+                  Featured Templates
                 </h2>
-                <p className="text-slate-650 dark:text-gray-400 text-base max-w-xl mx-auto">
+                <p className="text-slate-650 dark:text-gray-400 text-sm sm:text-base max-w-xl mx-auto">
                   Explore our live interactive templates on mobile frames. Click preview to experience full screen.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10 max-w-6xl mx-auto">
                 {templates
                   .filter((tpl) => ["royal-gold-demo", "wedding-animated-demo", "neon-surprise-demo"].includes(tpl.demoSlug))
                   .map((tpl) => (
                     <div
                       key={tpl.id}
                       onClick={() => handleTemplateClick(tpl.category, tpl.demoSlug)}
-                      className="group bg-white dark:bg-slate-900/60 border border-gray-200 dark:border-white/10 rounded-3xl p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                      className="group bg-white dark:bg-slate-900/60 border border-gray-200 dark:border-white/10 rounded-3xl p-4 sm:p-6 flex flex-col items-center shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
                     >
                       {/* Phone Container Box with Center Alignment */}
-                      <div className="w-full h-[500px] flex items-center justify-center relative overflow-hidden mb-2">
-                        {/* Scaled 375px x 660px Physical Phone Mockup (DevicePreviewMock standard) */}
+                      <div className="w-full h-[400px] sm:h-[500px] flex items-center justify-center relative overflow-hidden mb-2">
                         <div 
                           style={{
-                            width: "375px",
-                            height: "660px",
-                            transform: "scale(0.74)",
                             transformOrigin: "center center"
                           }}
-                          className="border-[12px] border-slate-900 rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] bg-white dark:bg-slate-900 overflow-hidden relative flex flex-col shrink-0 group-hover:border-brand-500 transition-colors duration-300"
+                          className="w-[310px] sm:w-[375px] h-[540px] sm:h-[660px] scale-[0.66] sm:scale-[0.74] border-[10px] sm:border-[12px] border-slate-900 rounded-[38px] sm:rounded-[48px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.4)] bg-white dark:bg-slate-900 overflow-hidden relative flex flex-col shrink-0 group-hover:border-brand-500 transition-colors duration-300"
                         >
                           {/* Speaker & Camera notch */}
-                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-slate-900 rounded-b-2xl z-50 flex items-center justify-center">
-                            <span className="w-12 h-1 bg-slate-750 rounded-full mb-1" />
-                            <span className="w-2.5 h-2.5 bg-slate-800 rounded-full mb-1 ml-3" />
+                          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 sm:w-40 h-5 sm:h-6 bg-slate-900 rounded-b-2xl z-50 flex items-center justify-center">
+                            <span className="w-10 sm:w-12 h-1 bg-slate-750 rounded-full mb-1" />
+                            <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 bg-slate-800 rounded-full mb-1 ml-2.5 sm:ml-3" />
                           </div>
 
                           {/* Viewport Content */}

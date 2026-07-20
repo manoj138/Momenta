@@ -24,7 +24,7 @@ const Login = () => {
     setLoading(false);
     
     if (res.success) {
-      if (res.user.role === "super_admin") {
+      if (res.user.role === "superadmin" || res.user.role === "super_admin") {
         navigate("/superadmin");
       } else {
         navigate("/creator");
@@ -37,12 +37,13 @@ const Login = () => {
   const handleQuickLogin = async (role) => {
     setError("");
     setLoading(true);
-    const targetEmail = role === "super_admin" ? "superadmin@momenta.com" : "creator@momenta.com";
-    const res = await login(targetEmail, "password");
+    const targetEmail = role === "super_admin" || role === "superadmin" ? "superadmin@momenta.com" : "creator_test@momenta.com";
+    const targetPass = role === "super_admin" || role === "superadmin" ? "SuperAdmin@123" : "password123";
+    const res = await login(targetEmail, targetPass);
     setLoading(false);
     
     if (res.success) {
-      if (res.user.role === "super_admin") {
+      if (res.user.role === "superadmin" || res.user.role === "super_admin") {
         navigate("/superadmin");
       } else {
         navigate("/creator");

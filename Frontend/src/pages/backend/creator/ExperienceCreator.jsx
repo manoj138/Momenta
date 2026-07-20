@@ -7,6 +7,7 @@ import Select from "../../../components/common/Select";
 import Button from "../../../components/common/Button";
 import DynamicFormRenderer from "../../../components/features/DynamicFormRenderer";
 import DevicePreviewMock from "../../../components/common/DevicePreviewMock";
+import { experienceService } from "../../../services/experienceService";
 
 // Template Components
 import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGold";
@@ -65,21 +66,36 @@ const ExperienceCreator = () => {
     }));
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!slug) return;
 
     // Create the experience payload
     const experiencePayload = {
       slug: slug.trim(),
+      template_id: 1, // default template id reference
+      category_id: 1,
+      title: `${enquiry.clientName}'s Experience`,
+      client_name: enquiry.clientName,
+      is_published: true,
+      data: formData,
+    };
+
+    try {
+      await experienceService.create(experiencePayload);
+    } catch (err) {
+      console.warn("Failed to create experience on backend:", err);
+    }
+
+    addExperience({
+      slug: slug.trim(),
       templateId: selectedTemplateId,
       category: enquiry.category,
       clientName: enquiry.clientName,
       status: "published",
       data: formData,
-    };
+    });
 
-    addExperience(experiencePayload);
     // Mark enquiry status as "Completed"
     updateEnquiryStatus(enquiry.id, "Completed", `Published live link: /e/${slug}`);
     setIsPublished(true);

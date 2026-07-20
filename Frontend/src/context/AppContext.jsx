@@ -1,4 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { categoryService } from "../services/categoryService";
+import { templateService } from "../services/templateService";
+import { experienceService } from "../services/experienceService";
+import { enquiryService } from "../services/enquiryService";
 
 const AppContext = createContext(null);
 
@@ -314,6 +318,72 @@ const seedData = () => {
 export const AppProvider = ({ children }) => {
   useEffect(() => {
     seedData();
+
+    // Fetch live data from SQLite Backend API
+    const fetchApiData = async () => {
+      try {
+        const catRes = await categoryService.getAll();
+        if (catRes && catRes.status && catRes.data && catRes.data.length > 0) {
+          const formattedCats = catRes.data.map(c => ({
+            id: c.slug || String(c.id),
+            name: c.name,
+            description: c.description,
+            fields: (c.fields || []).map(f => ({
+              name: f.field_name,
+              label: f.label,
+              type: f.field_type,
+              placeholder: f.placeholder,
+              required: f.is_required
+            }))
+          }));
+          setCategories(formattedCats);
+        }
+      } catch (e) {
+        console.warn("Backend Categories API unavailable, using local cache");
+      }
+
+      try {
+        const tplRes = await templateService.getAll();
+        if (tplRes && tplRes.status && tplRes.data && tplRes.data.length > 0) {
+          const formattedTpls = tplRes.data.map(t => ({
+            id: t.slug || String(t.id),
+            name: t.name,
+            category: t.category?.slug || 'wedding',
+            description: t.description,
+            thumbnail: t.thumbnail,
+            previewUrl: t.preview_url,
+            componentName: t.component_name
+          }));
+          setTemplates(formattedTpls);
+        }
+      } catch (e) {
+        console.warn("Backend Templates API unavailable, using local cache");
+      }
+
+      const token = sessionStorage.getItem("token");
+      if (token) {
+        try {
+          const expRes = await experienceService.getAll();
+          if (expRes && expRes.status && expRes.data && expRes.data.length > 0) {
+            const formattedExps = expRes.data.map(e => ({
+              id: String(e.id),
+              slug: e.slug,
+              templateId: e.template?.slug || e.template_id,
+              category: e.category?.slug || e.category_id,
+              clientName: e.client_name || e.title,
+              status: e.is_published ? "published" : "draft",
+              data: e.data,
+              createdAt: e.createdAt
+            }));
+            setExperiences(formattedExps);
+          }
+        } catch (e) {
+          console.warn("Backend Experiences API notice:", e.message);
+        }
+      }
+    };
+
+    fetchApiData();
   }, []);
 
   const [categories, setCategories] = useState(() => {

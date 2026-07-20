@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useApp } from "../../../../context/AppContext";
 import { Heart, Calendar, MapPin, Music, Send, CheckCircle2, MessageSquare, Clock } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
+import { guestService } from "../../../../services/guestService";
 
 const WeddingRoyalGold = ({ data = {}, isDemo = false }) => {
   const { addRSVPToExperience } = useApp();
@@ -40,7 +41,7 @@ const WeddingRoyalGold = ({ data = {}, isDemo = false }) => {
     return () => clearInterval(interval);
   }, [data.weddingDate]);
 
-  const handleRSVPSubmit = (e) => {
+  const handleRSVPSubmit = async (e) => {
     e.preventDefault();
     if (!guestName.trim()) return;
 
@@ -50,6 +51,18 @@ const WeddingRoyalGold = ({ data = {}, isDemo = false }) => {
       status: rsvpStatus,
       message: guestMessage,
     };
+
+    try {
+      await guestService.submitRsvp({
+        experience_id: data.id || 1,
+        guest_name: guestName,
+        attending_status: rsvpStatus,
+        guest_count: Number(guestCount),
+        notes: guestMessage
+      });
+    } catch (err) {
+      console.warn("Failed to submit RSVP to backend API:", err);
+    }
 
     if (!isDemo && data.slug) {
       addRSVPToExperience(data.slug, rsvpObj);

@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useApp } from "../../../../context/AppContext";
 import { Sparkles, Calendar, MapPin, Gift, Gift as RevealBox, MessageSquare, Send, CheckCircle2 } from "lucide-react";
 import PremiumAudioPlayer from "../../../../components/common/PremiumAudioPlayer";
+import { guestService } from "../../../../services/guestService";
 
 // Helper to select birthday character image based on person's age & gender (Boy/Girl/Man/Woman)
 const getAgeImage = (ageVal, genderVal = "", personName = "") => {
@@ -34,13 +35,25 @@ const getAgeImage = (ageVal, genderVal = "", personName = "") => {
 const BirthdayNeonSurprise = ({ data = {}, isDemo = false }) => {
   const { addRSVPToExperience } = useApp();
   const [isRevealed, setIsRevealed] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [guestName, setGuestName] = useState("");
   const [guestMessage, setGuestMessage] = useState("");
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
+  const audioRef = useRef(null);
 
-  const handleRSVPSubmit = (e) => {
+  const handleRSVPSubmit = async (e) => {
     e.preventDefault();
     if (!guestName.trim()) return;
+
+    try {
+      await guestService.submitWish({
+        experience_id: data.id || 1,
+        guest_name: guestName,
+        message: guestMessage || "Happy Birthday!"
+      });
+    } catch (err) {
+      console.warn("Failed to submit wish to backend API:", err);
+    }
 
     const rsvpObj = {
       name: guestName,

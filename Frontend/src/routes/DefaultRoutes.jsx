@@ -36,22 +36,22 @@ import ThemeToggle from "../components/common/ThemeToggle";
 // Simple Public Header
 const PublicHeader = () => {
   return (
-    <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-250 dark:border-white/5 px-6 py-4 flex justify-between items-center text-slate-900 dark:text-white transition-colors duration-300">
-      <Link to="/" className="flex items-center gap-2">
-        <Sparkles className="text-brand-500 animate-pulse" size={18} />
-        <span className="font-extrabold tracking-wider text-base">Momenta</span>
+    <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-250 dark:border-white/5 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center text-slate-900 dark:text-white transition-colors duration-300">
+      <Link to="/" className="flex items-center gap-1.5 shrink-0">
+        <Sparkles className="text-brand-500 animate-pulse" size={16} />
+        <span className="font-extrabold tracking-wider text-sm sm:text-base">Momenta</span>
       </Link>
-      <nav className="flex items-center gap-6 text-xs font-semibold text-gray-600 dark:text-gray-300">
+      <nav className="flex items-center gap-2 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-600 dark:text-gray-300">
         <Link to="/" className="hover:text-brand-500 dark:hover:text-white transition-colors">Home</Link>
         <Link to="/templates" className="hover:text-brand-500 dark:hover:text-white transition-colors">Themes</Link>
         <Link to="/about" className="hover:text-brand-500 dark:hover:text-white transition-colors">About</Link>
         <Link to="/contact" className="hover:text-brand-500 dark:hover:text-white transition-colors">Contact</Link>
       </nav>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
         <ThemeToggle />
-        <Link to="/login" className="flex items-center gap-1.5 px-4 py-2 bg-slate-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-brand-600 hover:border-brand-500 hover:text-white rounded-full text-xs font-bold transition-all cursor-pointer">
+        <Link to="/login" className="flex items-center gap-1 px-2.5 py-1.5 sm:px-4 sm:py-2 bg-slate-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:bg-brand-600 hover:border-brand-500 hover:text-white rounded-full text-[11px] sm:text-xs font-bold transition-all cursor-pointer">
           <Shield size={13} />
-          <span>Console</span>
+          <span className="hidden sm:inline">Console</span>
         </Link>
       </div>
     </header>
@@ -119,7 +119,7 @@ const DefaultRoutes = () => {
       </Route>
 
       {/* 3. Protected Super Admin Dashboard Panel */}
-      <Route element={<ProtectedRoute allowedRoles={["super_admin"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["superadmin", "super_admin"]} />}>
         <Route
           path="/superadmin"
           element={
@@ -171,7 +171,7 @@ const DefaultRoutes = () => {
       </Route>
 
       {/* 4. Protected Creator Dashboard Panel */}
-      <Route element={<ProtectedRoute allowedRoles={["creator"]} />}>
+      <Route element={<ProtectedRoute allowedRoles={["creator", "superadmin", "super_admin"]} />}>
         <Route
           path="/creator"
           element={
