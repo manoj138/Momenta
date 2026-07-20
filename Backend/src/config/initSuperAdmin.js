@@ -6,7 +6,7 @@ async function initSuperAdmin() {
         const superEmail = process.env.SUPERADMIN_EMAIL || 'superadmin@momenta.com';
         const superPassword = process.env.SUPERADMIN_PASSWORD || 'SuperAdmin@123';
 
-        const existingAdmin = await User.findOne({ where: { role: 'superadmin' } });
+        const existingAdmin = await User.findOne({ role: 'superadmin' });
 
         if (!existingAdmin) {
             const hashedPassword = await hashPassword(superPassword);

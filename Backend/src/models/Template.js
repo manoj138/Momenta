@@ -1,51 +1,52 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const Template = sequelize.define('Template', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const TemplateSchema = new mongoose.Schema({
     category_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: [true, 'Category reference is required']
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Template name is required']
     },
     slug: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        type: String,
+        required: [true, 'Slug is required'],
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: String
     },
     thumbnail: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     preview_url: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     component_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Component name is required']
     },
     is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+        type: Boolean,
+        default: true
     },
     schema_contract: {
-        type: DataTypes.JSON,
-        allowNull: true
+        type: mongoose.Schema.Types.Mixed
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+TemplateSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const Template = mongoose.model('Template', TemplateSchema);
 module.exports = Template;

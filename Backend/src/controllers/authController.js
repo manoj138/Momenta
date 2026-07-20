@@ -10,7 +10,7 @@ const login = async (req, res) => {
             return handle422(res, { email: 'Email and password are required' });
         }
 
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ email });
         if (!user) {
             return handle401(res, 'Invalid email or password');
         }
@@ -47,7 +47,7 @@ const register = async (req, res) => {
             return handle422(res, { error: 'Name, email, and password are required' });
         }
 
-        const existingUser = await User.findOne({ where: { email } });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return handle422(res, { email: 'Email is already registered' });
         }
@@ -78,9 +78,7 @@ const register = async (req, res) => {
 
 const getProfile = async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id, {
-            attributes: { exclude: ['password'] }
-        });
+        const user = await User.findById(req.user.id).select('-password');
         if (!user) {
             return handle404(res, 'User not found');
         }

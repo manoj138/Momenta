@@ -1,39 +1,48 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const Category = sequelize.define('Category', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const CategorySchema = new mongoose.Schema({
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Category name is required']
     },
     slug: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        type: String,
+        required: [true, 'Slug is required'],
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     description: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: String
     },
     icon: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+        type: Boolean,
+        default: true
     },
     display_order: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
+        type: Number,
+        default: 0
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+CategorySchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+// Virtual populate for fields to mimic Category.hasMany(DynamicField)
+CategorySchema.virtual('fields', {
+    ref: 'DynamicField',
+    localField: '_id',
+    foreignField: 'category_id'
+});
+
+const Category = mongoose.model('Category', CategorySchema);
 module.exports = Category;

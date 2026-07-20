@@ -1,47 +1,49 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const DynamicField = sequelize.define('DynamicField', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const DynamicFieldSchema = new mongoose.Schema({
     category_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category',
+        required: [true, 'Category reference is required']
     },
     field_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Field name is required']
     },
     field_type: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: 'text'
+        type: String,
+        required: [true, 'Field type is required'],
+        default: 'text'
     },
     label: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Label is required']
     },
     placeholder: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     is_required: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        type: Boolean,
+        default: false
     },
     options: {
-        type: DataTypes.JSON,
-        allowNull: true
+        type: mongoose.Schema.Types.Mixed,
+        default: []
     },
     display_order: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
+        type: Number,
+        default: 0
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+DynamicFieldSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const DynamicField = mongoose.model('DynamicField', DynamicFieldSchema);
 module.exports = DynamicField;

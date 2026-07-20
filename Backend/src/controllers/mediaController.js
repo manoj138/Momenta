@@ -10,8 +10,8 @@ const uploadMedia = async (req, res) => {
 
         const media = await MediaAsset.create({
             uploaded_by_user_id: req.user ? req.user.id : null,
-            filename: req.file.filename,
-            file_path: `/uploads/${req.file.filename}`,
+            filename: req.file.originalname || req.file.filename,
+            file_path: req.file.path, // Direct Cloudinary secure URL
             file_type: req.file.mimetype.startsWith('image/') ? 'image' : (req.file.mimetype.startsWith('audio/') ? 'audio' : 'other'),
             file_size: req.file.size,
             mime_type: req.file.mimetype
@@ -25,9 +25,7 @@ const uploadMedia = async (req, res) => {
 
 const getAllMedia = async (req, res) => {
     try {
-        const mediaList = await MediaAsset.findAll({
-            order: [['createdAt', 'DESC']]
-        });
+        const mediaList = await MediaAsset.find({}).sort({ createdAt: -1 });
         return handle200(res, mediaList);
     } catch (error) {
         return handle500(res, error);
@@ -36,9 +34,9 @@ const getAllMedia = async (req, res) => {
 
 const deleteMedia = async (req, res) => {
     try {
-        const media = await MediaAsset.findByPk(req.params.id);
+        const media = await MediaAsset.findById(req.params.id);
         if (!media) return handle404(res, 'Media not found');
-        await media.destroy();
+        await media.deleteOne();
         return handle200(res, null, 'Media asset deleted successfully');
     } catch (error) {
         return handle500(res, error);

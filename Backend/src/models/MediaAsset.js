@@ -1,38 +1,38 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const MediaAsset = sequelize.define('MediaAsset', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const MediaAssetSchema = new mongoose.Schema({
     uploaded_by_user_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     filename: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Filename is required']
     },
     file_path: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'File path is required']
     },
     file_type: {
-        type: DataTypes.STRING,
-        defaultValue: 'image'
+        type: String,
+        default: 'image'
     },
     file_size: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        type: Number
     },
     mime_type: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+MediaAssetSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const MediaAsset = mongoose.model('MediaAsset', MediaAssetSchema);
 module.exports = MediaAsset;

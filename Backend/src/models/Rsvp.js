@@ -1,42 +1,42 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const Rsvp = sequelize.define('Rsvp', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const RsvpSchema = new mongoose.Schema({
     experience_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Experience',
+        required: [true, 'Experience reference is required']
     },
     guest_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Guest name is required']
     },
     guest_email: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     guest_phone: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     attending_status: {
-        type: DataTypes.STRING,
-        defaultValue: 'yes'
+        type: String,
+        default: 'yes'
     },
     guest_count: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1
+        type: Number,
+        default: 1
     },
     notes: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: String
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+RsvpSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const Rsvp = mongoose.model('Rsvp', RsvpSchema);
 module.exports = Rsvp;

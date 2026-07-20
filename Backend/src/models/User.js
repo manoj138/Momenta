@@ -1,40 +1,43 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const UserSchema = new mongoose.Schema({
     name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Name is required']
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        type: String,
+        required: [true, 'Email is required'],
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Password is required']
     },
     role: {
-        type: DataTypes.STRING,
-        defaultValue: 'creator'
+        type: String,
+        default: 'creator'
     },
     status: {
-        type: DataTypes.STRING,
-        defaultValue: 'active'
+        type: String,
+        default: 'active'
     },
     category_permissions: {
-        type: DataTypes.JSON,
-        allowNull: true,
-        defaultValue: []
+        type: [String],
+        default: []
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id to match Sequelize behaviour
+UserSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const User = mongoose.model('User', UserSchema);
 module.exports = User;

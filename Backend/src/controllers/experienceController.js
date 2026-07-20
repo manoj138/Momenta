@@ -1,4 +1,4 @@
-const { Experience, Template, Category, Rsvp, WishBook } = require('../models');
+const { Experience } = require('../models');
 const { handle200, handle201 } = require('../helper/successHandler');
 const { handle404, handle500, formatSequelizeError, handle422 } = require('../helper/errorHandler');
 
@@ -7,14 +7,10 @@ const getAllExperiences = async (req, res) => {
         const isStaff = req.user && (req.user.role === 'superadmin' || req.user.role === 'creator');
         const whereClause = isStaff ? {} : { is_published: true };
 
-        const experiences = await Experience.findAll({
-            where: whereClause,
-            order: [['createdAt', 'DESC']],
-            include: [
-                { model: Template, as: 'template' },
-                { model: Category, as: 'category' }
-            ]
-        });
+        const experiences = await Experience.find(whereClause)
+            .sort({ createdAt: -1 })
+            .populate('template')
+            .populate('category');
         return handle200(res, experiences);
     } catch (error) {
         return handle500(res, error);
@@ -23,15 +19,11 @@ const getAllExperiences = async (req, res) => {
 
 const getExperienceBySlug = async (req, res) => {
     try {
-        const experience = await Experience.findOne({
-            where: { slug: req.params.slug },
-            include: [
-                { model: Template, as: 'template' },
-                { model: Category, as: 'category' },
-                { model: Rsvp, as: 'rsvps' },
-                { model: WishBook, as: 'wishes' }
-            ]
-        });
+        const experience = await Experience.findOne({ slug: req.params.slug })
+            .populate('template')
+            .populate('category')
+            .populate('rsvps')
+            .populate('wishes');
 
         if (!experience) return handle404(res, 'Digital Experience not found');
 
@@ -49,7 +41,7 @@ const createExperience = async (req, res) => {
     try {
         const { slug } = req.body;
         if (slug) {
-            const existing = await Experience.findOne({ where: { slug } });
+            const existing = await Experience.findOne({ slug });
             if (existing) {
                 return handle422(res, { slug: 'This URL slug is already taken. Please choose another one.' });
             }
@@ -63,9 +55,12 @@ const createExperience = async (req, res) => {
 
 const updateExperience = async (req, res) => {
     try {
-        const experience = await Experience.findByPk(req.params.id);
+        const experience = await Experience.findById(req.params.id);
         if (!experience) return handle404(res, 'Experience not found');
-        await experience.update(req.body);
+        
+        experience.set(req.body);
+        await experience.save();
+        
         return handle200(res, experience, 'Experience updated successfully');
     } catch (error) {
         return formatSequelizeError(res, error);
@@ -74,9 +69,9 @@ const updateExperience = async (req, res) => {
 
 const deleteExperience = async (req, res) => {
     try {
-        const experience = await Experience.findByPk(req.params.id);
+        const experience = await Experience.findById(req.params.id);
         if (!experience) return handle404(res, 'Experience not found');
-        await experience.destroy();
+        await experience.deleteOne();
         return handle200(res, null, 'Experience deleted successfully');
     } catch (error) {
         return handle500(res, error);

@@ -4,10 +4,8 @@ const { handle404, handle500, formatSequelizeError } = require('../helper/errorH
 
 const getFieldsByCategory = async (req, res) => {
     try {
-        const fields = await DynamicField.findAll({
-            where: { category_id: req.params.categoryId },
-            order: [['display_order', 'ASC']]
-        });
+        const fields = await DynamicField.find({ category_id: req.params.categoryId })
+            .sort({ display_order: 1 });
         return handle200(res, fields);
     } catch (error) {
         return handle500(res, error);
@@ -25,9 +23,12 @@ const createField = async (req, res) => {
 
 const updateField = async (req, res) => {
     try {
-        const field = await DynamicField.findByPk(req.params.id);
+        const field = await DynamicField.findById(req.params.id);
         if (!field) return handle404(res, 'Field not found');
-        await field.update(req.body);
+        
+        field.set(req.body);
+        await field.save();
+        
         return handle200(res, field, 'Field updated successfully');
     } catch (error) {
         return formatSequelizeError(res, error);
@@ -36,9 +37,9 @@ const updateField = async (req, res) => {
 
 const deleteField = async (req, res) => {
     try {
-        const field = await DynamicField.findByPk(req.params.id);
+        const field = await DynamicField.findById(req.params.id);
         if (!field) return handle404(res, 'Field not found');
-        await field.destroy();
+        await field.deleteOne();
         return handle200(res, null, 'Field deleted successfully');
     } catch (error) {
         return handle500(res, error);

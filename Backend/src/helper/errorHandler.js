@@ -1,21 +1,21 @@
 // helper/errorHandler.js
 
 /**
- * Formats Sequelize errors into a flat object
+ * Formats Mongoose errors into a flat object (using the original name for backward compatibility)
  */
 const formatSequelizeError = (res, error) => {
   let errors = {};
-  if (error.name === "SequelizeValidationError" || error.name === "SequelizeUniqueConstraintError") {
-    error.errors.forEach((err) => {
-      errors[err.path] = err.message;
+  if (error.name === "ValidationError") {
+    Object.keys(error.errors).forEach((key) => {
+      errors[key] = error.errors[key].message;
     });
     return res.status(422).json({ status: false, errors });
-  } else if (error.name === "SequelizeForeignKeyConstraintError") {
-    const field = error.fields ? Object.keys(error.fields)[0] : "error";
-    errors[field] = `Cannot perform action because this record is referenced elsewhere`;
+  } else if (error.code === 11000) {
+    const field = error.keyValue ? Object.keys(error.keyValue)[0] : "error";
+    errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is already taken.`;
     return res.status(422).json({ status: false, errors });
-  } else if (error.name === "SequelizeDatabaseError") {
-    errors.database = error.message;
+  } else if (error.name === "CastError") {
+    errors[error.path] = `Invalid format for ${error.path}`;
     return res.status(422).json({ status: false, errors });
   } else {
     return handle500(res, error);
@@ -71,7 +71,9 @@ const handle500 = (res, error) => {
 
 module.exports = {
   formatSequelizeError,
+  formatMongooseError: formatSequelizeError, // Alias for clean code
   handle404,
   handle401,
+  handle422,
   handle500
 };

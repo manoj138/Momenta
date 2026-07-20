@@ -1,30 +1,33 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const WishBook = sequelize.define('WishBook', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const WishBookSchema = new mongoose.Schema({
     experience_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Experience',
+        required: [true, 'Experience reference is required']
     },
     guest_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Guest name is required']
     },
     message: {
-        type: DataTypes.TEXT,
-        allowNull: false
+        type: String,
+        required: [true, 'Message is required']
     },
     is_approved: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+        type: Boolean,
+        default: true
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+WishBookSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const WishBook = mongoose.model('WishBook', WishBookSchema);
 module.exports = WishBook;

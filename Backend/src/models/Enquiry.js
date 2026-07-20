@@ -1,50 +1,49 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const Enquiry = sequelize.define('Enquiry', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const EnquirySchema = new mongoose.Schema({
     client_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Client name is required']
     },
     client_email: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Client email is required']
     },
     client_phone: {
-        type: DataTypes.STRING,
-        allowNull: true
+        type: String
     },
     category_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category'
     },
     template_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Template'
     },
     form_data: {
-        type: DataTypes.JSON,
-        allowNull: true
+        type: mongoose.Schema.Types.Mixed
     },
     status: {
-        type: DataTypes.STRING,
-        defaultValue: 'new'
+        type: String,
+        default: 'new'
     },
     assigned_to_user_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     notes: {
-        type: DataTypes.TEXT,
-        allowNull: true
+        type: String
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+EnquirySchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const Enquiry = mongoose.model('Enquiry', EnquirySchema);
 module.exports = Enquiry;

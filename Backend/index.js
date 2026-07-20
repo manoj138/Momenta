@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { sequelize } = require('./src/models');
+const connectDB = require('./src/config/mongoDB');
 const apiRoutes = require('./src/routes');
 
 const app = express();
@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve static uploaded files
+// Serve static uploaded files (kept for backward compatibility, although Cloudinary is now active)
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
 // Root Route
@@ -33,16 +33,14 @@ app.use('/api', apiRoutes);
 
 const initSuperAdmin = require('./src/config/initSuperAdmin');
 
-// Sync Database and start server
-sequelize.sync()
+// Connect DB and start server
+connectDB()
   .then(async () => {
-    console.log('SQLite Database models synced successfully.');
     await initSuperAdmin();
     app.listen(port, () => {
       console.log(`Momenta Express server listening at http://localhost:${port}`);
     });
   })
   .catch((error) => {
-    console.error('Failed to sync SQLite database:', error.message);
+    console.error('Failed to connect to the database:', error.message);
   });
-

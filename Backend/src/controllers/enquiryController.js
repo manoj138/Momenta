@@ -1,16 +1,13 @@
-const { Enquiry, Category, Template } = require('../models');
+const { Enquiry } = require('../models');
 const { handle200, handle201 } = require('../helper/successHandler');
 const { handle404, handle500, formatSequelizeError } = require('../helper/errorHandler');
 
 const getAllEnquiries = async (req, res) => {
     try {
-        const enquiries = await Enquiry.findAll({
-            order: [['createdAt', 'DESC']],
-            include: [
-                { model: Category, as: 'category' },
-                { model: Template, as: 'template' }
-            ]
-        });
+        const enquiries = await Enquiry.find({})
+            .sort({ createdAt: -1 })
+            .populate('category')
+            .populate('template');
         return handle200(res, enquiries);
     } catch (error) {
         return handle500(res, error);
@@ -28,11 +25,11 @@ const createEnquiry = async (req, res) => {
 
 const updateEnquiryStatus = async (req, res) => {
     try {
-        const enquiry = await Enquiry.findByPk(req.params.id);
+        const enquiry = await Enquiry.findById(req.params.id);
         if (!enquiry) return handle404(res, 'Enquiry not found');
         const { status, assigned_to_user_id, notes } = req.body;
         if (status) enquiry.status = status;
-        if (assigned_to_user_id !== undefined) enquiry.assigned_to_user_id = assigned_to_user_id;
+        if (assigned_to_user_id !== undefined) enquiry.assigned_to_user_id = assigned_to_user_id ? assigned_to_user_id : null;
         if (notes !== undefined) enquiry.notes = notes;
         await enquiry.save();
         return handle200(res, enquiry, 'Enquiry status updated successfully');
@@ -43,9 +40,9 @@ const updateEnquiryStatus = async (req, res) => {
 
 const deleteEnquiry = async (req, res) => {
     try {
-        const enquiry = await Enquiry.findByPk(req.params.id);
+        const enquiry = await Enquiry.findById(req.params.id);
         if (!enquiry) return handle404(res, 'Enquiry not found');
-        await enquiry.destroy();
+        await enquiry.deleteOne();
         return handle200(res, null, 'Enquiry deleted successfully');
     } catch (error) {
         return handle500(res, error);

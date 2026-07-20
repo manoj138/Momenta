@@ -1,27 +1,29 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/sqliteDB');
+const mongoose = require('mongoose');
 
-const CmsContent = sequelize.define('CmsContent', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+const CmsContentSchema = new mongoose.Schema({
     key: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: String,
+        required: [true, 'Key is required'],
         unique: true
     },
     section_name: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: String,
+        required: [true, 'Section name is required']
     },
     content: {
-        type: DataTypes.JSON,
-        allowNull: false
+        type: mongoose.Schema.Types.Mixed,
+        required: [true, 'Content is required']
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
 });
 
+// Virtual for id
+CmsContentSchema.virtual('id').get(function () {
+    return this._id.toHexString();
+});
+
+const CmsContent = mongoose.model('CmsContent', CmsContentSchema);
 module.exports = CmsContent;

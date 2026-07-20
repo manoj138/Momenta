@@ -5,10 +5,9 @@ const { handle404, handle500, formatSequelizeError, handle422 } = require('../he
 
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.findAll({
-            attributes: { exclude: ['password'] },
-            order: [['createdAt', 'DESC']]
-        });
+        const users = await User.find({})
+            .select('-password')
+            .sort({ createdAt: -1 });
         return handle200(res, users);
     } catch (error) {
         return handle500(res, error);
@@ -22,7 +21,7 @@ const createUser = async (req, res) => {
             return handle422(res, { error: 'Name, email, and password are required' });
         }
 
-        const existing = await User.findOne({ where: { email } });
+        const existing = await User.findOne({ email });
         if (existing) {
             return handle422(res, { email: 'Email already exists' });
         }
@@ -46,7 +45,7 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id);
+        const user = await User.findById(req.params.id);
         if (!user) return handle404(res, 'User not found');
 
         const { name, email, role, status, category_permissions, password } = req.body;
@@ -69,9 +68,9 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.id);
+        const user = await User.findById(req.params.id);
         if (!user) return handle404(res, 'User not found');
-        await user.destroy();
+        await user.deleteOne();
         return handle200(res, null, 'User deleted successfully');
     } catch (error) {
         return handle500(res, error);

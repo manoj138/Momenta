@@ -5,7 +5,7 @@ const { handle404, handle500, formatSequelizeError } = require('../helper/errorH
 const submitRsvp = async (req, res) => {
     try {
         const { experience_id } = req.body;
-        const experience = await Experience.findByPk(experience_id);
+        const experience = await Experience.findById(experience_id);
         if (!experience) return handle404(res, 'Experience not found');
 
         const rsvp = await Rsvp.create(req.body);
@@ -17,10 +17,8 @@ const submitRsvp = async (req, res) => {
 
 const getRsvpsByExperience = async (req, res) => {
     try {
-        const rsvps = await Rsvp.findAll({
-            where: { experience_id: req.params.experienceId },
-            order: [['createdAt', 'DESC']]
-        });
+        const rsvps = await Rsvp.find({ experience_id: req.params.experienceId })
+            .sort({ createdAt: -1 });
         return handle200(res, rsvps);
     } catch (error) {
         return handle500(res, error);
@@ -30,7 +28,7 @@ const getRsvpsByExperience = async (req, res) => {
 const submitWish = async (req, res) => {
     try {
         const { experience_id } = req.body;
-        const experience = await Experience.findByPk(experience_id);
+        const experience = await Experience.findById(experience_id);
         if (!experience) return handle404(res, 'Experience not found');
 
         const wish = await WishBook.create(req.body);
@@ -42,10 +40,8 @@ const submitWish = async (req, res) => {
 
 const getWishesByExperience = async (req, res) => {
     try {
-        const wishes = await WishBook.findAll({
-            where: { experience_id: req.params.experienceId, is_approved: true },
-            order: [['createdAt', 'DESC']]
-        });
+        const wishes = await WishBook.find({ experience_id: req.params.experienceId, is_approved: true })
+            .sort({ createdAt: -1 });
         return handle200(res, wishes);
     } catch (error) {
         return handle500(res, error);
