@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useApp } from "../../../context/AppContext";
 import { ArrowLeft, Save, Globe, Eye, Sparkles, CheckCircle2 } from "lucide-react";
@@ -46,6 +46,43 @@ const ExperienceCreator = () => {
   });
   const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
+  const [showSaveMessage, setShowSaveMessage] = useState(false);
+
+  const initialLoadRef = useRef(false);
+
+  // Synchronize dynamic form data once the enquiry loads from context
+  useEffect(() => {
+    if (enquiry && enquiry.submittedDetails && !initialLoadRef.current) {
+      console.log("Syncing form data with loaded enquiry details:", enquiry.submittedDetails);
+      
+      // Double-safe: Normalise keys to have both camelCase and snake_case versions
+      const normalized = {};
+      Object.entries(enquiry.submittedDetails).forEach(([key, val]) => {
+        normalized[key] = val;
+        if (key.includes("_")) {
+          const camel = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+          normalized[camel] = val;
+        } else {
+          const snake = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+          normalized[snake] = val;
+        }
+      });
+
+      setFormData((prev) => ({
+        ...prev,
+        ...normalized,
+      }));
+      initialLoadRef.current = true;
+    }
+  }, [enquiry]);
+
+  // Synchronize template selection once the available templates list loads
+  useEffect(() => {
+    if (availableTemplates.length > 0 && !selectedTemplateId) {
+      console.log("Defaulting selected template to:", availableTemplates[0].id);
+      setSelectedTemplateId(availableTemplates[0].id);
+    }
+  }, [availableTemplates, selectedTemplateId]);
 
   // Auto-generate slug from clientName
   useEffect(() => {
@@ -60,21 +97,59 @@ const ExperienceCreator = () => {
   }, [enquiry]);
 
   const handleFieldChange = (name, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => {
+      const next = { ...prev, [name]: value };
+      // Double-safe: If the field uses snake_case, synchronize the camelCase version as well
+      if (name.includes("_")) {
+        const camel = name.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+        next[camel] = value;
+      } else {
+        // If the field uses camelCase, synchronize the snake_case version
+        const snake = name.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+        next[snake] = value;
+      }
+      return next;
+    });
+  };
+
+  const handlePreview = () => {
+    const payload = {
+      templateId: selectedTemplateId,
+      data: formData,
+      clientName: enquiry.clientName
+    };
+    console.log("Opening preview with payload:", payload);
+    localStorage.setItem("momenta_preview_data", JSON.stringify(payload));
+    window.open("/e/preview", "_blank");
+  };
+
+  const handleUpdatePreview = (e) => {
+    if (e) e.preventDefault();
+    const payload = {
+      templateId: selectedTemplateId,
+      data: formData,
+      clientName: enquiry.clientName
+    };
+    console.log("Saving & updating preview with payload:", payload);
+    localStorage.setItem("momenta_preview_data", JSON.stringify(payload));
+    setShowSaveMessage(true);
+    setTimeout(() => {
+      setShowSaveMessage(false);
+    }, 3000);
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
     if (!slug) return;
 
+    const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
+    const activeCategoryObj = categories.find((c) => c.id === enquiry.category);
+
     // Create the experience payload
     const experiencePayload = {
       slug: slug.trim(),
-      template_id: 1, // default template id reference
-      category_id: 1,
+      template_id: selectedTemplate?.dbId || selectedTemplateId,
+      category_id: activeCategoryObj?.dbId || enquiry.categoryId,
       title: `${enquiry.clientName}'s Experience`,
       client_name: enquiry.clientName,
       is_published: true,
@@ -183,22 +258,30 @@ const ExperienceCreator = () => {
           </div>
         </div>
 
-        <button
-          onClick={handleSave}
-          className="flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg cursor-pointer shadow-md shadow-brand-500/10"
-        >
-          <Save size={14} />
-          <span>Publish Experience</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handlePreview}
+            className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-750 border border-white/10 hover:border-white/20 text-gray-200 font-bold text-xs px-4 py-2 rounded-lg cursor-pointer transition-all"
+          >
+            <Eye size={14} className="text-brand-400" />
+            <span>Check Design (Preview)</span>
+          </button>
+          <button
+            onClick={handleSave}
+            className="flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-4 py-2 rounded-lg cursor-pointer shadow-md shadow-brand-500/10"
+          >
+            <Save size={14} />
+            <span>Publish Experience</span>
+          </button>
+        </div>
       </div>
 
-      {/* Split view workspace */}
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-        {/* Left Side: Customize Inputs */}
-        <div className="w-full lg:w-1/2 overflow-y-auto p-6 space-y-8 border-r border-white/5">
+      {/* Full width workspace */}
+      <div className="flex-1 overflow-y-auto bg-slate-950 p-6 md:p-10">
+        <div className="max-w-4xl mx-auto w-full space-y-8 bg-slate-900 border border-white/5 rounded-3xl p-6 md:p-10 shadow-premium">
           <div className="space-y-6">
             <h3 className="text-base font-bold text-brand-400 border-b border-white/5 pb-2">1. Choose Theme Template</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {availableTemplates.map((tpl) => (
                 <button
                   key={tpl.id}
@@ -207,7 +290,7 @@ const ExperienceCreator = () => {
                   className={`p-3 rounded-xl border text-left flex flex-col justify-between h-28 cursor-pointer transition-all ${
                     selectedTemplateId === tpl.id
                       ? "bg-brand-600/15 border-brand-500 text-white shadow-md"
-                      : "bg-slate-900 border-white/5 hover:border-white/10 text-gray-400"
+                      : "bg-slate-950 border-white/5 hover:border-white/10 text-gray-400"
                   }`}
                 >
                   <div>
@@ -234,31 +317,33 @@ const ExperienceCreator = () => {
           </div>
 
           {formFields.length > 0 && (
-            <div className="space-y-6 pb-12">
+            <div className="space-y-6 pb-6">
               <h3 className="text-base font-bold text-brand-400 border-b border-white/5 pb-2">3. Experience Content</h3>
               <DynamicFormRenderer
                 fields={formFields}
                 formData={formData}
                 onChange={handleFieldChange}
               />
+
+              {/* Form Save and Update Button */}
+              <div className="pt-6 border-t border-white/5 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={handleUpdatePreview}
+                  className="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl cursor-pointer shadow-lg shadow-brand-500/10 flex items-center gap-2 border-0"
+                >
+                  <Save size={15} />
+                  <span>Save & Update Preview</span>
+                </button>
+
+                {showSaveMessage && (
+                  <span className="text-xs text-emerald-400 font-semibold animate-pulse">
+                    ✓ Preview data updated! Check your preview tab.
+                  </span>
+                )}
+              </div>
             </div>
           )}
-        </div>
-
-        {/* Right Side: Device Preview Mock */}
-        <div className="w-full lg:w-1/2 h-[50vh] lg:h-full overflow-hidden bg-slate-950 flex flex-col border-t lg:border-t-0 border-white/5">
-          <div className="p-3 bg-slate-900 border-b border-white/5 flex items-center justify-between shrink-0">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
-              <Eye size={12} className="text-brand-400" />
-              <span>Realtime WYSIWYG Viewport</span>
-            </span>
-          </div>
-          
-          <div className="flex-1 overflow-auto bg-slate-950">
-            <DevicePreviewMock>
-              {renderLiveTemplate()}
-            </DevicePreviewMock>
-          </div>
         </div>
       </div>
     </div>

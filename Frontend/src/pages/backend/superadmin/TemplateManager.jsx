@@ -109,7 +109,7 @@ const TemplateManager = () => {
     const tpl = templates.find((t) => t.id === id);
     if (tpl && tpl.dbId) {
       try {
-        await templateService.update(tpl.dbId, { status: nextStatus });
+        await templateService.update(tpl.dbId, { is_active: nextStatus === "published" });
       } catch (err) {
         console.warn("Failed to sync template status to backend:", err.message);
       }

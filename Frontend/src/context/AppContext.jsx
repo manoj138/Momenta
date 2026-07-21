@@ -13,12 +13,15 @@ export const AppProvider = ({ children }) => {
     const { categoryService } = await import("../services/categoryService");
     const { templateService } = await import("../services/templateService");
     const { experienceService } = await import("../services/experienceService");
+    const { enquiryService } = await import("../services/enquiryService");
+    const { userService } = await import("../services/userService");
 
     try {
       const catRes = await categoryService.getAll();
       if (catRes && catRes.status && catRes.data && catRes.data.length > 0) {
         const formattedCats = catRes.data.map(c => ({
           id: c.slug || String(c.id),
+          dbId: c.id || c._id || String(c.id),
           name: c.name,
           description: c.description,
           fields: (c.fields || []).map(f => ({
@@ -47,6 +50,7 @@ export const AppProvider = ({ children }) => {
           thumbnail: t.thumbnail,
           previewUrl: t.preview_url,
           componentName: t.component_name,
+          status: t.is_active ? "published" : "draft",
           fields: t.schema_contract || [],
           demoSlug: t.slug === 'wedding-animated' ? 'wedding-animated-demo' : (t.slug === 'birthday-neon-surprise' ? 'neon-surprise-demo' : t.slug)
         }));
@@ -56,7 +60,7 @@ export const AppProvider = ({ children }) => {
       console.warn("Backend Templates API unavailable:", e.message);
     }
 
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       try {
         const expRes = await experienceService.getAll();
@@ -75,6 +79,45 @@ export const AppProvider = ({ children }) => {
         }
       } catch (e) {
         console.warn("Backend Experiences API notice:", e.message);
+      }
+
+      try {
+        const enqRes = await enquiryService.getAll();
+        if (enqRes && enqRes.status && enqRes.data && enqRes.data.length > 0) {
+          const formattedEnqs = enqRes.data.map(e => ({
+            id: String(e.id),
+            clientName: e.client_name,
+            clientEmail: e.client_email,
+            clientPhone: e.client_phone,
+            category: e.category?.slug || e.category_id,
+            categoryId: e.category_id,
+            templateId: e.template_id,
+            submittedDetails: e.form_data || {},
+            status: e.status || "New",
+            assignedTo: e.assigned_to_user_id || "",
+            notes: e.notes || "",
+            createdAt: e.createdAt
+          }));
+          setEnquiries(formattedEnqs);
+        }
+      } catch (e) {
+        console.warn("Backend Enquiries API notice:", e.message);
+      }
+
+      try {
+        const userRes = await userService.getAll();
+        if (userRes && userRes.status && userRes.data && userRes.data.length > 0) {
+          const formattedUsers = userRes.data.map(u => ({
+            id: String(u.id),
+            name: u.name,
+            email: u.email,
+            role: u.role,
+            status: u.status
+          }));
+          setAdmins(formattedUsers);
+        }
+      } catch (e) {
+        console.warn("Backend Users API notice:", e.message);
       }
     }
   };

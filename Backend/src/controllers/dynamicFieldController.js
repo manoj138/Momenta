@@ -46,9 +46,44 @@ const deleteField = async (req, res) => {
     }
 };
 
+const bulkSyncFields = async (req, res) => {
+    try {
+        const { categoryId, fields } = req.body;
+        if (!categoryId) {
+            return res.status(400).json({ status: false, message: 'Category ID is required' });
+        }
+
+        // Delete all old fields for this category
+        await DynamicField.deleteMany({ category_id: categoryId });
+
+        // Create new fields
+        const createdFields = [];
+        if (fields && Array.isArray(fields)) {
+            for (let i = 0; i < fields.length; i++) {
+                const f = fields[i];
+                const created = await DynamicField.create({
+                    category_id: categoryId,
+                    field_name: f.name || f.field_name,
+                    field_type: f.type || f.field_type || 'text',
+                    label: f.label || f.field_name,
+                    placeholder: f.placeholder || '',
+                    is_required: f.required !== undefined ? f.required : (f.is_required || false),
+                    display_order: i
+                });
+                createdFields.push(created);
+            }
+        }
+
+        return handle200(res, createdFields, 'Dynamic fields synchronized successfully');
+    } catch (error) {
+        return handle500(res, error);
+    }
+};
+
 module.exports = {
     getFieldsByCategory,
     createField,
     updateField,
-    deleteField
+    deleteField,
+    bulkSyncFields
 };

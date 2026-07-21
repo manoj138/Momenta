@@ -73,7 +73,9 @@ const EnquiryForm = () => {
       client_name: clientName,
       client_email: clientEmail,
       client_phone: clientPhone,
-      category_id: typeof selectedCategory === 'number' ? selectedCategory : null,
+      category_id: activeCategoryObj?.dbId || null,
+      template_id: presetTemplate?.dbId || null,
+      category: activeCategoryObj?.id || null,
       form_data: dynamicValues,
       notes: presetTemplateId ? `Preselected Theme: ${presetTemplate?.name || presetTemplateId}` : "General category enquiry",
     };

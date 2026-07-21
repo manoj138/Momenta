@@ -63,10 +63,17 @@ const CategoryManager = () => {
     deleteCategory(catId);
   };
 
-  const handleSaveFields = (fieldsList) => {
+  const handleSaveFields = async (fieldsList) => {
     if (!activeCategory) return;
-    updateCategory(activeCategory.id, { fields: fieldsList });
-    setActiveCategory(null);
+    try {
+      await categoryService.syncFields(activeCategory.dbId, fieldsList);
+      updateCategory(activeCategory.id, { fields: fieldsList });
+      setActiveCategory(null);
+    } catch (err) {
+      console.error("Failed to sync category fields on backend:", err);
+      updateCategory(activeCategory.id, { fields: fieldsList });
+      setActiveCategory(null);
+    }
   };
 
   return (

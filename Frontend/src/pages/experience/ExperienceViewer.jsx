@@ -19,7 +19,53 @@ const ExperienceViewer = () => {
 
   useEffect(() => {
     let isMounted = true;
+
+    // Listen for storage changes from the editor tab for real-time live preview updates
+    const handleStorageChange = (e) => {
+      console.log("Storage event listener triggered. Key changed:", e.key);
+      if (e.key === "momenta_preview_data" && slug === "preview" && isMounted) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          console.log("Parsed real-time sync preview data:", parsed);
+          setExperience({
+            slug: "preview",
+            templateId: parsed.templateId,
+            data: parsed.data,
+            clientName: parsed.clientName,
+            status: "published",
+            is_published: true
+          });
+        } catch (err) {
+          console.warn("Failed to parse storage sync update:", err);
+        }
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+
     const fetchExperience = async () => {
+      if (slug === "preview") {
+        try {
+          const localData = localStorage.getItem("momenta_preview_data");
+          console.log("Fetching preview data on mount. Value:", localData);
+          if (localData && isMounted) {
+            const parsed = JSON.parse(localData);
+            console.log("Parsed mount preview data:", parsed);
+            setExperience({
+              slug: "preview",
+              templateId: parsed.templateId,
+              data: parsed.data,
+              clientName: parsed.clientName,
+              status: "published",
+              is_published: true
+            });
+            setLoading(false);
+            return;
+          }
+        } catch (e) {
+          console.warn("Failed to load preview data:", e);
+        }
+      }
+
       try {
         const res = await experienceService.getBySlug(slug);
         if (isMounted && res.status && res.data) {
@@ -45,7 +91,10 @@ const ExperienceViewer = () => {
     };
 
     fetchExperience();
-    return () => { isMounted = false; };
+    return () => { 
+      isMounted = false;
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, [slug, contextExperiences]);
 
   if (loading) {

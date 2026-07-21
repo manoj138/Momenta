@@ -32,5 +32,9 @@ export const categoryService = {
     deleteField: async (fieldId) => {
         const response = await Api.delete(`/fields/${fieldId}`);
         return response.data;
+    },
+    syncFields: async (categoryId, fields) => {
+        const response = await Api.post('/fields/bulk-sync', { categoryId, fields });
+        return response.data;
     }
 };
