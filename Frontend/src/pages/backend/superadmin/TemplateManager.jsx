@@ -1,19 +1,154 @@
 import React, { useState } from "react";
 import { useApp } from "../../../context/AppContext";
-import { Eye } from "lucide-react";
+import { Eye, Wrench, Sparkles, Layers, Undo2, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { templateService } from "../../../services/templateService";
+import DynamicFormBuilder from "../../../components/features/DynamicFormBuilder";
+import Button from "../../../components/common/Button";
+
 
 // Import Templates for native mockup rendering in Super Admin
 import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "../../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../../experience/templates/birthday/BirthdayNeonSurprise";
 
+const defaultTemplateFields = {
+  "royal-gold-demo": [
+    { name: "groomName", label: "Groom Name", type: "text", required: true, placeholder: "e.g. Rahul" },
+    { name: "brideName", label: "Bride Name", type: "text", required: true, placeholder: "e.g. Priya" },
+    { name: "weddingDate", label: "Wedding Date", type: "date", required: true, placeholder: "" },
+    { name: "weddingTime", label: "Wedding Time", type: "text", required: true, placeholder: "e.g. 11:30 AM onwards" },
+    { name: "venueName", label: "Venue Name", type: "text", required: true, placeholder: "e.g. Maratha Durbar Hall" },
+    { name: "venueAddress", label: "Venue Address", type: "textarea", required: true, placeholder: "Complete Address Details" },
+    { name: "mapsLink", label: "Google Maps Location Link", type: "text", required: false, placeholder: "https://maps.google.com/..." },
+    { name: "welcomeMessage", label: "Welcome Message", type: "textarea", required: false, placeholder: "We invite you to share our joy..." },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ],
+  "wedding-royal-gold": [
+    { name: "groomName", label: "Groom Name", type: "text", required: true, placeholder: "e.g. Rahul" },
+    { name: "brideName", label: "Bride Name", type: "text", required: true, placeholder: "e.g. Priya" },
+    { name: "weddingDate", label: "Wedding Date", type: "date", required: true, placeholder: "" },
+    { name: "weddingTime", label: "Wedding Time", type: "text", required: true, placeholder: "e.g. 11:30 AM onwards" },
+    { name: "venueName", label: "Venue Name", type: "text", required: true, placeholder: "e.g. Maratha Durbar Hall" },
+    { name: "venueAddress", label: "Venue Address", type: "textarea", required: true, placeholder: "Complete Address Details" },
+    { name: "mapsLink", label: "Google Maps Location Link", type: "text", required: false, placeholder: "https://maps.google.com/..." },
+    { name: "welcomeMessage", label: "Welcome Message", type: "textarea", required: false, placeholder: "We invite you to share our joy..." },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ],
+  "wedding-animated-demo": [
+    { name: "groomName", label: "Groom Name", type: "text", required: true, placeholder: "e.g. Rahul" },
+    { name: "brideName", label: "Bride Name", type: "text", required: true, placeholder: "e.g. Priya" },
+    { name: "weddingDate", label: "Wedding Date", type: "date", required: true, placeholder: "" },
+    { name: "weddingTime", label: "Wedding Time", type: "text", required: true, placeholder: "e.g. 11:30 AM" },
+    { name: "venueName", label: "Venue Name", type: "text", required: true, placeholder: "e.g. Royal Palace Hall" },
+    { name: "venueAddress", label: "Venue Address", type: "textarea", required: true, placeholder: "Complete Address Details" },
+    { name: "mapsLink", label: "Google Maps Link", type: "text", required: false, placeholder: "" },
+    { name: "welcomeMessage", label: "Welcome Message", type: "textarea", required: false, placeholder: "" },
+    { name: "familyDetails", label: "Family / RSVP Invitee Details", type: "textarea", required: false, placeholder: "e.g. Shinde & Patil Family welcomes you" },
+    { name: "eventsList", label: "Additional Events (separated by ;;)", type: "textarea", required: false, placeholder: "e.g. Haldi - 10 AM;;Sangeet - 6 PM" },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ],
+  "wedding-animated": [
+    { name: "groomName", label: "Groom Name", type: "text", required: true, placeholder: "e.g. Rahul" },
+    { name: "brideName", label: "Bride Name", type: "text", required: true, placeholder: "e.g. Priya" },
+    { name: "weddingDate", label: "Wedding Date", type: "date", required: true, placeholder: "" },
+    { name: "weddingTime", label: "Wedding Time", type: "text", required: true, placeholder: "e.g. 11:30 AM" },
+    { name: "venueName", label: "Venue Name", type: "text", required: true, placeholder: "e.g. Royal Palace Hall" },
+    { name: "venueAddress", label: "Venue Address", type: "textarea", required: true, placeholder: "Complete Address Details" },
+    { name: "mapsLink", label: "Google Maps Link", type: "text", required: false, placeholder: "" },
+    { name: "welcomeMessage", label: "Welcome Message", type: "textarea", required: false, placeholder: "" },
+    { name: "familyDetails", label: "Family / RSVP Invitee Details", type: "textarea", required: false, placeholder: "e.g. Shinde & Patil Family welcomes you" },
+    { name: "eventsList", label: "Additional Events (separated by ;;)", type: "textarea", required: false, placeholder: "e.g. Haldi - 10 AM;;Sangeet - 6 PM" },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ],
+  "neon-surprise-demo": [
+    { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+    { name: "age", label: "Age to Celebrate", type: "number", required: true, placeholder: "e.g. 25" },
+    { name: "birthdayDate", label: "Celebration Date", type: "date", required: true, placeholder: "" },
+    { name: "venue", label: "Venue & Timing Details", type: "textarea", required: true, placeholder: "e.g. Sky Lounge, Kothrud at 7 PM" },
+    { name: "message", label: "Invitation Message", type: "textarea", required: false, placeholder: "Join me as I celebrate 25 years of awesome!" },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ],
+  "birthday-neon-surprise": [
+    { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+    { name: "age", label: "Age to Celebrate", type: "number", required: true, placeholder: "e.g. 25" },
+    { name: "birthdayDate", label: "Celebration Date", type: "date", required: true, placeholder: "" },
+    { name: "venue", label: "Venue & Timing Details", type: "textarea", required: true, placeholder: "e.g. Sky Lounge, Kothrud at 7 PM" },
+    { name: "message", label: "Invitation Message", type: "textarea", required: false, placeholder: "Join me as I celebrate 25 years of awesome!" },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ]
+};
+
+const getDefaultFieldsForTemplate = (tpl) => {
+  const slug = tpl.demoSlug || tpl.id || "";
+  const category = tpl.category || "";
+  
+  if (defaultTemplateFields[slug]) {
+    return defaultTemplateFields[slug];
+  }
+  
+  // Fallbacks by category
+  if (category.toLowerCase().includes("wedding")) {
+    return defaultTemplateFields["wedding-royal-gold"];
+  }
+  if (category.toLowerCase().includes("birthday")) {
+    return defaultTemplateFields["birthday-neon-surprise"];
+  }
+  return [];
+};
+
 const TemplateManager = () => {
   const { templates, categories, updateTemplate } = useApp();
   const [activeCategory, setActiveCategory] = useState("all");
+  const [activeTemplateForForm, setActiveTemplateForForm] = useState(null);
+  const [formFields, setFormFields] = useState([]);
 
-  const handleToggleStatus = (id, currentStatus) => {
-    updateTemplate(id, { status: currentStatus === "published" ? "draft" : "published" });
+  const handleToggleStatus = async (id, currentStatus) => {
+    const nextStatus = currentStatus === "published" ? "draft" : "published";
+    // Find the template
+    const tpl = templates.find((t) => t.id === id);
+    if (tpl && tpl.dbId) {
+      try {
+        await templateService.update(tpl.dbId, { status: nextStatus });
+      } catch (err) {
+        console.warn("Failed to sync template status to backend:", err.message);
+      }
+    }
+    updateTemplate(id, { status: nextStatus });
+  };
+
+  const handleOpenFormDesigner = (tpl) => {
+    setActiveTemplateForForm(tpl);
+    if (tpl.fields && tpl.fields.length > 0) {
+      setFormFields(tpl.fields);
+    } else {
+      const autoGenFields = getDefaultFieldsForTemplate(tpl);
+      setFormFields(autoGenFields);
+    }
+  };
+
+  const handleSaveForm = async (updatedFields) => {
+    if (!activeTemplateForForm) return;
+    try {
+      await templateService.update(activeTemplateForForm.dbId, {
+        schema_contract: updatedFields
+      });
+      updateTemplate(activeTemplateForForm.id, { fields: updatedFields });
+      setActiveTemplateForForm(null);
+    } catch (err) {
+      console.error("Failed to save template fields on backend:", err);
+      updateTemplate(activeTemplateForForm.id, { fields: updatedFields });
+      setActiveTemplateForForm(null);
+    }
+  };
+
+  const handleResetToCategory = () => {
+    setFormFields([]);
+  };
+
+  const handleAutoGenerate = () => {
+    const autoGenFields = getDefaultFieldsForTemplate(activeTemplateForForm);
+    setFormFields(autoGenFields);
   };
 
   const filteredTemplates = activeCategory === "all"
@@ -50,6 +185,83 @@ const TemplateManager = () => {
         );
     }
   };
+
+  if (activeTemplateForForm) {
+    return (
+      <div className="p-6 md:p-10 space-y-8 bg-slate-950 min-h-screen text-white">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-white/5">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setActiveTemplateForForm(null)}
+              className="p-2.5 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-xl transition-colors cursor-pointer"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div>
+              <span className="text-xs text-brand-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Layers size={12} />
+                Template Form Architect
+              </span>
+              <h2 className="text-2xl font-bold text-white">{activeTemplateForForm.name}</h2>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2.5">
+            <button
+              onClick={handleAutoGenerate}
+              className="px-4 py-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              title="Auto-detect fields from template code"
+            >
+              <Sparkles size={14} />
+              <span>Auto-generate (Template Code)</span>
+            </button>
+            <button
+              onClick={handleResetToCategory}
+              className="px-4 py-2 bg-slate-900 hover:bg-slate-850 text-gray-300 border border-white/5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5"
+              title="Reset fields to use category default fallbacks"
+            >
+              <Undo2 size={14} />
+              <span>Use Category Defaults</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Current State / Status message */}
+        <div className="p-4 bg-slate-900 border border-white/5 rounded-2xl flex items-center justify-between">
+          <div>
+            <span className="text-xs text-gray-400 uppercase tracking-widest font-semibold block mb-0.5">Form Status</span>
+            {formFields.length === 0 ? (
+              <span className="text-sm font-semibold text-amber-400">
+                Fallback: Using default category form fields
+              </span>
+            ) : (
+              <span className="text-sm font-semibold text-emerald-400">
+                Custom fields configured ({formFields.length} fields)
+              </span>
+            )}
+          </div>
+          {formFields.length > 0 && (
+            <button
+              onClick={() => setFormFields([])}
+              className="text-xs text-red-400 hover:underline cursor-pointer"
+            >
+              Clear Custom Fields
+            </button>
+          )}
+        </div>
+
+        {/* Dynamic Builder Component */}
+        <div className="bg-slate-900 border border-white/5 p-6 md:p-8 rounded-3xl">
+          <DynamicFormBuilder
+            key={JSON.stringify(formFields)}
+            initialFields={formFields}
+            onSave={handleSaveForm}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-10 space-y-8 bg-slate-950 min-h-screen text-white">
@@ -169,6 +381,15 @@ const TemplateManager = () => {
                       title="Toggle Status"
                     >
                       <span>Status</span>
+                    </button>
+
+                    <button
+                      onClick={() => handleOpenFormDesigner(tpl)}
+                      className="p-2 bg-brand-500/10 hover:bg-brand-500/25 border border-brand-500/20 rounded-lg text-brand-400 hover:text-brand-300 transition-colors cursor-pointer flex items-center gap-1.5 text-[11px]"
+                      title="Design Form Fields for this Theme"
+                    >
+                      <Wrench size={12} />
+                      <span>Form Design</span>
                     </button>
                   </div>
                 </div>

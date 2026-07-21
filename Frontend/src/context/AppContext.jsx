@@ -40,12 +40,14 @@ export const AppProvider = ({ children }) => {
       if (tplRes && tplRes.status && tplRes.data && tplRes.data.length > 0) {
         const formattedTpls = tplRes.data.map(t => ({
           id: t.slug || String(t.id),
+          dbId: t.id || t._id || String(t.id),
           name: t.name,
           category: t.category?.slug || 'wedding',
           description: t.description,
           thumbnail: t.thumbnail,
           previewUrl: t.preview_url,
           componentName: t.component_name,
+          fields: t.schema_contract || [],
           demoSlug: t.slug === 'wedding-animated' ? 'wedding-animated-demo' : (t.slug === 'birthday-neon-surprise' ? 'neon-surprise-demo' : t.slug)
         }));
         setTemplates(formattedTpls);

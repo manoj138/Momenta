@@ -29,7 +29,9 @@ const EnquiryForm = () => {
 
   // Get active fields schema
   const activeCategoryObj = categories.find(c => c.id === selectedCategory);
-  const fields = activeCategoryObj ? activeCategoryObj.fields : [];
+  const fields = (presetTemplate && presetTemplate.category === selectedCategory && presetTemplate.fields && presetTemplate.fields.length > 0)
+    ? presetTemplate.fields
+    : (activeCategoryObj ? activeCategoryObj.fields : []);
 
   // Reset fields when category changes
   useEffect(() => {

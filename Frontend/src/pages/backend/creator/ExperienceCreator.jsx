@@ -122,7 +122,11 @@ const ExperienceCreator = () => {
     }
   };
 
+  const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
   const activeCategoryObj = categories.find((c) => c.id === enquiry.category);
+  const formFields = (selectedTemplate && selectedTemplate.fields && selectedTemplate.fields.length > 0)
+    ? selectedTemplate.fields
+    : (activeCategoryObj?.fields || []);
 
   if (isPublished) {
     return (
@@ -229,11 +233,11 @@ const ExperienceCreator = () => {
             </div>
           </div>
 
-          {activeCategoryObj && (
+          {formFields.length > 0 && (
             <div className="space-y-6 pb-12">
               <h3 className="text-base font-bold text-brand-400 border-b border-white/5 pb-2">3. Experience Content</h3>
               <DynamicFormRenderer
-                fields={activeCategoryObj.fields}
+                fields={formFields}
                 formData={formData}
                 onChange={handleFieldChange}
               />
