@@ -32,10 +32,13 @@ const TemplateShowcase = () => {
 
     switch (demoSlug) {
       case "royal-gold-demo":
+      case "wedding-royal-gold":
         return <WeddingRoyalGold data={mockData} isDemo={true} />;
       case "wedding-animated-demo":
+      case "wedding-animated":
         return <WeddingAnimated data={mockData} isDemo={true} />;
       case "neon-surprise-demo":
+      case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={mockData} isDemo={true} />;
       default:
         return null;
