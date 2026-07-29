@@ -9,6 +9,7 @@ import { experienceService } from "../../services/experienceService";
 import WeddingRoyalGold from "./templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "./templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "./templates/birthday/BirthdayNeonSurprise";
+import BirthdayCinematicLove from "./templates/birthday/BirthdayCinematicLove";
 
 const ExperienceViewer = () => {
   const { slug } = useParams();
@@ -186,6 +187,9 @@ const ExperienceViewer = () => {
 
     if (tId === "birthday-neon-surprise" || cName === "BirthdayNeonSurprise") {
       return <BirthdayNeonSurprise data={experience.data} isDemo={false} />;
+    }
+    if (tId === "birthday-cinematic" || tId === "birthday-cinematic-love" || cName === "BirthdayCinematicLove") {
+      return <BirthdayCinematicLove data={experience.data} isDemo={false} />;
     }
     if (tId === "wedding-animated" || cName === "WeddingAnimated") {
       return <WeddingAnimated data={experience.data} isDemo={false} />;

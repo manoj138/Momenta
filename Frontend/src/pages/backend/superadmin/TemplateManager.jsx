@@ -11,6 +11,7 @@ import Button from "../../../components/common/Button";
 import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "../../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../../experience/templates/birthday/BirthdayNeonSurprise";
+import BirthdayCinematicLove from "../../experience/templates/birthday/BirthdayCinematicLove";
 
 const defaultTemplateFields = {
   "royal-gold-demo": [
@@ -177,6 +178,9 @@ const TemplateManager = () => {
         return <WeddingAnimated data={mockData} isDemo={true} />;
       case "neon-surprise-demo":
         return <BirthdayNeonSurprise data={mockData} isDemo={true} />;
+      case "birthday-cinematic-demo":
+      case "birthday-cinematic-love":
+        return <BirthdayCinematicLove data={mockData} isDemo={true} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full p-4 text-center bg-slate-900 text-gray-400 text-xs">

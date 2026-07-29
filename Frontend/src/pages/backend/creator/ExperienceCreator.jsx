@@ -13,6 +13,7 @@ import { experienceService } from "../../../services/experienceService";
 import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "../../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../../experience/templates/birthday/BirthdayNeonSurprise";
+import BirthdayCinematicLove from "../../experience/templates/birthday/BirthdayCinematicLove";
 
 const ExperienceCreator = () => {
   const { enquiryId } = useParams();
@@ -187,6 +188,9 @@ const ExperienceCreator = () => {
         return <WeddingAnimated data={formData} isDemo={true} />;
       case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={formData} isDemo={true} />;
+      case "birthday-cinematic":
+      case "birthday-cinematic-love":
+        return <BirthdayCinematicLove data={formData} isDemo={true} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-amber-50/40 text-slate-800">

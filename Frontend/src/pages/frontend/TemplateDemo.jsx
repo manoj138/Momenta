@@ -9,6 +9,7 @@ import Button from "../../components/common/Button";
 import WeddingRoyalGold from "../experience/templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../experience/templates/birthday/BirthdayNeonSurprise";
+import BirthdayCinematicLove from "../experience/templates/birthday/BirthdayCinematicLove";
 
 const TemplateDemo = () => {
   const { category, slug } = useParams();
@@ -44,6 +45,9 @@ const TemplateDemo = () => {
         return <WeddingAnimated data={mockData} isDemo={true} />;
       case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={mockData} isDemo={true} />;
+      case "birthday-cinematic":
+      case "birthday-cinematic-love":
+        return <BirthdayCinematicLove data={mockData} isDemo={true} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full p-8 text-center text-slate-800 bg-amber-50">

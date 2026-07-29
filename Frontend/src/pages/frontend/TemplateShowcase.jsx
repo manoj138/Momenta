@@ -9,6 +9,7 @@ import Button from "../../components/common/Button";
 import WeddingRoyalGold from "../experience/templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../experience/templates/birthday/BirthdayNeonSurprise";
+import BirthdayCinematicLove from "../experience/templates/birthday/BirthdayCinematicLove";
 
 const TemplateShowcase = () => {
   const { templates, categories } = useApp();
@@ -40,6 +41,10 @@ const TemplateShowcase = () => {
       case "neon-surprise-demo":
       case "birthday-neon-surprise":
         return <BirthdayNeonSurprise data={mockData} isDemo={true} />;
+      case "birthday-cinematic-demo":
+      case "birthday-cinematic-love":
+      case "birthday-cinematic":
+        return <BirthdayCinematicLove data={mockData} isDemo={true} />;
       default:
         return null;
     }
