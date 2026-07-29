@@ -166,10 +166,10 @@ const TemplateShowcase = () => {
                   </div>
                   
                   <div className="pt-5 border-t border-gray-200 dark:border-white/5 flex items-center justify-between mt-4">
-                    <Link to={`/templates/${tpl.category}/${tpl.demoSlug}`} className="text-brand-600 dark:text-brand-400 hover:text-brand-705 font-semibold text-xs flex items-center gap-1">
-                      <span>View Specifications</span>
-                      <ArrowRight size={12} />
-                    </Link>
+                    <a href={`/e/${tpl.demoSlug || tpl.id}`} target="_blank" rel="noreferrer" className="text-brand-600 dark:text-brand-400 hover:text-brand-700 font-semibold text-xs flex items-center gap-1">
+                      <span>Full Screen Preview</span>
+                      <ArrowRight size={14} />
+                    </a>
                     <Link to={`/enquiry?template=${tpl.id}`}>
                       <Button variant="outline" size="sm" className="bg-slate-100 dark:bg-white/5 border-gray-200 dark:border-white/10 text-slate-700 dark:text-white hover:bg-slate-205 cursor-pointer text-xs">
                         Use Theme

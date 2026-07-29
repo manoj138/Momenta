@@ -40,8 +40,9 @@ export const AppProvider = ({ children }) => {
 
     try {
       const tplRes = await templateService.getAll();
+      let fetchedTpls = [];
       if (tplRes && tplRes.status && tplRes.data && tplRes.data.length > 0) {
-        const formattedTpls = tplRes.data.map(t => ({
+        fetchedTpls = tplRes.data.map(t => ({
           id: t.slug || String(t.id),
           dbId: t.id || t._id || String(t.id),
           name: t.name,
@@ -54,8 +55,42 @@ export const AppProvider = ({ children }) => {
           fields: t.schema_contract || [],
           demoSlug: t.slug === 'wedding-animated' ? 'wedding-animated-demo' : (t.slug === 'birthday-neon-surprise' ? 'neon-surprise-demo' : t.slug)
         }));
-        setTemplates(formattedTpls);
       }
+
+      // Local template injection to ensure it is always loaded and customizable in UI
+      const localTemplates = [
+        {
+          id: "birthday-cinematic-love",
+          dbId: "local-birthday-cinematic-love",
+          name: "Birthday Cinematic Premium",
+          category: "birthday",
+          description: "A premium cinematic storytelling invitation for birthdays with interactive canvas particles, 3D polaroid cards, and virtual envelope.",
+          thumbnail: "",
+          previewUrl: "/e/birthday-cinematic-love",
+          componentName: "BirthdayCinematicLove",
+          status: "published",
+          fields: [
+            { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+            { name: "age", label: "Age to Celebrate", type: "number", required: true, placeholder: "e.g. 25" },
+            { name: "birthdayDate", label: "Celebration Date", type: "date", required: true, placeholder: "" },
+            { name: "venue", label: "Venue & Timing Details", type: "textarea", required: true, placeholder: "e.g. Sky Lounge, Kothrud at 7 PM" },
+            { name: "message", label: "Invitation Message", type: "textarea", required: false, placeholder: "Join me as I celebrate 25 years of awesome!" },
+            { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" },
+            { name: "secretReveal", label: "Surprise Message", type: "textarea", required: false, placeholder: "Join us for cake cutting and special announcement!" }
+          ],
+          demoSlug: "birthday-cinematic-love"
+        }
+      ];
+
+      // Merge fetched templates with local ones to prevent duplication
+      const allTemplates = [...fetchedTpls];
+      localTemplates.forEach(localTpl => {
+        if (!allTemplates.some(t => t.id === localTpl.id)) {
+          allTemplates.push(localTpl);
+        }
+      });
+
+      setTemplates(allTemplates);
     } catch (e) {
       console.warn("Backend Templates API unavailable:", e.message);
     }

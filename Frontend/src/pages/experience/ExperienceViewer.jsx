@@ -98,6 +98,34 @@ const ExperienceViewer = () => {
           templateId: "birthday-neon-surprise",
           clientName: "Sneha Shinde",
           data: {}
+        },
+        "birthday-cinematic-demo": {
+          templateId: "birthday-cinematic-love",
+          clientName: "Sneha Shinde",
+          data: {
+            personName: "Sneha Shinde",
+            age: 25,
+            eventDate: "Saturday, October 18",
+            eventTime: "7:00 PM Onwards",
+            venueName: "Skyline Lounge, Royal Park",
+            venueAddress: "123 Elegance Road, Sector 5",
+            secretReveal: "Join us for cake cutting and special announcement!",
+            description: "Join us for an elegant evening of cinematic storytelling, celebration, and love."
+          }
+        },
+        "birthday-cinematic-love": {
+          templateId: "birthday-cinematic-love",
+          clientName: "Sneha Shinde",
+          data: {
+            personName: "Sneha Shinde",
+            age: 25,
+            eventDate: "Saturday, October 18",
+            eventTime: "7:00 PM Onwards",
+            venueName: "Skyline Lounge, Royal Park",
+            venueAddress: "123 Elegance Road, Sector 5",
+            secretReveal: "Join us for cake cutting and special announcement!",
+            description: "Join us for an elegant evening of cinematic storytelling, celebration, and love."
+          }
         }
       };
 

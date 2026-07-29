@@ -349,7 +349,7 @@ const TemplateManager = () => {
 
                   {/* Hover Overlay with Direct New Tab Link */}
                   <div 
-                    onClick={() => window.open(tpl.previewUrl || `/e/${tpl.demoSlug}`, "_blank")}
+                    onClick={() => window.open(`/e/${tpl.demoSlug || tpl.id}`, "_blank")}
                     className="absolute inset-0 bg-slate-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer z-40 backdrop-blur-[2px]"
                   >
                     <button className="bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-xl cursor-pointer">
