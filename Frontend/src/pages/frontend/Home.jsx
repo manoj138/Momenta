@@ -624,7 +624,7 @@ const Home = () => {
               <p className="text-brand-100 max-w-lg mx-auto">Fill the inquiry form, select a template theme, and our experience admin will craft your layout instantly.</p>
               <div className="pt-2">
                 <Link to="/enquiry">
-                  <Button className="bg-white text-brand-700 hover:bg-gray-100 shadow-xl cursor-pointer font-bold px-8 py-3 rounded-full border-0">
+                  <Button className="bg-white !text-black hover:bg-gray-100 shadow-xl cursor-pointer font-bold px-8 py-3 rounded-full border-0">
                     Get Started Now
                   </Button>
                 </Link>

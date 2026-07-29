@@ -4,7 +4,7 @@ import Navbar from "../pages/backend/Navbar";
 
 const DefaultLayout = ({ children }) => {
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-950 text-white font-sans">
+    <div className="admin-console flex h-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white font-sans transition-colors duration-300">
       {/* Sidebar */}
       <Asidebar />
 
@@ -14,7 +14,7 @@ const DefaultLayout = ({ children }) => {
         <Navbar />
 
         {/* Page content */}
-        <div className="flex-1 overflow-auto bg-slate-950">
+        <div className="flex-1 overflow-auto bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
           {children}
         </div>
       </div>

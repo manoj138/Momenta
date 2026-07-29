@@ -52,8 +52,8 @@ const Asidebar = () => {
   const links = getLinks();
 
   return (
-    <div
-      className={`h-screen relative transition-all duration-500 ease-in-out print:hidden border-r border-white/5 ${
+    <aside
+      className={`admin-sidebar h-screen relative transition-all duration-500 ease-in-out print:hidden border-r border-white/5 ${
         isOpen ? "w-64" : "w-20"
       } bg-slate-900 text-white shadow-premium flex flex-col justify-between`}
     >
@@ -112,7 +112,7 @@ const Asidebar = () => {
           </span>
         </button>
       </div>
-    </div>
+    </aside>
   );
 };
 

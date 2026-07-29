@@ -117,3 +117,75 @@
     height: 100% !important;
   }
 }
+
+/* Scoped layout overrides for admin console in light mode */
+html:not(.dark) .admin-console {
+  background-color: var(--color-surface-light) !important;
+  color: #111827 !important;
+
+  .bg-slate-950:not(.admin-sidebar) {
+    background-color: var(--color-surface-light) !important;
+    color: #111827 !important;
+  }
+  
+  .bg-slate-900:not(.admin-sidebar) {
+    background-color: #ffffff !important;
+    color: #1f2937 !important;
+    border-color: #e5e7eb !important;
+  }
+  
+  .bg-slate-900\/60:not(.admin-sidebar), .bg-slate-900\/80:not(.admin-sidebar) {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+  }
+  
+  .border-white\/5, .border-white\/10 {
+    border-color: #e5e7eb !important;
+  }
+  
+  .bg-slate-950\/40 {
+    background-color: rgba(243, 244, 246, 0.5) !important;
+  }
+  
+  .text-gray-400 {
+    color: #4b5563 !important;
+  }
+
+  .text-gray-300 {
+    color: #374151 !important;
+  }
+
+  .text-gray-500 {
+    color: #6b7280 !important;
+  }
+
+  input, select, textarea {
+    &.bg-slate-950 {
+      background-color: #ffffff !important;
+      color: #111827 !important;
+      border-color: #d1d5db !important;
+    }
+  }
+
+  .text-brand-400 {
+    color: var(--color-brand-600) !important;
+  }
+
+  .bg-brand-500\/10 {
+    background-color: rgba(37, 99, 235, 0.1) !important;
+  }
+  
+  /* Make sure titles in cards are dark */
+  h1, h2, h3, h4, h5, h6 {
+    &.text-white {
+      color: #111827 !important;
+    }
+  }
+  
+  /* Make sure labels are dark */
+  label {
+    &.text-white, &.text-gray-300 {
+      color: #374151 !important;
+    }
+  }
+}
