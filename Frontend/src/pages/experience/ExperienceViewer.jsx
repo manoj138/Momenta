@@ -73,12 +73,27 @@ const ExperienceViewer = () => {
           clientName: "Rahul & Priya",
           data: {}
         },
+        "wedding-animated": {
+          templateId: "wedding-animated",
+          clientName: "Rahul & Priya",
+          data: {}
+        },
         "royal-gold-demo": {
           templateId: "wedding-royal-gold",
           clientName: "Rahul & Priya",
           data: {}
         },
+        "wedding-royal-gold": {
+          templateId: "wedding-royal-gold",
+          clientName: "Rahul & Priya",
+          data: {}
+        },
         "neon-surprise-demo": {
+          templateId: "birthday-neon-surprise",
+          clientName: "Sneha Shinde",
+          data: {}
+        },
+        "birthday-neon-surprise": {
           templateId: "birthday-neon-surprise",
           clientName: "Sneha Shinde",
           data: {}
