@@ -66,6 +66,39 @@ const ExperienceViewer = () => {
         }
       }
 
+      // Check if it is a template demo slug and load statically
+      const demoTemplates = {
+        "wedding-animated-demo": {
+          templateId: "wedding-animated",
+          clientName: "Rahul & Priya",
+          data: {}
+        },
+        "royal-gold-demo": {
+          templateId: "wedding-royal-gold",
+          clientName: "Rahul & Priya",
+          data: {}
+        },
+        "neon-surprise-demo": {
+          templateId: "birthday-neon-surprise",
+          clientName: "Sneha Shinde",
+          data: {}
+        }
+      };
+
+      if (demoTemplates[slug]) {
+        const demo = demoTemplates[slug];
+        setExperience({
+          slug: slug,
+          templateId: demo.templateId,
+          data: demo.data,
+          clientName: demo.clientName,
+          status: "published",
+          is_published: true
+        });
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await experienceService.getBySlug(slug);
         if (isMounted && res.status && res.data) {
