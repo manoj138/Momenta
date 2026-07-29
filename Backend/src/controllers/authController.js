@@ -40,42 +40,6 @@ const login = async (req, res) => {
     }
 };
 
-const register = async (req, res) => {
-    try {
-        const { name, email, password, role } = req.body;
-        if (!name || !email || !password) {
-            return handle422(res, { error: 'Name, email, and password are required' });
-        }
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return handle422(res, { email: 'Email is already registered' });
-        }
-
-        const hashedPassword = await hashPassword(password);
-        const newUser = await User.create({
-            name,
-            email,
-            password: hashedPassword,
-            role: role || 'creator'
-        });
-
-        const token = generateToken({ id: newUser.id, email: newUser.email, role: newUser.role });
-
-        return handle201(res, {
-            token,
-            user: {
-                id: newUser.id,
-                name: newUser.name,
-                email: newUser.email,
-                role: newUser.role
-            }
-        }, 'Registration successful');
-    } catch (error) {
-        return handle500(res, error);
-    }
-};
-
 const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password');
@@ -90,6 +54,5 @@ const getProfile = async (req, res) => {
 
 module.exports = {
     login,
-    register,
     getProfile
 };

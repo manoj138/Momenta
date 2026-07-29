@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
-import { Sparkles, Shield, UserCheck, AlertCircle } from "lucide-react";
+import { Sparkles, AlertCircle } from "lucide-react";
 import Input from "../../../components/common/Input";
 import Button from "../../../components/common/Button";
 
@@ -34,24 +34,6 @@ const Login = () => {
     }
   };
 
-  const handleQuickLogin = async (role) => {
-    setError("");
-    setLoading(true);
-    const targetEmail = role === "super_admin" || role === "superadmin" ? "superadmin@momenta.com" : "creator_test@momenta.com";
-    const targetPass = role === "super_admin" || role === "superadmin" ? "SuperAdmin@123" : "password123";
-    const res = await login(targetEmail, targetPass);
-    setLoading(false);
-    
-    if (res.success) {
-      if (res.user.role === "superadmin" || res.user.role === "super_admin") {
-        navigate("/superadmin");
-      } else {
-        navigate("/creator");
-      }
-    } else {
-      setError(res.message);
-    }
-  };
 
   return (
     <div className="bg-slate-950 text-white min-h-screen flex items-center justify-center py-20 px-6 relative overflow-hidden">
@@ -99,27 +81,6 @@ const Login = () => {
             {loading ? "Authenticating..." : "Login"}
           </Button>
         </form>
-
-        {/* Quick access buttons */}
-        <div className="pt-6 border-t border-white/5 space-y-3">
-          <span className="block text-center text-[10px] text-gray-500 uppercase tracking-widest font-bold">Quick Demo Access</span>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => handleQuickLogin("super_admin")}
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-brand-300 transition-all cursor-pointer"
-            >
-              <Shield size={14} />
-              <span>Super Admin</span>
-            </button>
-            <button
-              onClick={() => handleQuickLogin("creator")}
-              className="flex items-center justify-center gap-1.5 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-semibold text-indigo-300 transition-all cursor-pointer"
-            >
-              <UserCheck size={14} />
-              <span>Creator Admin</span>
-            </button>
-          </div>
-        </div>
 
         <div className="text-center">
           <Link to="/" className="text-xs text-gray-400 hover:text-white transition-all underline">
