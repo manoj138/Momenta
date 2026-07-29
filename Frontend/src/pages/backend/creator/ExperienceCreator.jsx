@@ -22,27 +22,15 @@ const ExperienceCreator = () => {
   // Find the enquiry
   const enquiry = enquiries.find((e) => e.id === enquiryId);
 
-  // If no enquiry found, redirect or show error
-  if (!enquiry) {
-    return (
-      <div className="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-2xl font-bold mb-2">Inquiry Not Found</h2>
-        <p className="text-gray-400 mb-6">The assigned lead reference does not exist or has been deleted.</p>
-        <Link to="/creator">
-          <Button variant="primary" className="cursor-pointer">Back to Dashboard</Button>
-        </Link>
-      </div>
-    );
-  }
+  // Filter templates matching this enquiry category (safe optional chaining)
+  const availableTemplates = enquiry 
+    ? templates.filter((t) => t.category === enquiry.category)
+    : [];
 
-  // Filter templates matching this enquiry category
-  const availableTemplates = templates.filter((t) => t.category === enquiry.category);
-
-  // Studio states
-  const [selectedTemplateId, setSelectedTemplateId] = useState(availableTemplates[0]?.id || "");
+  // Studio states (placed unconditionally at the top)
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
   const [formData, setFormData] = useState({
     bgMusic: "",
-    ...enquiry.submittedDetails,
   });
   const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
@@ -95,6 +83,19 @@ const ExperienceCreator = () => {
       setSlug(`${cleanSlug}-${enquiry.category}`);
     }
   }, [enquiry]);
+
+  // Early return checks must be placed AFTER all Hook declarations to obey rules of hooks
+  if (!enquiry) {
+    return (
+      <div className="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <h2 className="text-2xl font-bold mb-2">Inquiry Not Found</h2>
+        <p className="text-gray-400 mb-6">The assigned lead reference does not exist or has been deleted.</p>
+        <Link to="/creator">
+          <Button variant="primary" className="cursor-pointer">Back to Dashboard</Button>
+        </Link>
+      </div>
+    );
+  }
 
   const handleFieldChange = (name, value) => {
     setFormData((prev) => {
