@@ -163,12 +163,19 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
   const scratchMessage = data.scratchMessage || data.scratch_message || "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨";
   const musicUrl = data.bgMusic || data.musicUrl || data.music_url || "https://assets.mixkit.co/music/preview/mixkit-romantic-sunburst-241.mp3";
 
+  // Default Unsplash fallbacks
+  const defaultPhoto1 = "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
+  const defaultPhoto2 = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80";
+  const defaultPhoto3 = "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&auto=format&fit=crop&q=80";
+  const defaultPhoto4 = "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80";
+  const defaultPhoto5 = "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
+
   // 5 Photos
-  const photo1 = data.photo1 || data.photo_1 || "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
-  const photo2 = data.photo2 || data.photo_2 || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80";
-  const photo3 = data.photo3 || data.photo_3 || "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&auto=format&fit=crop&q=80";
-  const photo4 = data.photo4 || data.photo_4 || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80";
-  const photo5 = data.photo5 || data.photo_5 || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80";
+  const photo1 = data.photo1 || data.photo_1 || defaultPhoto1;
+  const photo2 = data.photo2 || data.photo_2 || defaultPhoto2;
+  const photo3 = data.photo3 || data.photo_3 || defaultPhoto3;
+  const photo4 = data.photo4 || data.photo_4 || defaultPhoto4;
+  const photo5 = data.photo5 || data.photo_5 || defaultPhoto5;
 
   // App States
   const [currentStep, setCurrentStep] = useState(secretPin ? 0 : 1);
@@ -575,7 +582,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
                 <Heart size={12} className="text-white fill-white" />
               </div>
-              <img src={photo1} alt="Memory 1" className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner" />
+              <img
+                src={photo1}
+                alt="Memory 1"
+                onError={(e) => { e.target.onerror = null; e.target.src = defaultPhoto1; }}
+                className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner"
+              />
               <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Timeless Smile ✨"</p>
             </div>
 
@@ -584,7 +596,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center shadow-md">
                 <Sparkles size={12} className="text-white" />
               </div>
-              <img src={photo2} alt="Memory 2" className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner" />
+              <img
+                src={photo2}
+                alt="Memory 2"
+                onError={(e) => { e.target.onerror = null; e.target.src = defaultPhoto2; }}
+                className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner"
+              />
               <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Favorite Adventures 💖"</p>
             </div>
 
@@ -593,7 +610,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-30 w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 via-rose-500 to-purple-600 flex items-center justify-center shadow-lg">
                 <Award size={14} className="text-white" />
               </div>
-              <img src={photo3} alt="Memory 3" className="w-full h-40 sm:h-52 object-cover rounded-xl mb-2 shadow-inner" />
+              <img
+                src={photo3}
+                alt="Memory 3"
+                onError={(e) => { e.target.onerror = null; e.target.src = defaultPhoto3; }}
+                className="w-full h-40 sm:h-52 object-cover rounded-xl mb-2 shadow-inner"
+              />
               <p className="font-serif italic text-[11px] sm:text-xs font-black text-rose-600 tracking-tight">"Warmth & Laughter 🌟"</p>
             </div>
 
@@ -602,7 +624,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-md">
                 <Smile size={12} className="text-white" />
               </div>
-              <img src={photo4} alt="Memory 4" className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner" />
+              <img
+                src={photo4}
+                alt="Memory 4"
+                onError={(e) => { e.target.onerror = null; e.target.src = defaultPhoto4; }}
+                className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner"
+              />
               <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Unforgettable Joy 🥳"</p>
             </div>
 
@@ -611,7 +638,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
                 <Heart size={12} className="text-white fill-white" />
               </div>
-              <img src={photo5} alt="Memory 5" className="w-full h-36 sm:h-48 object-cover rounded-lg mb-2 shadow-inner" />
+              <img
+                src={photo5}
+                alt="Memory 5"
+                onError={(e) => { e.target.onerror = null; e.target.src = defaultPhoto5; }}
+                className="w-full h-36 sm:h-48 object-cover rounded-lg mb-2 shadow-inner"
+              />
               <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Pure Magic Together 💖"</p>
             </div>
           </div>

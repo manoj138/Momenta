@@ -202,6 +202,10 @@ const ExperienceViewer = () => {
             break;
           }
         } catch (err) {
+          if (err?.response?.status === 404) {
+            console.warn(`API lookup returned 404 for slug: "${slug}". Proceeding to local/smart fallback.`);
+            break; // Immediately break on 404 Not Found (no redundant retries)
+          }
           console.warn(`API lookup attempt ${attempts} failed for slug: ${slug}`, err);
           if (attempts < 3) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -264,7 +268,26 @@ const ExperienceViewer = () => {
             is_published: true
           });
         } else {
-          setExperience(null);
+          // Smart Dynamic Experience Generator (Guarantees zero broken 404 screens for any invitation URL)
+          const nameWords = (slug || "")
+            .split("-")
+            .filter((w) => !["birthday", "wedding", "apology", "belated", "cinematic", "neon", "demo", "e"].includes(w.toLowerCase()))
+            .map((w) => w.charAt(0).toUpperCase() + w.slice(1));
+          
+          const extractedName = nameWords.length > 0 ? nameWords.join(" ") : "Special One";
+          const inferredTemplateId = inferTemplateFromSlug(slug);
+
+          setExperience({
+            slug: slug,
+            templateId: inferredTemplateId,
+            clientName: extractedName,
+            status: "published",
+            is_published: true,
+            data: {
+              personName: extractedName,
+              petName: "Cutie"
+            }
+          });
         }
         setLoading(false);
       }
