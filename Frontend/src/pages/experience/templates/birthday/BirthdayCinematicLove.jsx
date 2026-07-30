@@ -631,13 +631,25 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
       {/* MAIN FULL-SCREEN ORGANIC CONTAINER */}
       <div 
         ref={cardRef}
-        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-visible bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone && !isPasscodeLocked ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-visible text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone && !isPasscodeLocked ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         style={{
           borderRadius: `clamp(30px, 6vw, 60px) clamp(80px, 18vw, 240px) clamp(40px, 8vw, 80px) clamp(70px, 15vw, 200px) / clamp(60px, 12vw, 180px) clamp(35px, 6vw, 80px) clamp(80px, 16vw, 220px) clamp(30px, 5vw, 60px)`,
-          backgroundImage: `radial-gradient(#e2d9d2 1.2px, transparent 1.2px)`,
-          backgroundSize: `24px 24px`
+          background: `linear-gradient(135deg, #fffcf9 0%, #fdf2f4 50%, #f9f0ec 100%)`,
+          backgroundImage: `radial-gradient(#e5d0c5 1.3px, transparent 1.3px), linear-gradient(135deg, #fffcf9 0%, #fdf2f4 50%, #f9f0ec 100%)`,
+          backgroundSize: `24px 24px, 100% 100%`
         }}
       >
+
+        {/* INNER DASHED COQUETTE BORDER FRAME */}
+        <div 
+          className="absolute inset-2 sm:inset-3 border-2 border-dashed border-pink-300/40 pointer-events-none z-10"
+          style={{
+            borderRadius: `clamp(24px, 5vw, 50px) clamp(70px, 16vw, 220px) clamp(32px, 7vw, 70px) clamp(60px, 13vw, 180px) / clamp(50px, 10vw, 160px) clamp(28px, 5vw, 70px) clamp(70px, 14vw, 200px) clamp(24px, 4vw, 50px)`
+          }}
+        />
+
+        {/* VINTAGE PINK WASHI TAPE ACCENTS */}
+        <div className="absolute -top-1.5 inset-x-0 mx-auto w-24 sm:w-32 h-4 sm:h-5 bg-pink-300/40 backdrop-blur-xs border-y border-white/50 rotate-[-1deg] shadow-xs pointer-events-none z-30" />
 
         {/* PERSISTENT DECORATIVE CORNER STICKERS */}
         <img 
