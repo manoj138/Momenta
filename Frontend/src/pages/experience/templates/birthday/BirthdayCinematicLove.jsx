@@ -80,8 +80,9 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   const [isEnvelopeOpened, setIsEnvelopeOpened] = useState(false);
   const [isLocketOpen, setIsLocketOpen] = useState(false);
 
-  // 3D Perspective Tilt State
+  // 3D Perspective Tilt & Cursor Spotlight State
   const [cardTilt, setCardTilt] = useState({ x: 0, y: 0 });
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // Language & Font settings
   const [currentLang, setCurrentLang] = useState(data.language || "en");
@@ -114,13 +115,14 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     }
   };
 
-  // Mouse / Touch 3D Tilt Tracking
+  // Mouse / Touch 3D Tilt & Interactive Cursor Spotlight Tracking
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
     const x = ((clientY / innerHeight) - 0.5) * -8;
     const y = ((clientX / innerWidth) - 0.5) * 8;
     setCardTilt({ x, y });
+    setMousePos({ x: clientX, y: clientY });
   };
 
   // 1. 0-100 Loader simulation
@@ -163,26 +165,35 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     return raw;
   };
 
-  // Canvas Real-Time Heart Rain & Confetti System
+  // Canvas Real-Time Fireworks & Heart Rain System
   const canvasRef = useRef(null);
   const confettiParticles = useRef([]);
   const heartParticles = useRef([]);
 
+  // Upgraded Fireworks Rockets & Golden Sparkle Explosions
   const triggerConfetti = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const colors = ["#d4af37", "#f5e6ca", "#e8c5c8", "#b76e79", "#f472b6", "#ec4899", "#3b82f6"];
-    for (let i = 0; i < 150; i++) {
-      confettiParticles.current.push({
-        x: canvas.width / 2,
-        y: canvas.height - 20,
-        vx: (Math.random() - 0.5) * 16,
-        vy: -Math.random() * 22 - 6,
-        r: Math.random() * 6 + 3,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        alpha: 1,
-        decay: Math.random() * 0.015 + 0.005
-      });
+    const colors = ["#ffd700", "#f472b6", "#ec4899", "#3b82f6", "#ffffff", "#fbbf24", "#e11d48"];
+    
+    // Launch 3 simultaneous Firework Rockets from bottom
+    for (let rocket = 0; rocket < 3; rocket++) {
+      const startX = (canvas.width / 4) * (rocket + 1);
+      for (let i = 0; i < 60; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 14 + 4;
+        confettiParticles.current.push({
+          x: startX,
+          y: canvas.height * 0.4,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          r: Math.random() * 5 + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          decay: Math.random() * 0.02 + 0.008,
+          isSparkle: Math.random() > 0.5
+        });
+      }
     }
   };
 
@@ -201,14 +212,14 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     window.addEventListener("resize", resizeCanvas);
 
     // Initialize rising heart sparkles
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 35; i++) {
       heartParticles.current.push({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        size: Math.random() * 14 + 10,
-        speedY: Math.random() * 1.5 + 0.5,
+        size: Math.random() * 16 + 10,
+        speedY: Math.random() * 1.6 + 0.6,
         speedX: (Math.random() - 0.5) * 0.8,
-        alpha: Math.random() * 0.6 + 0.2
+        alpha: Math.random() * 0.7 + 0.2
       });
     }
 
@@ -230,11 +241,11 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         ctx.restore();
       });
 
-      // 2. Draw Confetti Burst
+      // 2. Draw Fireworks Burst
       confettiParticles.current.forEach((p, idx) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.35;
+        p.vy += 0.25; // gravity
         p.alpha -= p.decay;
         
         ctx.save();
@@ -285,20 +296,32 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         }}
       />
 
+      {/* Interactive Cursor Spotlight Glow */}
+      <div 
+        className="fixed pointer-events-none z-10 w-96 h-96 rounded-full blur-3xl opacity-30 bg-radial from-pink-300 via-amber-200 to-transparent transition-all duration-75 -translate-x-1/2 -translate-y-1/2"
+        style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
+      />
+
       {/* 1. Cinematic Ambient Canvas Overlay */}
       <canvas 
         ref={canvasRef} 
         className="fixed inset-0 z-10 pointer-events-none"
       />
 
-      {/* 2. Premium Intro Loader */}
+      {/* 2. Premium Intro Loader with Dual Energy Rings */}
       {!loadingDone && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#b83854] transition-opacity duration-500">
           <div className="space-y-6 text-center max-w-sm px-6">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full border border-pink-300 flex items-center justify-center shadow-2xl animate-pulse">
-              <span className="font-fredoka text-2xl sm:text-3xl font-bold text-white">
-                {(data.personName || "B").charAt(0).toUpperCase()}
-              </span>
+            
+            {/* Dual Spinning Energy Rings */}
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-2 border-dashed border-amber-300 animate-spin-slow" />
+              <div className="absolute inset-1 rounded-full border-2 border-pink-200 animate-reverse-spin" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center shadow-2xl animate-pulse">
+                <span className="font-fredoka text-2xl sm:text-3xl font-bold text-white">
+                  {(data.personName || "B").charAt(0).toUpperCase()}
+                </span>
+              </div>
             </div>
             
             <h2 className="text-xs uppercase tracking-[0.25em] text-pink-200 font-semibold font-fredoka">
@@ -311,7 +334,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
             <div className="w-full h-[4px] bg-white/20 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-white transition-all duration-300 ease-out"
+                className="h-full bg-gradient-to-r from-amber-300 via-pink-200 to-white transition-all duration-300 ease-out"
                 style={{ width: `${loadingProgress}%` }}
               />
             </div>
@@ -353,7 +376,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
         
         {/* ========================================================= */}
-        {/* STEP 0: INITIAL TEASER SCREEN (Fixed Frame Fit)           */}
+        {/* STEP 0: INITIAL TEASER SCREEN                             */}
         {/* ========================================================= */}
         {storyStep === 0 && (
           <div className="w-full h-full flex flex-col md:flex-row items-center justify-between animate-fade-in gap-4 sm:gap-6 my-auto py-1">
@@ -373,19 +396,21 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 </p>
               </div>
 
-              {/* Pill Buttons */}
+              {/* Pill Buttons with Magnetic Shimmer FX */}
               <div className="flex items-center justify-center md:justify-start gap-3 pt-2 sm:pt-4 font-fredoka">
                 <button
                   onClick={() => goToStep(2)}
-                  className="px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:-rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 animate-glow-ring"
+                  className="relative overflow-hidden px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:-rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 group"
                 >
-                  <u className="decoration-white underline-offset-4">{t.yesBtn}</u>
+                  <span className="relative z-10"><u className="decoration-white underline-offset-4">{t.yesBtn}</u></span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 </button>
                 <button
                   onClick={() => goToStep(1)}
-                  className="px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30"
+                  className="relative overflow-hidden px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 group"
                 >
-                  <u className="decoration-white underline-offset-4">{t.noBtn}</u>
+                  <span className="relative z-10"><u className="decoration-white underline-offset-4">{t.noBtn}</u></span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 </button>
               </div>
 
@@ -410,7 +435,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 1: ANGRY TEASE SCREEN (Fixed Frame Fit)              */}
+        {/* STEP 1: ANGRY TEASE SCREEN                                */}
         {/* ========================================================= */}
         {storyStep === 1 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-wobble-card my-auto py-1">
@@ -446,7 +471,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 2: PRAISE SCREEN (Fixed Frame Fit)                   */}
+        {/* STEP 2: PRAISE SCREEN                                     */}
         {/* ========================================================= */}
         {storyStep === 2 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
@@ -485,7 +510,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 3: MAIN REVEAL CARD (Fixed Frame Fit)                */}
+        {/* STEP 3: MAIN REVEAL CARD (Fireworks Particle Launch)      */}
         {/* ========================================================= */}
         {storyStep === 3 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
@@ -525,7 +550,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 4: PINK ENVELOPE SCREEN (Fixed Frame Fit)            */}
+        {/* STEP 4: PINK ENVELOPE SCREEN                              */}
         {/* ========================================================= */}
         {storyStep === 4 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
@@ -559,7 +584,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 5: GIFT BOX SCREEN (Fixed Frame Fit)                 */}
+        {/* STEP 5: GIFT BOX SCREEN (Fireworks Launch)                */}
         {/* ========================================================= */}
         {storyStep === 5 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 relative animate-fade-in my-auto py-1">
@@ -611,7 +636,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 6: LETTER WITH 3D GOLDEN LOCKET (Fixed Frame Fit)    */}
+        {/* STEP 6: LETTER WITH 3D GOLDEN LOCKET                      */}
         {/* ========================================================= */}
         {storyStep === 6 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
@@ -637,10 +662,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 className="flex items-center justify-center gap-3 sm:gap-5 pt-1 cursor-pointer group"
               >
                 <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[0]} alt="Locket Photo 1" loading="eager" className="w-full h-full object-cover rounded-full" />
+                  <img src={photos[0]} alt="Locket Photo 1" loading="eager" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
                 </div>
                 <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" loading="eager" className="w-full h-full object-cover rounded-full" />
+                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" loading="eager" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
                 </div>
               </div>
             </div>
@@ -659,7 +684,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 7: VIRTUAL HUG SCREEN (Fixed Frame Fit)              */}
+        {/* STEP 7: VIRTUAL HUG SCREEN                                */}
         {/* ========================================================= */}
         {storyStep === 7 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
@@ -697,7 +722,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 8: POLAROIDS & CAKE WALL (Fixed Frame Fit)           */}
+        {/* STEP 8: POLAROIDS & CAKE WALL (Grand Fireworks Finale)    */}
         {/* ========================================================= */}
         {storyStep === 8 && (
           <div className="w-full h-full flex flex-col justify-between space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
