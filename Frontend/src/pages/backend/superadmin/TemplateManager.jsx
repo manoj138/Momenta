@@ -70,12 +70,32 @@ const defaultTemplateFields = {
     { name: "message", label: "Invitation Message", type: "textarea", required: false, placeholder: "Join me as I celebrate 25 years of awesome!" },
     { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
   ],
-  "birthday-neon-surprise": [
+  "birthday-cinematic-love": [
     { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
-    { name: "age", label: "Age to Celebrate", type: "number", required: true, placeholder: "e.g. 25" },
-    { name: "birthdayDate", label: "Celebration Date", type: "date", required: true, placeholder: "" },
-    { name: "venue", label: "Venue & Timing Details", type: "textarea", required: true, placeholder: "e.g. Sky Lounge, Kothrud at 7 PM" },
-    { name: "message", label: "Invitation Message", type: "textarea", required: false, placeholder: "Join me as I celebrate 25 years of awesome!" },
+    { name: "secretPin", label: "4-Digit Secret PIN Lock", type: "text", required: false, placeholder: "e.g. 1234 (Leave blank for no lock)" },
+    { name: "letterText", label: "Envelope Love Letter Message", type: "textarea", required: false, placeholder: "Write your special letter for the recipient..." },
+    { name: "favNotification", label: "Notification Banner Text", type: "text", required: false, placeholder: "e.g. YOU ARE MY FAVORITE NOTIFICATION 💖" },
+    { name: "stayCute", label: "Wish Tagline Subheading", type: "text", required: false, placeholder: "e.g. STAY CUTE, STAY HAPPY, STAY MINE 💖" },
+    { name: "iloveYou", label: "Grand Finale Heading", type: "text", required: false, placeholder: "e.g. I LOVE YOU ❤️" },
+    { name: "meanToMe", label: "Grand Finale Quote/Subtitle", type: "textarea", required: false, placeholder: "e.g. You don't know how much you mean to me" },
+    { name: "photo1", label: "Polaroid Photo Card 1", type: "file_upload", required: true, placeholder: "" },
+    { name: "photo2", label: "Polaroid Photo Card 2", type: "file_upload", required: true, placeholder: "" },
+    { name: "photo3", label: "Polaroid Photo Card 3", type: "file_upload", required: true, placeholder: "" },
+    { name: "language", label: "Default Language", type: "select", options: [{ label: "English", value: "en" }, { label: "Marathi", value: "mr" }], required: false, placeholder: "" },
+    { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+  ],
+  "birthday-cinematic-demo": [
+    { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+    { name: "secretPin", label: "4-Digit Secret PIN Lock", type: "text", required: false, placeholder: "e.g. 1234 (Leave blank for no lock)" },
+    { name: "letterText", label: "Envelope Love Letter Message", type: "textarea", required: false, placeholder: "Write your special letter for the recipient..." },
+    { name: "favNotification", label: "Notification Banner Text", type: "text", required: false, placeholder: "e.g. YOU ARE MY FAVORITE NOTIFICATION 💖" },
+    { name: "stayCute", label: "Wish Tagline Subheading", type: "text", required: false, placeholder: "e.g. STAY CUTE, STAY HAPPY, STAY MINE 💖" },
+    { name: "iloveYou", label: "Grand Finale Heading", type: "text", required: false, placeholder: "e.g. I LOVE YOU ❤️" },
+    { name: "meanToMe", label: "Grand Finale Quote/Subtitle", type: "textarea", required: false, placeholder: "e.g. You don't know how much you mean to me" },
+    { name: "photo1", label: "Polaroid Photo Card 1", type: "file_upload", required: true, placeholder: "" },
+    { name: "photo2", label: "Polaroid Photo Card 2", type: "file_upload", required: true, placeholder: "" },
+    { name: "photo3", label: "Polaroid Photo Card 3", type: "file_upload", required: true, placeholder: "" },
+    { name: "language", label: "Default Language", type: "select", options: [{ label: "English", value: "en" }, { label: "Marathi", value: "mr" }], required: false, placeholder: "" },
     { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
   ]
 };

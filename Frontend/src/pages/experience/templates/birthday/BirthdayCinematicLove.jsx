@@ -505,7 +505,21 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   };
 
   const getPhotos = () => {
-    if (data.gallery && data.gallery.length > 0) return data.gallery;
+    const userUploaded = [data.photo1, data.photo2, data.photo3].filter(Boolean);
+    if (userUploaded.length > 0) {
+      const defaults = [
+        "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800",
+        "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800",
+        "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=800"
+      ];
+      return [
+        userUploaded[0] || defaults[0],
+        userUploaded[1] || defaults[1],
+        userUploaded[2] || defaults[2]
+      ];
+    }
+    if (data.photos && Array.isArray(data.photos) && data.photos.length > 0) return data.photos;
+    if (data.gallery && Array.isArray(data.gallery) && data.gallery.length > 0) return data.gallery;
     return [
       "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800",
       "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800",
@@ -621,7 +635,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
       <TemplateControls
         currentLang={currentLang}
         onToggleLanguage={toggleLanguage}
-        audioUrl={data.bgMusic || "https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3"}
+        audioUrl={data.bgMusic || data.musicUrl || data.audio || "https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3"}
         bgClass="bg-[#8b233a]/80 backdrop-blur-md"
         textClass="text-pink-200"
         hoverClass="hover:text-white hover:scale-105 hover:bg-[#a62b46]"
@@ -800,8 +814,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
             </h1>
 
             <div className="space-y-1 text-xs xs:text-sm sm:text-base font-bold text-slate-700 uppercase tracking-wide font-fredoka">
-              <p className="text-[#a83650] animate-pulse">{t.favNotification}</p>
-              <p>{t.stayCute}</p>
+              <p className="text-[#a83650] animate-pulse">{data.favNotification || t.favNotification}</p>
+              <p>{data.stayCute || t.stayCute}</p>
             </div>
 
             <button
@@ -906,18 +920,24 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 </div>
 
                 {/* Styled Handwritten Message */}
-                <div className="space-y-0.5 pt-1 pb-3 px-2 font-kalam text-slate-900 text-xs xs:text-sm sm:text-base font-bold leading-snug">
-                  <p>You are seen, you are</p>
-                  <p>heard, and you are</p>
-                  <p>loved, no matter what.</p>
-                  <p>If you ever feel</p>
-                  <p>unloved, remember</p>
-                  <p>that my love for you is</p>
-                  <p className="text-base sm:text-lg pt-0.5">
-                    <span className="text-pink-400 font-extrabold">boundless</span>{" "}
-                    and{" "}
-                    <span className="text-slate-900 font-extrabold">endless!</span>
-                  </p>
+                <div className="space-y-0.5 pt-1 pb-3 px-2 font-kalam text-slate-900 text-xs xs:text-sm sm:text-base font-bold leading-snug max-h-48 overflow-y-auto custom-scrollbar">
+                  {(data.letterText || data.letter) ? (
+                    <p className="whitespace-pre-line leading-snug">{data.letterText || data.letter}</p>
+                  ) : (
+                    <>
+                      <p>You are seen, you are</p>
+                      <p>heard, and you are</p>
+                      <p>loved, no matter what.</p>
+                      <p>If you ever feel</p>
+                      <p>unloved, remember</p>
+                      <p>that my love for you is</p>
+                      <p className="text-base sm:text-lg pt-0.5">
+                        <span className="text-pink-400 font-extrabold">boundless</span>{" "}
+                        and{" "}
+                        <span className="text-slate-900 font-extrabold">endless!</span>
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -1200,10 +1220,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
               <div className="text-center sm:text-right space-y-0.5 sm:space-y-1 flex-1 pl-0 sm:pl-3">
                 <h1 className="text-3xl xs:text-4xl sm:text-6xl font-extrabold text-[#c2395d] tracking-wider uppercase font-fredoka drop-shadow-sm">
-                  {t.iloveYou}
+                  {data.iloveYou || t.iloveYou}
                 </h1>
                 <p className="text-slate-700 font-kalam text-xs xs:text-sm sm:text-xl font-bold">
-                  "{t.meanToMe}"
+                  "{data.meanToMe || t.meanToMe}"
                 </p>
               </div>
             </div>
