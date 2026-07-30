@@ -1,5 +1,150 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Heart, Clock, Mail, Sparkles, Volume2, VolumeX, Lock, Unlock, ArrowRight, RefreshCw, Smile, Gift, Award, Music, Stars, Flame, Compass } from "lucide-react";
+import { Heart, Mail, Sparkles, Volume2, VolumeX, Lock, Unlock, ArrowRight, RefreshCw, Smile, Gift, Award, Music, Stars, Flame, Compass } from "lucide-react";
+
+// ==========================================
+// CUSTOM RICH SVG VECTOR GRAPHICS
+// ==========================================
+const CrownSvg = ({ className = "w-6 h-6" }) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="goldCrownGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FCD34D" />
+        <stop offset="50%" stopColor="#F59E0B" />
+        <stop offset="100%" stopColor="#D97706" />
+      </linearGradient>
+    </defs>
+    <path d="M2 19H22V21H2V19ZM2 17L5 7L9 12L12 4L15 12L19 7L22 17H2Z" fill="url(#goldCrownGrad)" />
+    <circle cx="5" cy="6" r="1.5" fill="#FFF" />
+    <circle cx="12" cy="3" r="1.5" fill="#FFF" />
+    <circle cx="19" cy="6" r="1.5" fill="#FFF" />
+  </svg>
+);
+
+const CakeSvg = ({ className = "w-20 h-20" }) => (
+  <svg viewBox="0 0 64 64" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cakeBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FB7185" />
+        <stop offset="50%" stopColor="#E11D48" />
+        <stop offset="100%" stopColor="#9F1239" />
+      </linearGradient>
+      <linearGradient id="icingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FEF08A" />
+        <stop offset="100%" stopColor="#F59E0B" />
+      </linearGradient>
+      <filter id="flameGlow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    {/* Base Layer */}
+    <rect x="8" y="38" width="48" height="20" rx="4" fill="url(#cakeBodyGrad)" />
+    <path d="M8 44C12 47 16 44 20 47C24 44 28 47 32 44C36 47 40 44 44 47C48 44 52 47 56 44V38H8V44Z" fill="url(#icingGrad)" />
+    {/* Top Layer */}
+    <rect x="14" y="24" width="36" height="15" rx="3" fill="#BE123C" />
+    <path d="M14 29C18 31 22 29 26 31C30 29 34 31 38 29C42 31 46 29 50 29V24H14V29Z" fill="#FCD34D" />
+    {/* Candles */}
+    <rect x="22" y="14" width="3" height="10" rx="1" fill="#60A5FA" />
+    <rect x="31" y="12" width="3" height="12" rx="1" fill="#F472B6" />
+    <rect x="40" y="14" width="3" height="10" rx="1" fill="#34D399" />
+    {/* Flickering Flames */}
+    <circle cx="23.5" cy="11" r="3" fill="#F59E0B" filter="url(#flameGlow)" className="animate-pulse" />
+    <circle cx="32.5" cy="9" r="3.5" fill="#EF4444" filter="url(#flameGlow)" className="animate-ping" />
+    <circle cx="41.5" cy="11" r="3" fill="#F59E0B" filter="url(#flameGlow)" className="animate-pulse" />
+  </svg>
+);
+
+const GiftBoxSvg = ({ className = "w-16 h-16" }) => (
+  <svg viewBox="0 0 64 64" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#8B5CF6" />
+        <stop offset="100%" stopColor="#6D28D9" />
+      </linearGradient>
+      <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stopColor="#FCD34D" />
+        <stop offset="100%" stopColor="#F59E0B" />
+      </linearGradient>
+    </defs>
+    <rect x="10" y="26" width="44" height="30" rx="4" fill="url(#boxGrad)" />
+    <rect x="6" y="20" width="52" height="8" rx="2" fill="#7C3AED" />
+    {/* Ribbons */}
+    <rect x="28" y="20" width="8" height="36" fill="url(#ribbonGrad)" />
+    <rect x="6" y="22" width="52" height="4" fill="url(#ribbonGrad)" opacity="0.4" />
+    {/* Ribbon Bow */}
+    <path d="M32 20C26 12 16 14 22 20Z" fill="url(#ribbonGrad)" />
+    <path d="M32 20C38 12 48 14 42 20Z" fill="url(#ribbonGrad)" />
+    <circle cx="32" cy="20" r="3" fill="#FFF" />
+  </svg>
+);
+
+const ClockSvg = ({ className = "w-16 h-16" }) => (
+  <svg viewBox="0 0 64 64" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+    <circle cx="32" cy="32" r="28" stroke="#F59E0B" strokeWidth="2" strokeDasharray="4 4" className="animate-spin" style={{ animationDuration: "18s" }} />
+    <circle cx="32" cy="32" r="24" fill="#0F172A" stroke="#F43F5E" strokeWidth="2" />
+    <line x1="32" y1="32" x2="32" y2="16" stroke="#FCD34D" strokeWidth="3" strokeLinecap="round" />
+    <line x1="32" y1="32" x2="44" y2="32" stroke="#F43F5E" strokeWidth="2.5" strokeLinecap="round" />
+    <circle cx="32" cy="32" r="3" fill="#FFF" />
+  </svg>
+);
+
+const ApologyEmojiSvg = ({ className = "w-28 h-28" }) => (
+  <svg viewBox="0 0 100 100" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="emojiBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FCD34D" />
+        <stop offset="50%" stopColor="#F59E0B" />
+        <stop offset="100%" stopColor="#EA580C" />
+      </linearGradient>
+      <linearGradient id="apologyHeartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FB7185" />
+        <stop offset="100%" stopColor="#E11D48" />
+      </linearGradient>
+      <filter id="emojiGlowShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    {/* Outer Glowing Dashed Ring */}
+    <circle cx="50" cy="50" r="45" stroke="#F43F5E" strokeWidth="2" strokeDasharray="6 4" className="animate-spin" style={{ animationDuration: "14s" }} opacity="0.7" />
+    
+    {/* Main Face Circle */}
+    <circle cx="50" cy="50" r="38" fill="url(#emojiBodyGrad)" filter="url(#emojiGlowShadow)" />
+    
+    {/* Big Pleading Glossy Eyes */}
+    {/* Left Eye */}
+    <ellipse cx="37" cy="44" rx="7" ry="9" fill="#1E293B" />
+    <ellipse cx="35" cy="41" rx="3" ry="4" fill="#FFFFFF" />
+    <circle cx="39" cy="47" r="1.5" fill="#FFFFFF" />
+    
+    {/* Right Eye */}
+    <ellipse cx="63" cy="44" rx="7" ry="9" fill="#1E293B" />
+    <ellipse cx="61" cy="41" rx="3" ry="4" fill="#FFFFFF" />
+    <circle cx="65" cy="47" r="1.5" fill="#FFFFFF" />
+    
+    {/* Cute Pouting Sad Mouth */}
+    <path d="M 40 64 Q 50 56 60 64" stroke="#7C2D12" strokeWidth="3.5" strokeLinecap="round" fill="none" />
+    
+    {/* Rosy Cheeks */}
+    <ellipse cx="27" cy="53" rx="5" ry="3" fill="#F43F5E" opacity="0.6" />
+    <ellipse cx="73" cy="53" rx="5" ry="3" fill="#F43F5E" opacity="0.6" />
+    
+    {/* Floating Animated Heart Badge */}
+    <g className="animate-bounce">
+      <path d="M 74 24 C 74 20 68 16 63 21 C 58 16 52 20 52 24 C 52 31 63 37 63 37 C 63 37 74 31 74 24 Z" fill="url(#apologyHeartGrad)" />
+    </g>
+    
+    {/* Sparkles */}
+    <circle cx="20" cy="28" r="2" fill="#FCD34D" className="animate-ping" />
+    <circle cx="82" cy="68" r="2" fill="#F43F5E" className="animate-pulse" />
+  </svg>
+);
 
 const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
   // Dynamic fields with fallback values
@@ -8,17 +153,17 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
   const secretPin = data.secretPin || data.secret_pin || "";
   const lateReason = data.lateReason || data.late_reason || "Finding the perfect words for someone as special as you took a little extra time! ✨";
   const letterText = data.letterText || data.letter_text || data.letter || 
-    `Dearest ${personName},\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖`;
+    `Dearest ${personName},\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Birthday to my favorite person in the world! 💖`;
   
-  const favNotification = data.favNotification || data.fav_notification || "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖";
+  const favNotification = data.favNotification || data.fav_notification || "A SPECIAL SURPRISE CRAFTED FOR YOU 💖";
   const stayCute = data.stayCute || data.stay_cute || "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨";
-  const iloveYou = data.iloveYou || data.ilove_you || "BEST WISHES ALWAYS ❤️";
-  const meanToMe = data.meanToMe || data.mean_to_me || "You don't know how much you mean to me.";
-  const scratchTitle = data.scratchTitle || data.scratch_title || "SORRY BHAI / BESTIE! 🥺❤️";
+  const iloveYou = data.iloveYou || data.ilove_you || "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖";
+  const meanToMe = data.meanToMe || data.mean_to_me || "Finding the perfect words took a little extra time, but my wishes for you are timeless. ❤️";
+  const scratchTitle = data.scratchTitle || data.scratch_title || "SURPRISE GIFT COUPON 🎁";
   const scratchMessage = data.scratchMessage || data.scratch_message || "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨";
   const musicUrl = data.bgMusic || data.musicUrl || data.music_url || "https://assets.mixkit.co/music/preview/mixkit-romantic-sunburst-241.mp3";
 
-  // 5 Photos resolution
+  // 5 Photos
   const photo1 = data.photo1 || data.photo_1 || "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
   const photo2 = data.photo2 || data.photo_2 || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80";
   const photo3 = data.photo3 || data.photo_3 || "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&auto=format&fit=crop&q=80";
@@ -70,7 +215,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
     window.addEventListener("resize", resizeCanvas);
 
     const stars = [];
-    for (let i = 0; i < 70; i++) {
+    for (let i = 0; i < 75; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -121,7 +266,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
     }
   };
 
-  // Dodging "Yes, still mad!" Button
+  // Dodging "Still a little mad!" Button
   const handleNoHover = () => {
     const randomX = (Math.random() - 0.5) * 220;
     const randomY = (Math.random() - 0.5) * 160;
@@ -289,7 +434,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-extrabold text-white tracking-tight">Secret Birthday Vault</h2>
-              <p className="text-xs text-gray-400">Enter the 4-digit passcode to unlock your belated birthday surprise.</p>
+              <p className="text-xs text-gray-400">Enter the 4-digit passcode to unlock your surprise.</p>
             </div>
 
             <form onSubmit={handlePinSubmit} className="space-y-4">
@@ -308,36 +453,52 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
                 type="submit"
                 className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 text-white font-extrabold text-sm rounded-xl shadow-xl hover:brightness-110 transition-all cursor-pointer"
               >
-                Unlock Secret Gift Card
+                Unlock Surprise Gift
               </button>
             </form>
           </div>
         </main>
       )}
 
-      {/* STEP 1: Time Rewind Clock & Apology Teaser */}
+      {/* STEP 1: Main Hero Screen with SVG Crown, Avatar & Animated SVG Cake */}
       {currentStep === 1 && (
-        <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 max-w-xl mx-auto">
-          {/* Notification Banner */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-rose-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md animate-bounce">
-            <Sparkles size={14} className="text-amber-400" />
-            <span>{favNotification}</span>
+        <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-2xl mx-auto">
+          {/* Birthday Person Photo Avatar with SVG Crown */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full border-4 border-amber-400 p-1 shadow-[0_0_40px_rgba(245,158,11,0.4)] overflow-hidden bg-slate-950 transition-transform hover:scale-105">
+                <img src={photo1} alt={personName} className="w-full h-full object-cover rounded-full" />
+              </div>
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 drop-shadow-md animate-bounce">
+                <CrownSvg className="w-8 h-8" />
+              </div>
+            </div>
+            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-rose-500/20 border border-amber-400/40 text-amber-300 text-xs font-extrabold uppercase tracking-wider backdrop-blur-md">
+              <Sparkles size={14} className="text-amber-400" />
+              <span>Birthday Special for {personName}</span>
+            </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h1 className="text-3xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-amber-300 to-purple-400 leading-tight drop-shadow-lg">
-              I Know I'm A Little Late...
+              Happy Birthday, {personName}! ✨
             </h1>
-            <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-              {lateReason}
+            <p className="text-slate-300 text-sm md:text-base leading-relaxed max-w-lg mx-auto font-serif italic">
+              "{lateReason}"
             </p>
           </div>
 
-          {/* Interactive Animated Clock Illustration */}
-          <div className="relative w-44 h-44 flex items-center justify-center my-2">
-            <div className="absolute inset-0 rounded-full border-2 border-dashed border-amber-400/40 animate-spin" style={{ animationDuration: "22s" }} />
-            <div className="w-32 h-32 rounded-full bg-slate-900/90 border border-amber-500/30 flex flex-col items-center justify-center text-amber-400 shadow-[0_0_40px_rgba(245,158,11,0.25)] backdrop-blur-xl">
-              <Clock size={40} className="mb-1 text-rose-400 animate-pulse" />
+          {/* Dual SVG Cake & Animated SVG Clock Cards */}
+          <div className="flex flex-wrap items-center justify-center gap-6 my-3">
+            {/* Glowing 3D Vector SVG Cake Card */}
+            <div className="w-36 h-36 rounded-3xl bg-slate-900/90 border border-amber-500/40 p-2 shadow-[0_0_35px_rgba(245,158,11,0.25)] backdrop-blur-xl flex flex-col items-center justify-center relative group hover:scale-105 transition-all">
+              <CakeSvg className="w-16 h-16 mb-1 drop-shadow-[0_10px_20px_rgba(245,158,11,0.3)]" />
+              <span className="text-[10px] font-extrabold text-amber-300 uppercase tracking-widest font-mono">Special Cake</span>
+            </div>
+
+            {/* Interactive Animated SVG Clock Card */}
+            <div className="w-36 h-36 rounded-3xl bg-slate-900/90 border border-amber-500/30 p-2 shadow-[0_0_35px_rgba(245,158,11,0.25)] backdrop-blur-xl flex flex-col items-center justify-center relative group hover:scale-105 transition-all">
+              <ClockSvg className="w-16 h-16 mb-1" />
               <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">Better Late</span>
               <span className="text-xs font-bold text-amber-300">Than Never</span>
             </div>
@@ -347,25 +508,27 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
             onClick={() => setCurrentStep(2)}
             className="px-8 py-3.5 bg-gradient-to-r from-rose-500 via-purple-600 to-amber-500 text-white font-extrabold text-sm rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2 group border border-white/10"
           >
-            <span>Open Your Belated Surprise</span>
+            <span>Open Your Birthday Surprise</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </main>
       )}
 
-      {/* STEP 2: Cute "Are You Still Mad At Me?" Forgiveness Quiz */}
+      {/* STEP 2: Forgiveness Quiz with Colorful Big SVG Apology Illustration */}
       {currentStep === 2 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-8 max-w-md mx-auto">
-          <div className="w-20 h-20 rounded-full bg-rose-500/15 border border-rose-500/40 flex items-center justify-center text-rose-400 mx-auto shadow-[0_0_30px_rgba(244,63,94,0.3)]">
-            <Smile size={44} className="animate-bounce" />
+          {/* Colorful Big SVG Apology Vector Illustration */}
+          <div className="relative group flex justify-center items-center my-2">
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-purple-500/20 rounded-full blur-2xl animate-pulse pointer-events-none" />
+            <ApologyEmojiSvg className="w-32 h-32 md:w-36 md:h-36 drop-shadow-[0_0_40px_rgba(245,158,11,0.4)] transition-transform hover:scale-110 cursor-pointer" />
           </div>
 
           <div className="space-y-3">
             <h2 className="text-2xl md:text-3xl font-extrabold text-white">
-              Are you mad at me for being late? 🥺
+              Are you mad at me for being a little late, {personName}? 🥺
             </h2>
             <p className="text-xs text-gray-400 leading-relaxed">
-              Be honest! But remember... I have a heart-warming surprise waiting for you inside!
+              Be honest! A heartwarming birthday surprise is waiting for you inside.
             </p>
           </div>
 
@@ -374,7 +537,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
               onClick={() => setCurrentStep(3)}
               className="w-full sm:w-auto px-8 py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm rounded-full shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>No, I forgive you! 💕</span>
+              <span>No, all is forgiven! 💕</span>
             </button>
 
             <button
@@ -384,9 +547,9 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
                 transform: `translate(${noButtonPos.x}px, ${noButtonPos.y}px)`,
                 transition: "all 0.2s ease-out"
               }}
-              className="w-full sm:w-auto px-6 py-3 bg-slate-800 hover:bg-slate-700 text-gray-300 font-semibold text-xs rounded-full border border-white/10 transition-all cursor-pointer"
+              className="w-full sm:w-auto px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-gray-300 font-semibold text-xs rounded-full border border-white/10 transition-all cursor-pointer"
             >
-              Yes, super mad! 😤
+              Still a little mad 😤
             </button>
           </div>
         </main>
@@ -396,7 +559,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
       {currentStep === 3 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-5xl mx-auto">
           <div className="space-y-2">
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Memories That Never Expire</span>
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Memories That Last Forever</span>
             <h2 className="text-2xl md:text-4xl font-extrabold text-white">5 Special Moments With You 📸</h2>
           </div>
 
@@ -453,24 +616,24 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
             className="px-8 py-3.5 bg-gradient-to-r from-purple-600 to-amber-500 text-white font-bold text-sm rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2 border border-white/10"
           >
             <span>Scratch Your Surprise Coupon</span>
-            <Gift size={16} />
+            <GiftBoxSvg className="w-5 h-5" />
           </button>
         </main>
       )}
 
-      {/* STEP 4: Interactive Scratch Card Surprise */}
+      {/* STEP 4: Interactive Scratch Card Surprise with SVG Gift Box */}
       {currentStep === 4 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-lg mx-auto">
           <div className="space-y-2">
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Special Secret Gift</span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-white">Scratch To Reveal Your Coupon 🎁</h2>
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Secret Gift Coupon</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">Scratch To Reveal Your Gift 🎁</h2>
           </div>
 
           {/* Scratch Container */}
           <div className="relative w-full h-56 bg-slate-900 border border-amber-500/40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.2)] flex flex-col items-center justify-center p-6 text-center">
             {/* Hidden Message Behind Scratch Layer */}
             <div className="space-y-2 z-10 px-4">
-              <Gift size={36} className="mx-auto text-amber-400 animate-bounce" />
+              <GiftBoxSvg className="w-12 h-12 mx-auto animate-bounce" />
               <h3 className="text-sm font-extrabold text-amber-300 uppercase tracking-widest font-mono">
                 {scratchTitle}
               </h3>
@@ -502,43 +665,56 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
         </main>
       )}
 
-      {/* STEP 5: Wax-Sealed Virtual Letter Envelope */}
+      {/* STEP 5: Clean 3D Royal Wax-Sealed Virtual Letter Envelope */}
       {currentStep === 5 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-lg mx-auto">
           <div className="space-y-2">
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Heartfelt Apology & Love</span>
-            <h2 className="text-2xl font-extrabold text-white">A Letter Written Just For You ✉️</h2>
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Heartfelt Message & Love</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">A Letter Written Just For You ✉️</h2>
           </div>
 
+          {/* Envelope Card Container */}
           <div
             onClick={() => setLetterOpen(!letterOpen)}
             className={`w-full p-8 rounded-3xl border transition-all duration-500 cursor-pointer shadow-2xl backdrop-blur-2xl relative overflow-hidden ${
               letterOpen
-                ? "bg-slate-900/95 border-amber-500/50 text-left shadow-[0_0_50px_rgba(245,158,11,0.2)]"
-                : "bg-gradient-to-br from-slate-900 to-purple-950 border-white/20 hover:border-amber-400 text-center"
+                ? "bg-slate-900/95 border-amber-500/50 text-left shadow-[0_0_60px_rgba(245,158,11,0.25)]"
+                : "bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 border-amber-400/30 hover:border-amber-400 text-center hover:scale-[1.02]"
             }`}
           >
             {!letterOpen ? (
-              <div className="py-8 space-y-4 flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-xl border-2 border-amber-300 animate-pulse">
-                  <Mail size={28} />
+              <div className="py-8 space-y-6 flex flex-col items-center">
+                {/* Royal Wax Seal Icon */}
+                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-rose-600 to-amber-500 p-1 shadow-[0_0_40px_rgba(244,63,94,0.4)] flex items-center justify-center animate-pulse">
+                  <div className="w-full h-full bg-slate-950 rounded-full flex flex-col items-center justify-center text-amber-300 border border-amber-300/40">
+                    <Mail size={32} className="text-rose-400" />
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-amber-300">Tap Wax Seal to Open Letter</h3>
-                  <p className="text-xs text-gray-400 mt-1">Unfold the special belated birthday message inside.</p>
+
+                <div className="space-y-1.5">
+                  <span className="text-xs font-black uppercase tracking-widest text-amber-400 font-mono">To {personName} 💕</span>
+                  <h3 className="text-xl font-extrabold text-white">Tap Seal to Open Letter</h3>
+                  <p className="text-xs text-gray-400">Unfold your special birthday message inside.</p>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="flex justify-between items-center border-b border-white/10 pb-3">
-                  <span className="text-xs font-bold text-amber-400 font-mono">To {personName}</span>
-                  <Heart size={16} className="text-rose-500 fill-rose-500" />
+                {/* Header with Recipient Name & Heart */}
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <div>
+                    <h4 className="text-base font-extrabold text-amber-300">Dearest {personName} 💕</h4>
+                    <span className="text-[10px] font-mono text-gray-400 uppercase tracking-wider">Birthday Special</span>
+                  </div>
+                  <Heart size={22} className="text-rose-500 fill-rose-500 animate-pulse" />
                 </div>
+
                 <p className="text-slate-200 text-xs md:text-sm leading-relaxed whitespace-pre-line font-serif italic">
                   {letterText}
                 </p>
-                <div className="pt-2 text-right">
-                  <span className="text-xs font-bold text-purple-300">With All My Love ❤️</span>
+
+                <div className="pt-3 border-t border-white/10 flex justify-between items-center text-right">
+                  <span className="text-[11px] font-mono text-amber-400">🎂 Happy Birthday!</span>
+                  <span className="text-xs font-extrabold text-purple-300">With All My Love ❤️</span>
                 </div>
               </div>
             )}
@@ -547,7 +723,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
           {letterOpen && (
             <button
               onClick={() => setCurrentStep(6)}
-              className="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-extrabold text-sm rounded-full shadow-xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2"
+              className="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-extrabold text-sm rounded-full shadow-2xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2 border border-white/10"
             >
               <span>Grand Finale Wish 🎉</span>
               <Sparkles size={16} />
@@ -556,16 +732,26 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
         </main>
       )}
 
-      {/* STEP 6: Grand Finale Celebration Fireworks */}
+      {/* STEP 6: Grand Finale Celebration Fireworks with SVG Cake & Crown Avatar */}
       {currentStep === 6 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-xl mx-auto">
           {/* Fireworks Canvas Background */}
           <canvas ref={fireworksCanvasRef} className="absolute inset-0 pointer-events-none z-10" />
 
-          <div className="relative z-20 space-y-4">
-            <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 p-1 shadow-[0_0_50px_rgba(245,158,11,0.4)] animate-bounce">
-              <div className="w-full h-full bg-slate-950 rounded-full flex items-center justify-center text-amber-300">
-                <Award size={40} />
+          <div className="relative z-20 space-y-5">
+            {/* Birthday Person Avatar Photo with Crown & SVG Cake Card */}
+            <div className="flex items-center justify-center gap-4 mx-auto">
+              <div className="relative group">
+                <div className="w-20 h-20 rounded-full border-4 border-amber-400 p-0.5 shadow-[0_0_40px_rgba(245,158,11,0.5)] overflow-hidden bg-slate-950 animate-pulse">
+                  <img src={photo1} alt={personName} className="w-full h-full object-cover rounded-full" />
+                </div>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <CrownSvg className="w-6 h-6" />
+                </div>
+              </div>
+
+              <div className="w-20 h-20 rounded-2xl border-2 border-rose-500/40 p-1 shadow-[0_0_35px_rgba(244,63,94,0.4)] overflow-hidden bg-slate-900/90 backdrop-blur-md flex items-center justify-center animate-bounce">
+                <CakeSvg className="w-14 h-14" />
               </div>
             </div>
 
@@ -592,9 +778,9 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
         </main>
       )}
 
-      {/* Footer Branding */}
-      <footer className="relative z-20 text-center py-4 text-[10px] text-gray-500 tracking-wider uppercase border-t border-white/5 backdrop-blur-md bg-slate-900/40">
-        Crafted with love on <span className="text-brand-400 font-bold">Momenta</span>
+      {/* Clean Floating Footer Branding (No Dark Bar) */}
+      <footer className="relative z-20 text-center py-4 text-[10px] text-gray-400/60 tracking-widest uppercase">
+        Crafted with love on <span className="text-amber-400/80 font-bold">Momenta</span>
       </footer>
     </div>
   );

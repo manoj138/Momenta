@@ -138,7 +138,7 @@ const ExperienceViewer = () => {
             letterText: "Dearest Sneha,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
             favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
             stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
-            iloveYou: "BEST WISHES ALWAYS ❤️"
+            iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
           }
         },
         "belated-apology-demo": {
@@ -151,7 +151,7 @@ const ExperienceViewer = () => {
             letterText: "Dearest Sneha,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
             favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
             stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
-            iloveYou: "BEST WISHES ALWAYS ❤️"
+            iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
           }
         }
       };
