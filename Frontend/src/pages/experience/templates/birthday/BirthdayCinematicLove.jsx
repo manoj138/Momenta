@@ -83,7 +83,10 @@ const ASSETS = {
   pinkEnvelope: encodeURI("/birthday/birthday love/Pink Valentines Clipart - Romantic Love Art for Celebrations.png"),
   coquetteLollipop: encodeURI("/birthday/birthday love/Download premium png of PNG Coquette red lollipop confectionery furniture sweets_ by Ning about coquette, pink coquette png, coquette png, coquette pink, and coquette aesthetic 14797369.png"),
   stickerGif: encodeURI("/birthday/birthday love/Post by @lovelysticker · 8 images.gif"),
-  cake: encodeURI("/birthday/birthday love/birthday_cake_transparent copy.png")
+  cake: encodeURI("/birthday/birthday love/birthday_cake_transparent copy.png"),
+  giftBox: encodeURI("/birthday/birthday love/Gift  PNG.png"),
+  heartBallon: encodeURI("/birthday/birthday love/heart ballon.png"),
+  iloveGif: encodeURI("/birthday/birthday love/ilove gif.gif")
 };
 
 const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
@@ -628,13 +631,25 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
       {/* MAIN FULL-SCREEN ORGANIC CONTAINER */}
       <div 
         ref={cardRef}
-        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-hidden bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone && !isPasscodeLocked ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-visible bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone && !isPasscodeLocked ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         style={{
           borderRadius: `clamp(30px, 6vw, 60px) clamp(80px, 18vw, 240px) clamp(40px, 8vw, 80px) clamp(70px, 15vw, 200px) / clamp(60px, 12vw, 180px) clamp(35px, 6vw, 80px) clamp(80px, 16vw, 220px) clamp(30px, 5vw, 60px)`,
           backgroundImage: `radial-gradient(#e2d9d2 1.2px, transparent 1.2px)`,
           backgroundSize: `24px 24px`
         }}
       >
+
+        {/* PERSISTENT DECORATIVE CORNER STICKERS */}
+        <img 
+          src={ASSETS.heartBallon} 
+          alt="Floating Heart Balloons" 
+          className="absolute -top-6 -right-6 sm:-top-8 sm:-right-8 w-16 sm:w-20 h-16 sm:h-20 z-40 pointer-events-none rotate-12 drop-shadow-md animate-float" 
+        />
+        <img 
+          src={ASSETS.giftBox} 
+          alt="Gift Box" 
+          className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-14 sm:w-18 h-14 sm:h-18 z-40 pointer-events-none -rotate-12 drop-shadow-md" 
+        />
 
         {/* FLOATING BACK BUTTON */}
         {storyStep > 0 && (
@@ -1160,13 +1175,14 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               })}
             </div>
 
-            <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-2 sm:pt-4 px-1 gap-3">
-              <div className="w-20 h-20 sm:w-32 sm:h-32 relative animate-float flex-shrink-0">
+            <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-2 sm:pt-4 px-1 gap-3 relative">
+              {/* Animated "I Love You" Sticker GIF (Exclusive to Step 7 Grand Finale) */}
+              <div className="w-20 h-20 sm:w-28 sm:h-28 relative flex-shrink-0 animate-bounce">
                 <img 
-                  src={ASSETS.cake} 
-                  alt="Birthday Cake" 
+                  src={ASSETS.iloveGif} 
+                  alt="I Love You Animated GIF" 
                   loading="eager"
-                  className="w-full h-full object-contain filter drop-shadow-lg mix-blend-multiply"
+                  className="w-full h-full object-contain filter drop-shadow-md"
                 />
               </div>
 
