@@ -16,9 +16,14 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
     if (!file) return;
 
     if (file instanceof File) {
-      // Create a local object URL to display instantly
-      const localUrl = URL.createObjectURL(file);
-      handleValueChange(name, localUrl);
+      // Read file as a persistent Base64 Data URL so it never expires on page refresh or publish
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target && event.target.result) {
+          handleValueChange(name, event.target.result);
+        }
+      };
+      reader.readAsDataURL(file);
     } else {
       handleValueChange(name, file);
     }

@@ -815,6 +815,20 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
         </main>
       )}
 
+      {/* Background Audio Player & Floating Sound Control Toggle */}
+      <audio ref={audioRef} src={musicUrl} loop preload="auto" />
+      <button
+        onClick={toggleAudio}
+        className="fixed bottom-5 right-5 z-50 p-3.5 bg-slate-900/90 border border-amber-500/40 text-amber-300 rounded-full shadow-[0_0_25px_rgba(245,158,11,0.3)] hover:scale-110 active:scale-95 transition-all cursor-pointer flex items-center justify-center backdrop-blur-md"
+        title={isPlaying ? "Mute Background Music" : "Play Background Music"}
+      >
+        {isPlaying ? (
+          <Volume2 size={20} className="text-amber-400 animate-pulse" />
+        ) : (
+          <VolumeX size={20} className="text-gray-400" />
+        )}
+      </button>
+
       {/* Clean Floating Footer Branding (No Dark Bar) */}
       <footer className="relative z-20 text-center py-4 text-[10px] text-gray-400/60 tracking-widest uppercase">
         Crafted with love on <span className="text-amber-400/80 font-bold">Momenta</span>
