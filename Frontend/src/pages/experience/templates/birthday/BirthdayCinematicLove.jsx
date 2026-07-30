@@ -798,11 +798,11 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 setTimeout(() => {
                   goToStep(5);
                   triggerConfetti();
-                }, 700);
+                }, 600);
               }}
               className="w-full max-w-lg flex flex-col items-center justify-center cursor-pointer group"
             >
-              <div className={`w-56 xs:w-72 sm:w-88 h-48 xs:h-60 sm:h-72 my-1 relative transition-all duration-700 ${isEnvelopeOpened ? "scale-125 rotate-12 opacity-80" : "group-hover:scale-105"}`}>
+              <div className={`w-56 xs:w-72 sm:w-88 h-48 xs:h-60 sm:h-72 my-1 relative transition-all duration-700 ${isEnvelopeOpened ? "scale-110 opacity-90" : "group-hover:scale-105"}`}>
                 <img 
                   src={ASSETS.pinkEnvelope} 
                   alt="Pink Romantic Envelope" 
@@ -819,93 +819,91 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 5: CANVAS SCRATCH-TO-REVEAL SURPRISE CARD            */}
+        {/* STEP 5: SLIDING LETTER CARD OUT OF ENVELOPE WITH LOCKET   */}
         {/* ========================================================= */}
         {storyStep === 5 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 relative animate-fade-in my-auto py-1">
-            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
-              {t.hereSurprise}
-            </h1>
+          <div className="w-full h-full flex flex-col items-center justify-center text-center relative animate-fade-in my-auto py-1">
+            <div className="relative w-full max-w-lg flex flex-col items-center justify-center">
+              
+              {/* Slid-out Paper Letter Card */}
+              <div className="w-full bg-[#fffefb] border-2 border-pink-200 rounded-3xl p-4 sm:p-6 space-y-3 text-center relative shadow-2xl z-20 transform -translate-y-4 sm:-translate-y-6 animate-fade-in">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto -mt-9 sm:-mt-11 drop-shadow-md animate-float">
+                  <img 
+                    src={ASSETS.flowerBouquet} 
+                    alt="Flower Bouquet Mascot" 
+                    loading="eager"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
 
-            <div className="relative w-56 xs:w-64 sm:w-72 h-56 xs:h-64 sm:h-72 my-1 flex items-center justify-center rounded-3xl overflow-hidden shadow-2xl border-4 border-pink-300 bg-white">
-              {/* Underlying Gift Image */}
-              <img 
-                src={ASSETS.coquetteLollipop} 
-                alt="Surprise Sweets" 
-                className="w-full h-full object-contain p-4"
-              />
-
-              {/* Canvas Scratch Overlay */}
-              {!isScratched && (
-                <canvas
-                  ref={scratchCanvasRef}
-                  className="absolute inset-0 w-full h-full cursor-pointer touch-none z-10"
-                />
-              )}
-            </div>
-
-            {isScratched ? (
-              <div className="space-y-3 animate-fade-in">
-                <p className="text-sm font-bold text-pink-600 uppercase tracking-wider font-fredoka">
-                  {t.scratchedUnlocked}
+                <p className="text-slate-800 font-kalam text-sm xs:text-base sm:text-xl leading-relaxed px-1 font-bold">
+                  "{data.message || t.letterText}"
                 </p>
-                <button
-                  onClick={() => goToStep(6)}
-                  className="px-8 py-3 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base font-bold rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer font-fredoka flex items-center gap-2 mx-auto"
+
+                {/* Interactive 3D Golden Locket Hinge Opening */}
+                <div 
+                  onClick={() => setIsLocketOpen(!isLocketOpen)}
+                  className="flex items-center justify-center gap-3 sm:gap-4 pt-1 cursor-pointer group"
                 >
-                  <span>{t.nextBtn}</span>
-                  <ArrowRight size={18} />
-                </button>
+                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
+                    <img src={photos[0]} alt="Locket Photo 1" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
+                  </div>
+                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
+                    <img src={photos[1] || photos[0]} alt="Locket Photo 2" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
+                  </div>
+                </div>
+                
+                <div className="w-full flex justify-end pt-1">
+                  <button
+                    onClick={() => goToStep(6)}
+                    className="px-6 sm:px-8 py-2 sm:py-2.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xs sm:text-sm font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 border-2 border-white/30 font-fredoka animate-glow-ring"
+                  >
+                    <Camera size={14} />
+                    <span><u className="decoration-white underline-offset-4">{t.clickHereBtn}</u></span>
+                  </button>
+                </div>
               </div>
-            ) : (
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest animate-pulse font-fredoka">
-                {t.scratchInstruction}
-              </p>
-            )}
+
+              {/* Envelope Body Base behind bottom of letter */}
+              <div className="w-48 xs:w-56 sm:w-64 h-20 sm:h-24 -mt-16 sm:-mt-20 z-10 opacity-75">
+                <img 
+                  src={ASSETS.pinkEnvelope} 
+                  alt="Pink Envelope Base" 
+                  className="w-full h-full object-contain filter drop-shadow-md"
+                />
+              </div>
+
+            </div>
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 6: LETTER WITH 3D GOLDEN LOCKET                      */}
+        {/* STEP 6: VIRTUAL HUG SCREEN                                */}
         {/* ========================================================= */}
         {storyStep === 6 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            <div className="w-full bg-pink-50 border-2 border-pink-200 rounded-3xl p-4 sm:p-8 space-y-4 text-center relative shadow-inner">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto -mt-10 sm:-mt-14 drop-shadow-lg animate-float">
-                <img 
-                  src={ASSETS.flowerBouquet} 
-                  alt="Flower Bouquet Mascot" 
-                  loading="eager"
-                  className="w-full h-full object-contain"
-                />
-              </div>
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
+              {t.virtualHug}
+            </h1>
 
-              <p className="text-slate-800 font-kalam text-base xs:text-lg sm:text-2xl leading-relaxed px-1 font-bold">
-                "{data.message || t.letterText}"
-              </p>
-
-              <div 
-                onClick={() => setIsLocketOpen(!isLocketOpen)}
-                className="flex items-center justify-center gap-3 sm:gap-5 pt-1 cursor-pointer group"
-              >
-                <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[0]} alt="Locket Photo 1" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
-                </div>
-                <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
-                </div>
-              </div>
+            <div className="relative w-52 xs:w-64 sm:w-80 h-52 xs:h-64 sm:h-80 my-1 animate-float">
+              <img 
+                src={ASSETS.stickerGif} 
+                alt="Virtual Hug Bears GIF" 
+                loading="eager"
+                className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
+              />
             </div>
 
-            <div className="w-full flex justify-end pt-1">
-              <button
-                onClick={() => goToStep(7)}
-                className="px-7 sm:px-9 py-2.5 sm:py-3 bg-[#a83650] hover:bg-[#8e2b42] text-white text-sm sm:text-base font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-white/30 font-fredoka animate-glow-ring"
-              >
-                <Camera size={16} />
-                <span><u className="decoration-white underline-offset-4">{t.clickHereBtn}</u></span>
-              </button>
-            </div>
+            <button
+              onClick={() => {
+                goToStep(7);
+              }}
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
+            >
+              <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
+              <ArrowRight size={22} />
+            </button>
           </div>
         )}
 
