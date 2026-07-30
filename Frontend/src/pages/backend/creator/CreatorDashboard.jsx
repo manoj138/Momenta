@@ -1,7 +1,7 @@
 import React from "react";
 import { useApp } from "../../../context/AppContext";
 import { useAuth } from "../../../context/AuthContext";
-import { FileText, CheckCircle2, ChevronRight, Activity, PlusCircle, Trash2 } from "lucide-react";
+import { FileText, CheckCircle2, ChevronRight, Activity, PlusCircle, Trash2, Pencil } from "lucide-react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/common/Button";
 
@@ -169,6 +169,13 @@ const CreatorDashboard = () => {
                         >
                           🚀 Visit
                         </a>
+                        <Link
+                          to={`/creator/experience/edit/${exp.id}`}
+                          className="p-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded text-[10px] cursor-pointer transition-colors"
+                          title="Edit Experience & Media"
+                        >
+                          <Pencil size={13} />
+                        </Link>
                         <button
                           onClick={() => {
                             if (window.confirm(`Delete experience link "/e/${exp.slug}"?`)) {

@@ -184,6 +184,10 @@ const DefaultRoutes = () => {
           path="/creator/experience/create/:enquiryId"
           element={<ExperienceCreator />}
         />
+        <Route
+          path="/creator/experience/edit/:expId"
+          element={<ExperienceCreator />}
+        />
       </Route>
 
       {/* 5. Dedicated Logout Route */}

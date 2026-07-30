@@ -18,11 +18,22 @@ import BirthdayCinematicLove from "../../experience/templates/birthday/BirthdayC
 import BirthdayBelatedApology from "../../experience/templates/birthday/BirthdayBelatedApology";
 
 const ExperienceCreator = () => {
-  const { enquiryId } = useParams();
+  const { enquiryId, expId } = useParams();
   const navigate = useNavigate();
-  const { enquiries, templates, categories, addExperience, updateEnquiryStatus, fetchApiData } = useApp();
+  const { enquiries, experiences, templates, categories, addExperience, updateEnquiryStatus, fetchApiData } = useApp();
 
   const [activeEnquiry, setActiveEnquiry] = useState(null);
+
+  // Find target experience if editing an existing published link
+  const targetExp = expId
+    ? experiences.find((e) => e.id === expId || e.slug === expId || String(e.id) === String(expId))
+    : null;
+
+  useEffect(() => {
+    if (expId && !targetExp) {
+      fetchApiData();
+    }
+  }, [expId, targetExp]);
 
   useEffect(() => {
     const memoryEnq = enquiries.find((e) => e.id === enquiryId || String(e.id) === String(enquiryId));
@@ -33,13 +44,15 @@ const ExperienceCreator = () => {
     }
   }, [enquiryId, enquiries]);
 
-  // Find the enquiry
-  const enquiry = activeEnquiry || enquiries.find((e) => e.id === enquiryId || String(e.id) === String(enquiryId));
+  // Find the enquiry or derive from targetExp
+  const enquiry = targetExp
+    ? { id: targetExp.id, clientName: targetExp.clientName || targetExp.client_name || "Client", category: targetExp.category || "birthday" }
+    : activeEnquiry || enquiries.find((e) => e.id === enquiryId || String(e.id) === String(enquiryId));
 
-  // Filter templates matching this enquiry category (safe optional chaining)
+  // Filter templates matching this enquiry category
   const availableTemplates = enquiry 
-    ? templates.filter((t) => t.category === enquiry.category)
-    : [];
+    ? templates.filter((t) => t.category === enquiry.category || !t.category)
+    : templates;
 
   // Studio states (placed unconditionally at the top)
   const [selectedTemplateId, setSelectedTemplateId] = useState("");
@@ -52,9 +65,20 @@ const ExperienceCreator = () => {
 
   const initialLoadRef = useRef(false);
 
-  // Synchronize dynamic form data once the enquiry loads from context
+  // Synchronize target experience data if in Edit Mode
   useEffect(() => {
-    if (enquiry && enquiry.submittedDetails && !initialLoadRef.current) {
+    if (targetExp && targetExp.data && !initialLoadRef.current) {
+      console.log("Loading published experience into Creator Studio for editing:", targetExp);
+      setFormData(targetExp.data);
+      setSlug(targetExp.slug);
+      setSelectedTemplateId(targetExp.templateId || targetExp.template_slug || "birthday-belated-apology");
+      initialLoadRef.current = true;
+    }
+  }, [targetExp]);
+
+  // Synchronize dynamic form data once the enquiry loads from context (if not editing)
+  useEffect(() => {
+    if (!targetExp && enquiry && enquiry.submittedDetails && !initialLoadRef.current) {
       console.log("Syncing form data with loaded enquiry details:", enquiry.submittedDetails);
       
       // Double-safe: Normalise keys to have both camelCase and snake_case versions
@@ -76,7 +100,7 @@ const ExperienceCreator = () => {
       }));
       initialLoadRef.current = true;
     }
-  }, [enquiry]);
+  }, [enquiry, targetExp]);
 
   // Synchronize template selection once the available templates list loads
   useEffect(() => {
