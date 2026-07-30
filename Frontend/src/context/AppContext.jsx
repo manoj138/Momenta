@@ -179,20 +179,24 @@ export const AppProvider = ({ children }) => {
         console.warn("Backend Enquiries API notice:", e.message);
       }
 
-      try {
-        const userRes = await userService.getAll();
-        if (userRes && userRes.status && userRes.data && userRes.data.length > 0) {
-          const formattedUsers = userRes.data.map(u => ({
-            id: String(u.id),
-            name: u.name,
-            email: u.email,
-            role: u.role,
-            status: u.status
-          }));
-          setAdmins(formattedUsers);
+      const userStr = localStorage.getItem("users");
+      const currentUser = userStr ? JSON.parse(userStr) : null;
+      if (currentUser && (currentUser.role === "superadmin" || currentUser.role === "super_admin")) {
+        try {
+          const userRes = await userService.getAll();
+          if (userRes && userRes.status && userRes.data && userRes.data.length > 0) {
+            const formattedUsers = userRes.data.map(u => ({
+              id: String(u.id),
+              name: u.name,
+              email: u.email,
+              role: u.role,
+              status: u.status
+            }));
+            setAdmins(formattedUsers);
+          }
+        } catch (e) {
+          console.warn("Backend Users API notice:", e.message);
         }
-      } catch (e) {
-        console.warn("Backend Users API notice:", e.message);
       }
     }
   };
