@@ -9,14 +9,18 @@ const ExperienceSchema = new mongoose.Schema({
         lowercase: true
     },
     template_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Template',
-        required: [true, 'Template reference is required']
+        type: mongoose.Schema.Types.Mixed,
+        ref: 'Template'
     },
     category_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Category',
-        required: [true, 'Category reference is required']
+        type: mongoose.Schema.Types.Mixed,
+        ref: 'Category'
+    },
+    template_slug: {
+        type: String
+    },
+    category_slug: {
+        type: String
     },
     title: {
         type: String,

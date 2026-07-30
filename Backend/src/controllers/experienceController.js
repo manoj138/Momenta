@@ -39,16 +39,28 @@ const getExperienceBySlug = async (req, res) => {
 
 const createExperience = async (req, res) => {
     try {
-        const { slug } = req.body;
-        if (slug) {
-            const existing = await Experience.findOne({ slug });
+        const payload = { ...req.body };
+        if (payload.slug) {
+            const existing = await Experience.findOne({ slug: payload.slug });
             if (existing) {
-                return handle422(res, { slug: 'This URL slug is already taken. Please choose another one.' });
+                // If it already exists, update it instead of crashing with 422!
+                existing.set(payload);
+                await existing.save();
+                return handle200(res, existing, 'Experience updated successfully');
             }
         }
-        const experience = await Experience.create(req.body);
+        if (payload.template_id && !mongoose.Types.ObjectId.isValid(payload.template_id)) {
+            payload.template_slug = String(payload.template_id);
+            delete payload.template_id;
+        }
+        if (payload.category_id && !mongoose.Types.ObjectId.isValid(payload.category_id)) {
+            payload.category_slug = String(payload.category_id);
+            delete payload.category_id;
+        }
+        const experience = await Experience.create(payload);
         return handle201(res, experience, 'Experience created successfully');
     } catch (error) {
+        console.error("Error creating experience:", error);
         return formatSequelizeError(res, error);
     }
 };

@@ -159,10 +159,32 @@ const ExperienceViewer = () => {
         console.warn("API lookup failed, checking local context fallback:", err);
       }
 
-      // Context Fallback
+      // Context & LocalStorage Fallbacks
+      let foundLocal = contextExperiences.find((e) => e.slug === slug);
+
+      if (!foundLocal) {
+        try {
+          const storedExps = localStorage.getItem("momenta_local_experiences");
+          if (storedExps) {
+            const parsedList = JSON.parse(storedExps);
+            foundLocal = parsedList.find((e) => e.slug === slug);
+          }
+        } catch (e) {
+          console.warn("Failed to parse local stored experiences:", e);
+        }
+      }
+
       if (isMounted) {
-        const foundLocal = contextExperiences.find((e) => e.slug === slug);
-        setExperience(foundLocal || null);
+        if (foundLocal) {
+          setExperience({
+            ...foundLocal,
+            templateId: foundLocal.templateId || foundLocal.template?.slug || "birthday-cinematic-love",
+            status: "published",
+            is_published: true
+          });
+        } else {
+          setExperience(null);
+        }
         setLoading(false);
       }
     };

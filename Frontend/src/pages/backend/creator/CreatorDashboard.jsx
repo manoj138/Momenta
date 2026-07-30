@@ -6,8 +6,19 @@ import { Link } from "react-router-dom";
 import Button from "../../../components/common/Button";
 
 const CreatorDashboard = () => {
-  const { enquiries, experiences, categories } = useApp();
+  const { enquiries, experiences, categories, fetchApiData } = useApp();
   const { user } = useAuth();
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+
+  React.useEffect(() => {
+    fetchApiData();
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchApiData();
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
 
   // Filter tasks assigned to this creator OR unassigned new customer submissions
   const creatorTasks = enquiries.filter(
@@ -31,6 +42,15 @@ const CreatorDashboard = () => {
           <h1 className="text-3xl font-extrabold tracking-tight">Creator Studio Dashboard</h1>
           <p className="text-gray-400 text-sm">Welcome back, {user?.name}. Start creating immersive digital experiences below.</p>
         </div>
+        <Button
+          variant="outline"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="bg-white/5 border-white/10 hover:bg-white/10 text-xs font-bold px-4 py-2 cursor-pointer flex items-center gap-2"
+        >
+          <Activity size={14} className={isRefreshing ? "animate-spin text-brand-400" : "text-brand-400"} />
+          <span>{isRefreshing ? "Refreshing Queue..." : "Refresh Live Queue"}</span>
+        </Button>
       </div>
 
       {/* Metric summary Cards */}

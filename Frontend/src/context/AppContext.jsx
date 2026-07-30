@@ -275,16 +275,25 @@ export const AppProvider = ({ children }) => {
   // Experiences
   const addExperience = (experience) => {
     const fullExperience = {
-      id: `exp_${Date.now()}`,
+      id: experience.id || `exp_${Date.now()}`,
       createdAt: new Date().toISOString(),
-      status: "draft",
+      status: "published",
+      is_published: true,
       ...experience,
       data: {
         rsvpList: [],
         ...experience.data
       }
     };
-    setExperiences((prev) => [fullExperience, ...prev]);
+    setExperiences((prev) => {
+      const updated = [fullExperience, ...prev.filter(e => e.slug !== fullExperience.slug)];
+      try {
+        localStorage.setItem("momenta_local_experiences", JSON.stringify(updated));
+      } catch (e) {
+        console.warn("Failed to persist local experiences:", e);
+      }
+      return updated;
+    });
     return fullExperience;
   };
   const updateExperience = (id, updatedFields) => {
@@ -312,6 +321,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
+        fetchApiData,
         categories,
         templates,
         admins,

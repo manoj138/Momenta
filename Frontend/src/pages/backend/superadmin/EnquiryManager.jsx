@@ -6,10 +6,21 @@ import Modal from "../../../components/common/Modal";
 import { enquiryService } from "../../../services/enquiryService";
 
 const EnquiryManager = () => {
-  const { enquiries, categories, admins, updateEnquiryStatus } = useApp();
+  const { enquiries, categories, admins, updateEnquiryStatus, fetchApiData } = useApp();
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [filterStatus, setFilterStatus] = useState("all");
   const [search, setSearch] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  React.useEffect(() => {
+    fetchApiData();
+  }, []);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchApiData();
+    setTimeout(() => setIsRefreshing(false), 500);
+  };
 
   // Handler to assign and change status
   const handleUpdate = async (id, status, assignedTo, notes = "") => {

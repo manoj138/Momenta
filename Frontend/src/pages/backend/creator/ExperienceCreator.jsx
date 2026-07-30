@@ -18,10 +18,21 @@ import BirthdayCinematicLove from "../../experience/templates/birthday/BirthdayC
 const ExperienceCreator = () => {
   const { enquiryId } = useParams();
   const navigate = useNavigate();
-  const { enquiries, templates, categories, addExperience, updateEnquiryStatus } = useApp();
+  const { enquiries, templates, categories, addExperience, updateEnquiryStatus, fetchApiData } = useApp();
+
+  const [activeEnquiry, setActiveEnquiry] = useState(null);
+
+  useEffect(() => {
+    const memoryEnq = enquiries.find((e) => e.id === enquiryId || String(e.id) === String(enquiryId));
+    if (memoryEnq) {
+      setActiveEnquiry(memoryEnq);
+    } else {
+      fetchApiData();
+    }
+  }, [enquiryId, enquiries]);
 
   // Find the enquiry
-  const enquiry = enquiries.find((e) => e.id === enquiryId);
+  const enquiry = activeEnquiry || enquiries.find((e) => e.id === enquiryId || String(e.id) === String(enquiryId));
 
   // Filter templates matching this enquiry category (safe optional chaining)
   const availableTemplates = enquiry 
@@ -147,13 +158,16 @@ const ExperienceCreator = () => {
     const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
     const activeCategoryObj = categories.find((c) => c.id === enquiry.category);
 
-    // Create the experience payload
+    const isMongoId = (id) => typeof id === "string" && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id);
+
     const experiencePayload = {
       slug: slug.trim(),
-      template_id: selectedTemplate?.dbId || selectedTemplateId,
-      category_id: activeCategoryObj?.dbId || enquiry.categoryId,
-      title: `${enquiry.clientName}'s Experience`,
-      client_name: enquiry.clientName,
+      template_id: isMongoId(selectedTemplate?.dbId) ? selectedTemplate.dbId : undefined,
+      category_id: isMongoId(activeCategoryObj?.dbId) ? activeCategoryObj.dbId : undefined,
+      template_slug: selectedTemplateId,
+      category_slug: enquiry?.category || "birthday",
+      title: `${enquiry?.clientName || "Client"}'s Experience`,
+      client_name: enquiry?.clientName || "Client",
       is_published: true,
       data: formData,
     };
