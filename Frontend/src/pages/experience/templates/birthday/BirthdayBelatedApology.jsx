@@ -266,10 +266,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
     }
   };
 
-  // Dodging "Still a little mad!" Button
+  // Dodging "Still a little mad!" Button (Mobile Bounded)
   const handleNoHover = () => {
-    const randomX = (Math.random() - 0.5) * 220;
-    const randomY = (Math.random() - 0.5) * 160;
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 640;
+    const maxOffset = isMobile ? 80 : 180;
+    const randomX = (Math.random() - 0.5) * maxOffset;
+    const randomY = (Math.random() - 0.5) * (maxOffset * 0.7);
     setNoButtonPos({ x: randomX, y: randomY });
   };
 
@@ -308,6 +310,9 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
 
     const scratch = (e) => {
       if (!isDrawing.current) return;
+      if (e.touches && e.cancelable) {
+        e.preventDefault();
+      }
       const { x, y } = getPos(e);
       ctx.globalCompositeOperation = "destination-out";
       ctx.beginPath();
@@ -564,50 +569,50 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
           </div>
 
           {/* 3D Scattered Overlapping Mosaic Collage */}
-          <div className="flex flex-wrap items-center justify-center gap-2 md:gap-0 w-full my-6 relative py-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-2 md:gap-0 w-full my-4 sm:my-6 relative py-2 sm:py-4">
             {/* Photo 1 */}
-            <div className="relative group bg-white p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[-8deg] -translate-y-2 hover:rotate-0 hover:scale-125 hover:z-30 transition-all duration-300 w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200">
+            <div className="relative group bg-white p-2.5 sm:p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[-4deg] sm:rotate-[-8deg] -translate-y-1 sm:-translate-y-2 hover:rotate-0 hover:scale-110 sm:hover:scale-125 hover:z-30 transition-all duration-300 w-36 sm:w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
                 <Heart size={12} className="text-white fill-white" />
               </div>
-              <img src={photo1} alt="Memory 1" className="w-full h-48 object-cover rounded-xl mb-2.5 shadow-inner" />
-              <p className="font-serif italic text-xs font-extrabold text-slate-800 tracking-tight">"Timeless Smile ✨"</p>
+              <img src={photo1} alt="Memory 1" className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner" />
+              <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Timeless Smile ✨"</p>
             </div>
 
             {/* Photo 2 */}
-            <div className="relative group bg-white p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[-3deg] translate-y-1 md:-ml-6 hover:rotate-0 hover:scale-125 hover:z-30 transition-all duration-300 w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200 z-10">
+            <div className="relative group bg-white p-2.5 sm:p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[-2deg] sm:rotate-[-3deg] translate-y-1 md:-ml-6 hover:rotate-0 hover:scale-110 sm:hover:scale-125 hover:z-30 transition-all duration-300 w-36 sm:w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200 z-10">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center shadow-md">
                 <Sparkles size={12} className="text-white" />
               </div>
-              <img src={photo2} alt="Memory 2" className="w-full h-48 object-cover rounded-xl mb-2.5 shadow-inner" />
-              <p className="font-serif italic text-xs font-extrabold text-slate-800 tracking-tight">"Favorite Adventures 💖"</p>
+              <img src={photo2} alt="Memory 2" className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner" />
+              <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Favorite Adventures 💖"</p>
             </div>
 
             {/* Photo 3 (Hero Center) */}
-            <div className="relative group bg-white p-3.5 rounded-2xl shadow-[0_20px_50px_rgba(245,158,11,0.3)] text-slate-900 rotate-[0deg] -translate-y-4 scale-110 md:-ml-6 z-20 hover:scale-130 hover:z-40 transition-all duration-300 w-48 md:w-52 shrink-0 cursor-pointer border-2 border-amber-400">
+            <div className="relative group bg-white p-3 sm:p-3.5 rounded-2xl shadow-[0_20px_50px_rgba(245,158,11,0.3)] text-slate-900 rotate-[0deg] -translate-y-2 sm:-translate-y-4 scale-105 sm:scale-110 md:-ml-6 z-20 hover:scale-115 sm:hover:scale-130 hover:z-40 transition-all duration-300 w-40 sm:w-48 md:w-52 shrink-0 cursor-pointer border-2 border-amber-400">
               <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 z-30 w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 via-rose-500 to-purple-600 flex items-center justify-center shadow-lg">
                 <Award size={14} className="text-white" />
               </div>
-              <img src={photo3} alt="Memory 3" className="w-full h-52 object-cover rounded-xl mb-2.5 shadow-inner" />
-              <p className="font-serif italic text-xs font-black text-rose-600 tracking-tight">"Warmth & Laughter 🌟"</p>
+              <img src={photo3} alt="Memory 3" className="w-full h-40 sm:h-52 object-cover rounded-xl mb-2 shadow-inner" />
+              <p className="font-serif italic text-[11px] sm:text-xs font-black text-rose-600 tracking-tight">"Warmth & Laughter 🌟"</p>
             </div>
 
             {/* Photo 4 */}
-            <div className="relative group bg-white p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[4deg] translate-y-2 md:-ml-6 hover:rotate-0 hover:scale-125 hover:z-30 transition-all duration-300 w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200 z-10">
+            <div className="relative group bg-white p-2.5 sm:p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[2deg] sm:rotate-[4deg] translate-y-1 md:-ml-6 hover:rotate-0 hover:scale-110 sm:hover:scale-125 hover:z-30 transition-all duration-300 w-36 sm:w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200 z-10">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-md">
                 <Smile size={12} className="text-white" />
               </div>
-              <img src={photo4} alt="Memory 4" className="w-full h-48 object-cover rounded-xl mb-2.5 shadow-inner" />
-              <p className="font-serif italic text-xs font-extrabold text-slate-800 tracking-tight">"Unforgettable Joy 🥳"</p>
+              <img src={photo4} alt="Memory 4" className="w-full h-36 sm:h-48 object-cover rounded-xl mb-2 shadow-inner" />
+              <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Unforgettable Joy 🥳"</p>
             </div>
 
             {/* Photo 5 */}
-            <div className="relative group bg-white p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[9deg] -translate-y-1 md:-ml-6 hover:rotate-0 hover:scale-125 hover:z-30 transition-all duration-300 w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200">
+            <div className="relative group bg-white p-2.5 sm:p-3 rounded-2xl shadow-2xl text-slate-900 rotate-[4deg] sm:rotate-[9deg] -translate-y-1 md:-ml-6 hover:rotate-0 hover:scale-110 sm:hover:scale-125 hover:z-30 transition-all duration-300 w-36 sm:w-44 md:w-48 shrink-0 cursor-pointer border border-amber-200">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md">
                 <Heart size={12} className="text-white fill-white" />
               </div>
-              <img src={photo5} alt="Memory 5" className="w-full h-48 object-cover rounded-lg mb-2.5 shadow-inner" />
-              <p className="font-serif italic text-xs font-extrabold text-slate-800 tracking-tight">"Pure Magic Together 💖"</p>
+              <img src={photo5} alt="Memory 5" className="w-full h-36 sm:h-48 object-cover rounded-lg mb-2 shadow-inner" />
+              <p className="font-serif italic text-[11px] sm:text-xs font-extrabold text-slate-800 tracking-tight">"Pure Magic Together 💖"</p>
             </div>
           </div>
 
