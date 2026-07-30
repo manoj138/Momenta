@@ -8,6 +8,7 @@ import Button from "../../../components/common/Button";
 import DynamicFormRenderer from "../../../components/features/DynamicFormRenderer";
 import DevicePreviewMock from "../../../components/common/DevicePreviewMock";
 import { experienceService } from "../../../services/experienceService";
+import { enquiryService } from "../../../services/enquiryService";
 
 // Template Components
 import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGold";
@@ -187,7 +188,15 @@ const ExperienceCreator = () => {
       data: formData,
     });
 
-    // Mark enquiry status as "Completed"
+    // Mark enquiry status as "Completed" on backend API and local state
+    try {
+      await enquiryService.updateStatus(enquiry.id, {
+        status: "Completed",
+        notes: `Published live link: /e/${slug}`
+      });
+    } catch (err) {
+      console.warn("Failed to update enquiry status on backend:", err);
+    }
     updateEnquiryStatus(enquiry.id, "Completed", `Published live link: /e/${slug}`);
     setIsPublished(true);
   };

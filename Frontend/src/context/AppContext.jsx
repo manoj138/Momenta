@@ -139,19 +139,34 @@ export const AppProvider = ({ children }) => {
     if (token) {
       try {
         const expRes = await experienceService.getAll();
+        let apiExps = [];
         if (expRes && expRes.status && expRes.data && expRes.data.length > 0) {
-          const formattedExps = expRes.data.map(e => ({
-            id: String(e.id),
+          apiExps = expRes.data.map(e => ({
+            id: String(e.id || e._id),
             slug: e.slug,
-            templateId: e.template?.slug || e.template_id,
-            category: e.category?.slug || e.category_id,
-            clientName: e.client_name || e.title,
+            templateId: e.template?.slug || e.template_slug || e.template_id,
+            category: e.category?.slug || e.category_slug || e.category_id,
+            clientName: e.client_name || e.clientName || e.title,
             status: e.is_published ? "published" : "draft",
             data: e.data,
             createdAt: e.createdAt
           }));
-          setExperiences(formattedExps);
         }
+
+        let localExps = [];
+        try {
+          const stored = localStorage.getItem("momenta_local_experiences");
+          if (stored) localExps = JSON.parse(stored);
+        } catch (err) {}
+
+        const mergedExps = [...apiExps];
+        localExps.forEach(localExp => {
+          if (!mergedExps.some(e => e.slug === localExp.slug)) {
+            mergedExps.push(localExp);
+          }
+        });
+
+        setExperiences(mergedExps);
       } catch (e) {
         console.warn("Backend Experiences API notice:", e.message);
       }
