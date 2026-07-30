@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, Navigate } from "react-router-dom";
 import Home from "../pages/frontend/Home";
 import TemplateShowcase from "../pages/frontend/TemplateShowcase";
 import TemplateDemo from "../pages/frontend/TemplateDemo";
