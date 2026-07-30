@@ -6,27 +6,38 @@ import Button from "../../../components/common/Button";
 const ExperienceManager = () => {
   const { experiences, templates, categories, updateExperience, deleteExperience } = useApp();
   const [search, setSearch] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("all");
+  const [copiedId, setCopiedId] = useState(null);
 
   const handleToggleStatus = (id, currentStatus) => {
     updateExperience(id, { status: currentStatus === "published" ? "draft" : "published" });
   };
 
-  const filtered = experiences.filter((e) =>
-    e.clientName.toLowerCase().includes(search.toLowerCase()) ||
-    e.slug.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleCopyLink = (exp) => {
+    const fullUrl = `${window.location.origin}/e/${exp.slug}`;
+    navigator.clipboard.writeText(fullUrl);
+    setCopiedId(exp.id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const filtered = experiences.filter((e) => {
+    const matchesSearch = (e.clientName || "").toLowerCase().includes(search.toLowerCase()) ||
+      (e.slug || "").toLowerCase().includes(search.toLowerCase());
+    const matchesTemplate = selectedTemplate === "all" || e.templateId === selectedTemplate || e.componentName === selectedTemplate;
+    return matchesSearch && matchesTemplate;
+  });
 
   return (
     <div className="p-6 md:p-10 space-y-8 bg-slate-950 min-h-screen text-white">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-extrabold tracking-tight">Active Experience Directory</h1>
-        <p className="text-gray-400 text-sm">Review, monitor guest RSVP logs, and toggle access states of all published cards.</p>
+        <p className="text-gray-400 text-sm">Review, monitor guest RSVP logs, and filter live customer links by template.</p>
       </div>
 
       {/* Toolbar */}
-      <div className="flex gap-4 items-center bg-slate-900 p-5 rounded-2xl border border-white/5 max-w-md">
-        <div className="relative w-full">
+      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center bg-slate-900 p-5 rounded-2xl border border-white/5">
+        <div className="relative flex-1">
           <span className="absolute inset-y-0 left-3 flex items-center text-gray-500">
             <Search size={16} />
           </span>
@@ -35,9 +46,28 @@ const ExperienceManager = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search client or link slug..."
-            className="w-full pl-10 pr-4 py-2 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors"
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors"
           />
         </div>
+
+        {/* Dynamic Template Filter Dropdown */}
+        <select
+          value={selectedTemplate}
+          onChange={(e) => setSelectedTemplate(e.target.value)}
+          className="px-4 py-2.5 bg-slate-950 border border-white/10 rounded-xl text-xs text-white focus:outline-none focus:border-brand-500 cursor-pointer"
+        >
+          <option value="all">📁 All Templates ({experiences.length} links)</option>
+          {templates && templates.map((tpl) => {
+            const count = experiences.filter(
+              (exp) => exp.templateId === tpl.id || exp.componentName === tpl.component_name || exp.templateId === tpl.slug || exp.componentName === tpl.id
+            ).length;
+            return (
+              <option key={tpl.id} value={tpl.component_name || tpl.id || tpl.slug}>
+                ✨ {tpl.name} ({count} live links)
+              </option>
+            );
+          })}
+        </select>
       </div>
 
       {/* Grid catalog */}
@@ -95,10 +125,18 @@ const ExperienceManager = () => {
                     </a>
 
                     <button
+                      onClick={() => handleCopyLink(exp)}
+                      className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-300 hover:text-white transition-colors cursor-pointer flex items-center gap-1 text-[11px]"
+                      title="Copy URL"
+                    >
+                      <span>{copiedId === exp.id ? "✓ Copied" : "📋 Copy"}</span>
+                    </button>
+
+                    <button
                       onClick={() => handleToggleStatus(exp.id, exp.status)}
                       className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-300 hover:text-white transition-colors cursor-pointer flex items-center gap-1 text-[11px]"
                     >
-                      <span>Toggle Status</span>
+                      <span>{exp.status === "published" ? "Disable" : "Publish"}</span>
                     </button>
                   </div>
 

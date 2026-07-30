@@ -105,21 +105,70 @@ const CreatorDashboard = () => {
           )}
         </div>
 
-        {/* Quick Guidelines */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-brand-400">Workflow Rules</h3>
-          <div className="p-5 bg-slate-900 border border-white/5 rounded-2xl text-xs text-gray-300 space-y-4">
-            <div>
-              <span className="font-bold text-brand-400 block mb-1">1. Review Inquiries</span>
-              <p className="text-gray-400">Check client notes and verify details before selecting a template.</p>
+        {/* Quick Guidelines & Active Links Directory */}
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-brand-400">Live Customer Links Directory</h3>
+            <div className="p-5 bg-slate-900 border border-white/5 rounded-2xl space-y-4 max-h-96 overflow-y-auto">
+              {experiences.length === 0 ? (
+                <p className="text-gray-500 text-xs">No active customer links created yet.</p>
+              ) : (
+                experiences.map((exp) => (
+                  <div key={exp.id} className="p-3 bg-slate-950 border border-white/5 rounded-xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-white truncate">{exp.clientName}</span>
+                      <span className="text-[9px] uppercase px-2 py-0.5 rounded font-bold bg-emerald-500/10 text-emerald-400">
+                        {exp.status || "published"}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-pink-400 font-medium">
+                      📁 {exp.componentName || exp.templateId || "Birthday Cinematic Love"}
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
+                      <span className="font-mono text-gray-400 truncate">/e/{exp.slug}</span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/e/${exp.slug}`);
+                            alert(`Copied link: ${window.location.origin}/e/${exp.slug}`);
+                          }}
+                          className="px-2 py-1 bg-white/5 hover:bg-white/10 rounded text-[10px] text-gray-300 hover:text-white cursor-pointer"
+                        >
+                          📋 Copy
+                        </button>
+                        <a
+                          href={`/e/${exp.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-2 py-1 bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 rounded text-[10px] cursor-pointer"
+                        >
+                          🚀 Visit
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
-            <div>
-              <span className="font-bold text-brand-400 block mb-1">2. Build live preview</span>
-              <p className="text-gray-400">Use the Creator studio split panel. Upload high resolution assets for best aesthetics.</p>
-            </div>
-            <div>
-              <span className="font-bold text-brand-400 block mb-1">3. Generate Link</span>
-              <p className="text-gray-400">Set the custom URL slug according to client's choice and share it for feedback.</p>
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-brand-400">Workflow Rules</h3>
+            <div className="p-5 bg-slate-900 border border-white/5 rounded-2xl text-xs text-gray-300 space-y-4">
+              <div>
+                <span className="font-bold text-brand-400 block mb-1">1. Review Inquiries</span>
+                <p className="text-gray-400">Check client notes and verify details before selecting a template.</p>
+              </div>
+              <div>
+                <span className="font-bold text-brand-400 block mb-1">2. Build live preview</span>
+                <p className="text-gray-400">Use the Creator studio split panel. Upload high resolution assets for best aesthetics.</p>
+              </div>
+              <div>
+                <span className="font-bold text-brand-400 block mb-1">3. Generate Link</span>
+                <p className="text-gray-400">Set the custom URL slug according to client's choice and share it for feedback.</p>
+              </div>
             </div>
           </div>
         </div>

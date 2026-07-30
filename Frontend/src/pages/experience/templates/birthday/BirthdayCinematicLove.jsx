@@ -1187,7 +1187,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               })}
             </div>
 
-            <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-2 sm:pt-4 px-1 gap-3 relative">
+            <div className="w-full flex flex-col-reverse sm:flex-row items-center justify-between pt-2 sm:pt-4 px-1 gap-3 relative">
               {/* Animated "I Love You" Sticker GIF (Exclusive to Step 7 Grand Finale) */}
               <div className="w-20 h-20 sm:w-28 sm:h-28 relative flex-shrink-0 animate-bounce">
                 <img 
