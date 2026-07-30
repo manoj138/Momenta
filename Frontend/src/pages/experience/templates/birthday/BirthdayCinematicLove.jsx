@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useApp } from "../../../../context/AppContext";
-import { Sparkles, ArrowRight, RotateCcw, Camera, Heart } from "lucide-react";
+import { Sparkles, ArrowRight, RotateCcw, Camera, Heart, ChevronLeft } from "lucide-react";
 import { guestService } from "../../../../services/guestService";
 import TemplateControls from "../../../../components/common/TemplateControls";
 
@@ -27,7 +27,8 @@ const translations = {
     virtualHug: "Here is virtual hug for you",
     iloveYou: "I LOVE YOU ❤️",
     meanToMe: "You don't know how much you mean to me",
-    loadingText: "आठवणींचा पेटारा उघडत आहे..."
+    loadingText: "आठवणींचा पेटारा उघडत आहे...",
+    backBtn: "Back"
   },
   en: {
     heyHeader: "HEY!!",
@@ -51,17 +52,20 @@ const translations = {
     virtualHug: "Here is virtual hug for you",
     iloveYou: "I LOVE YOU ❤️",
     meanToMe: "You don't know how much you mean to me",
-    loadingText: "Unlocking Birthday Wishes..."
+    loadingText: "Unlocking Birthday Wishes...",
+    backBtn: "Back"
   }
 };
 
-// Exact Image Asset Paths from public/birthday/birthday love
+// Exact Image Asset Paths from public/birthday/birthday love - 100% Unique & Step-Wise
 const ASSETS = {
   puppyRose: encodeURI("/birthday/birthday love/It's Nearly Valentine's Day, And This Puppy Is So Ready For It!.png"),
+  angryPuppy: encodeURI("/birthday/birthday love/angry puppy.png"),
+  flowerBouquet: encodeURI("/birthday/birthday love/buke.png"),
   partyCakePuppy: encodeURI("/birthday/birthday love/Party Pup_ Adorable Puppy Celebrating with Birthday Cake!.png"),
   pinkEnvelope: encodeURI("/birthday/birthday love/Pink Valentines Clipart - Romantic Love Art for Celebrations.png"),
-  stickerGif: encodeURI("/birthday/birthday love/Post by @lovelysticker · 8 images.gif"),
   coquetteLollipop: encodeURI("/birthday/birthday love/Download premium png of PNG Coquette red lollipop confectionery furniture sweets_ by Ning about coquette, pink coquette png, coquette png, coquette pink, and coquette aesthetic 14797369.png"),
+  stickerGif: encodeURI("/birthday/birthday love/Post by @lovelysticker · 8 images.gif"),
   cake: encodeURI("/birthday/birthday love/cake.png")
 };
 
@@ -70,15 +74,54 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   
   // Story Step State Machine: 0 to 8
   const [storyStep, setStoryStep] = useState(0);
+  const [stepHistory, setStepHistory] = useState([0]);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingDone, setLoadingDone] = useState(false);
   const [isEnvelopeOpened, setIsEnvelopeOpened] = useState(false);
   const [isLocketOpen, setIsLocketOpen] = useState(false);
 
+  // 3D Perspective Tilt State
+  const [cardTilt, setCardTilt] = useState({ x: 0, y: 0 });
+
   // Language & Font settings
   const [currentLang, setCurrentLang] = useState(data.language || "en");
   const lang = currentLang;
   const t = translations[lang] || translations.en;
+
+  // Background Image Preloading Hook (Preloads ALL assets into memory for instant step transitions)
+  useEffect(() => {
+    Object.values(ASSETS).forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  // Navigation Helpers (Step Forward & Back History Stack)
+  const goToStep = (nextStep) => {
+    setStoryStep(nextStep);
+    setStepHistory((prev) => [...prev, nextStep]);
+  };
+
+  const handleGoBack = () => {
+    if (stepHistory.length > 1) {
+      const newHistory = [...stepHistory];
+      newHistory.pop();
+      const prevStep = newHistory[newHistory.length - 1];
+      setStepHistory(newHistory);
+      setStoryStep(prevStep);
+    } else {
+      setStoryStep(0);
+    }
+  };
+
+  // Mouse / Touch 3D Tilt Tracking
+  const handleMouseMove = (e) => {
+    const { clientX, clientY } = e;
+    const { innerWidth, innerHeight } = window;
+    const x = ((clientY / innerHeight) - 0.5) * -12;
+    const y = ((clientX / innerWidth) - 0.5) * 12;
+    setCardTilt({ x, y });
+  };
 
   // 1. 0-100 Loader simulation
   useEffect(() => {
@@ -120,9 +163,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     return raw;
   };
 
-  // Canvas Particle System
+  // Canvas Real-Time Heart Rain & Confetti System
   const canvasRef = useRef(null);
   const confettiParticles = useRef([]);
+  const heartParticles = useRef([]);
 
   const triggerConfetti = () => {
     const canvas = canvasRef.current;
@@ -143,7 +187,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   };
 
   useEffect(() => {
-    if (!loadingDone || storyStep < 3) return;
+    if (!loadingDone) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -156,8 +200,37 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
+    // Initialize rising heart sparkles
+    for (let i = 0; i < 30; i++) {
+      heartParticles.current.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        size: Math.random() * 14 + 10,
+        speedY: Math.random() * 1.5 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.8,
+        alpha: Math.random() * 0.6 + 0.2
+      });
+    }
+
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. Draw Rising Heart Particles
+      heartParticles.current.forEach((h) => {
+        h.y -= h.speedY;
+        h.x += h.speedX;
+        if (h.y < -20) {
+          h.y = canvas.height + 20;
+          h.x = Math.random() * canvas.width;
+        }
+        ctx.save();
+        ctx.globalAlpha = h.alpha;
+        ctx.font = `${h.size}px sans-serif`;
+        ctx.fillText("❤️", h.x, h.y);
+        ctx.restore();
+      });
+
+      // 2. Draw Confetti Burst
       confettiParticles.current.forEach((p, idx) => {
         p.x += p.vx;
         p.y += p.vy;
@@ -176,6 +249,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
           confettiParticles.current.splice(idx, 1);
         }
       });
+
       animationFrameId = requestAnimationFrame(draw);
     };
     draw();
@@ -184,7 +258,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
       window.removeEventListener("resize", resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [loadingDone, storyStep]);
+  }, [loadingDone]);
 
   const getPhotos = () => {
     if (data.gallery && data.gallery.length > 0) return data.gallery;
@@ -198,7 +272,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   const photos = getPhotos();
 
   return (
-    <div className="relative min-h-screen bg-[#c2395d] text-slate-900 select-none overflow-x-hidden font-sans flex flex-col items-center justify-center p-2.5 sm:p-6">
+    <div 
+      onMouseMove={handleMouseMove}
+      className="relative min-h-screen bg-[#c2395d] text-slate-900 select-none overflow-x-hidden font-sans flex flex-col items-center justify-center p-2.5 sm:p-6 perspective-1000"
+    >
       
       {/* Background Deep Pink Striped Pattern */}
       <div 
@@ -209,30 +286,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
       />
 
       {/* 1. Cinematic Ambient Canvas Overlay */}
-      {storyStep >= 3 && (
-        <canvas 
-          ref={canvasRef} 
-          className="fixed inset-0 z-10 pointer-events-none"
-        />
-      )}
-
-      {/* Floating Hearts Ambient Overlay */}
-      <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <div 
-            key={i} 
-            className="absolute text-pink-300/40 animate-float"
-            style={{
-              top: `${15 + i * 14}%`,
-              left: `${10 + (i * 17) % 80}%`,
-              animationDelay: `${i * 0.7}s`,
-              fontSize: `${18 + i * 5}px`
-            }}
-          >
-            ❤️
-          </div>
-        ))}
-      </div>
+      <canvas 
+        ref={canvasRef} 
+        className="fixed inset-0 z-10 pointer-events-none"
+      />
 
       {/* 2. Premium Intro Loader */}
       {!loadingDone && (
@@ -273,18 +330,30 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         borderClass="border-pink-300/30"
       />
 
-      {/* MAIN FULL-SCREEN ORGANIC WAVY CONTAINER (100% Fully Responsive Layout) */}
+      {/* MAIN FULL-SCREEN ORGANIC WAVY CONTAINER WITH 3D PERSPECTIVE TILT */}
       <div 
-        className={`relative z-20 w-full max-w-4xl min-h-[75vh] sm:min-h-[85vh] max-h-[92vh] overflow-y-auto no-scrollbar bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-12 flex flex-col justify-between transition-all duration-700 shadow-[0_30px_70px_rgba(0,0,0,0.4)] ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative z-20 w-full max-w-4xl min-h-[75vh] sm:min-h-[85vh] max-h-[92vh] overflow-y-auto no-scrollbar bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-12 flex flex-col justify-between transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         style={{
+          transform: `rotateX(${cardTilt.x}deg) rotateY(${cardTilt.y}deg)`,
           borderRadius: `clamp(30px, 6vw, 60px) clamp(80px, 18vw, 240px) clamp(40px, 8vw, 80px) clamp(70px, 15vw, 200px) / clamp(60px, 12vw, 180px) clamp(35px, 6vw, 80px) clamp(80px, 16vw, 220px) clamp(30px, 5vw, 60px)`,
-          backgroundImage: `radial-gradient(#e2d9d2 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(#e2d9d2 1.2px, transparent 1.2px)`,
           backgroundSize: `24px 24px`
         }}
       >
+
+        {/* FLOATING BACK BUTTON (When storyStep > 0) */}
+        {storyStep > 0 && (
+          <button
+            onClick={handleGoBack}
+            className="absolute top-3 left-3 sm:top-5 sm:left-5 z-40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/90 hover:bg-white text-[#c2395d] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1 text-xs sm:text-sm font-bold font-fredoka border border-pink-200"
+          >
+            <ChevronLeft size={18} />
+            <span>{t.backBtn}</span>
+          </button>
+        )}
         
         {/* ========================================================= */}
-        {/* STEP 0: INITIAL TEASER SCREEN (Matching Reference Screenshot 1) */}
+        {/* STEP 0: INITIAL TEASER SCREEN (Unique Image: puppyRose)   */}
         {/* ========================================================= */}
         {storyStep === 0 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col sm:flex-row items-center sm:items-start justify-between relative animate-fade-in gap-4">
@@ -307,14 +376,14 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               {/* Pill Buttons */}
               <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 pt-4 sm:pt-6 font-fredoka">
                 <button
-                  onClick={() => setStoryStep(2)}
-                  className="px-6 xs:px-8 sm:px-12 py-2.5 xs:py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-lg hover:scale-110 hover:-rotate-2 active:scale-95 transition-all cursor-pointer border-2 border-white/30"
+                  onClick={() => goToStep(2)}
+                  className="px-6 xs:px-8 sm:px-12 py-2.5 xs:py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-lg hover:scale-110 hover:-rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 animate-glow-ring"
                 >
                   <u className="decoration-white underline-offset-4">{t.yesBtn}</u>
                 </button>
                 <button
-                  onClick={() => setStoryStep(1)}
-                  className="px-6 xs:px-8 sm:px-12 py-2.5 xs:py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-lg hover:scale-110 hover:rotate-2 active:scale-95 transition-all cursor-pointer border-2 border-white/30"
+                  onClick={() => goToStep(1)}
+                  className="px-6 xs:px-8 sm:px-12 py-2.5 xs:py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-lg hover:scale-110 hover:rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30"
                 >
                   <u className="decoration-white underline-offset-4">{t.noBtn}</u>
                 </button>
@@ -322,11 +391,13 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
             </div>
 
-            {/* Top Right Puppy Mascot - Responsive scaling */}
+            {/* Step 0 Unique Mascot: puppyRose */}
             <div className="relative sm:absolute sm:top-0 sm:right-4 w-36 h-36 xs:w-48 xs:h-48 sm:w-64 sm:h-64 z-10 animate-float flex-shrink-0">
               <img 
                 src={ASSETS.puppyRose} 
                 alt="Cute Puppy with Rose" 
+                loading="eager"
+                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-xl"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -339,19 +410,22 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 1: ANGRY TEASE SCREEN (HOW DARE YOU 😤)               */}
+        {/* STEP 1: ANGRY TEASE SCREEN (Unique Image: angryPuppy)     */}
         {/* ========================================================= */}
         {storyStep === 1 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-wobble-card">
             
+            {/* Step 1 Unique Mascot: angryPuppy */}
             <div className="relative w-44 h-44 xs:w-52 xs:h-52 sm:w-64 sm:h-64 my-1">
               <img 
-                src={ASSETS.stickerGif} 
+                src={ASSETS.angryPuppy} 
                 alt="Angry Puppy" 
+                loading="eager"
+                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-xl animate-pulse"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "/birthday/birthday kid boy.png";
+                  e.target.src = ASSETS.stickerGif;
                 }}
               />
               <span className="absolute top-0 right-2 text-3xl xs:text-5xl animate-bounce">💢</span>
@@ -362,7 +436,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
             </h1>
 
             <button
-              onClick={() => setStoryStep(0)}
+              onClick={handleGoBack}
               className="px-8 xs:px-10 sm:px-12 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base xs:text-lg sm:text-xl font-bold rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka"
             >
               <RotateCcw size={18} className="animate-spin-slow" />
@@ -373,19 +447,22 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 2: PRAISE SCREEN (That's a good Gurlll 🌻)           */}
+        {/* STEP 2: PRAISE SCREEN (Unique Image: flowerBouquet)       */}
         {/* ========================================================= */}
         {storyStep === 2 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in">
             
+            {/* Step 2 Unique Mascot: flowerBouquet */}
             <div className="relative w-48 h-48 xs:w-56 xs:h-56 sm:w-72 sm:h-72 my-1 animate-float">
               <img 
-                src={ASSETS.puppyRose} 
-                alt="Puppy with Kiss Marks" 
+                src={ASSETS.flowerBouquet} 
+                alt="Puppy with Flower Bouquet" 
+                loading="eager"
+                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-xl"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "/birthday/birthday teen girl.png";
+                  e.target.src = ASSETS.puppyRose;
                 }}
               />
               <span className="absolute bottom-2 right-2 text-3xl xs:text-4xl animate-bounce">💋🌻</span>
@@ -397,10 +474,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
             <button
               onClick={() => {
-                setStoryStep(3);
+                goToStep(3);
                 triggerConfetti();
               }}
-              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka"
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.clickToContinue}</u></span>
               <ArrowRight size={22} />
@@ -410,15 +487,18 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 3: MAIN HAPPY BIRTHDAY REVEAL CARD                    */}
+        {/* STEP 3: MAIN REVEAL CARD (Unique Image: partyCakePuppy)   */}
         {/* ========================================================= */}
         {storyStep === 3 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in">
             
+            {/* Step 3 Unique Mascot: partyCakePuppy */}
             <div className="relative w-48 h-48 xs:w-56 xs:h-56 sm:w-72 sm:h-72 my-1 animate-float">
               <img 
                 src={ASSETS.partyCakePuppy} 
                 alt="Party Pup with Cake" 
+                loading="eager"
+                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-xl"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -437,8 +517,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
             </div>
 
             <button
-              onClick={() => setStoryStep(4)}
-              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka"
+              onClick={() => goToStep(4)}
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
               <ArrowRight size={22} />
@@ -448,16 +528,17 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 4: DIGITAL PINK ENVELOPE SCREEN (3D Unfolding Flip)   */}
+        {/* STEP 4: PINK ENVELOPE SCREEN (Unique Image: pinkEnvelope)  */}
         {/* ========================================================= */}
         {storyStep === 4 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in">
             
+            {/* Step 4 Unique Asset: pinkEnvelope */}
             <div 
               onClick={() => {
                 setIsEnvelopeOpened(true);
                 setTimeout(() => {
-                  setStoryStep(5);
+                  goToStep(5);
                   triggerConfetti();
                 }, 700);
               }}
@@ -467,6 +548,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 <img 
                   src={ASSETS.pinkEnvelope} 
                   alt="Pink Romantic Envelope" 
+                  loading="eager"
+                  fetchpriority="high"
                   className="w-full h-full object-contain filter drop-shadow-2xl"
                 />
               </div>
@@ -480,7 +563,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 5: SURPRISE GIFT BOX SCREEN ("Here's a surprise...")  */}
+        {/* STEP 5: GIFT BOX SCREEN (Unique Image: coquetteLollipop)   */}
         {/* ========================================================= */}
         {storyStep === 5 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 relative animate-fade-in">
@@ -489,9 +572,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               {t.hereSurprise}
             </h1>
 
+            {/* Step 5 Unique Asset: coquetteLollipop */}
             <div 
               onClick={() => {
-                setStoryStep(6);
+                goToStep(6);
                 triggerConfetti();
               }}
               className="relative w-56 xs:w-64 sm:w-80 h-56 xs:h-64 sm:h-80 my-1 sm:my-2 flex flex-col items-center justify-center cursor-pointer group"
@@ -500,6 +584,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 <img 
                   src={ASSETS.coquetteLollipop} 
                   alt="Surprise Gift Sweets" 
+                  loading="eager"
+                  fetchpriority="high"
                   className="w-full h-full object-contain filter drop-shadow-2xl animate-float"
                   onError={(e) => {
                     e.target.onerror = null;
@@ -517,8 +603,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
             <div className="w-full flex justify-end pt-1 sm:pt-2">
               <div className="w-20 h-20 sm:w-24 sm:h-24 relative animate-bounce">
                 <img 
-                  src={ASSETS.partyCakePuppy} 
-                  alt="Party Puppy Mascot" 
+                  src={ASSETS.flowerBouquet} 
+                  alt="Flower Bouquet Mascot" 
+                  loading="eager"
+                  fetchpriority="high"
                   className="w-full h-full object-contain filter drop-shadow-md"
                 />
               </div>
@@ -528,7 +616,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 6: HEARTFELT LETTER WITH GOLDEN LOCKET               */}
+        {/* STEP 6: LETTER WITH 3D GOLDEN LOCKET (Unique: flowerBouquet) */}
         {/* ========================================================= */}
         {storyStep === 6 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in">
@@ -536,8 +624,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
             <div className="w-full bg-pink-50 border-2 border-pink-200 rounded-3xl p-4 xs:p-6 sm:p-10 space-y-4 sm:space-y-6 text-center relative shadow-inner">
               <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto -mt-10 sm:-mt-14 drop-shadow-lg animate-float">
                 <img 
-                  src={ASSETS.puppyRose} 
-                  alt="Puppy with Flower" 
+                  src={ASSETS.flowerBouquet} 
+                  alt="Flower Bouquet Mascot" 
+                  loading="eager"
+                  fetchpriority="high"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -546,24 +636,24 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 "{data.message || t.letterText}"
               </p>
 
-              {/* Interactive 3D Locket Opening */}
+              {/* Interactive 3D Golden Locket Hinge Opening */}
               <div 
                 onClick={() => setIsLocketOpen(!isLocketOpen)}
                 className="flex items-center justify-center gap-3 sm:gap-4 pt-1 sm:pt-2 cursor-pointer group"
               >
-                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 ${isLocketOpen ? "rotate-0 scale-110" : "-rotate-12 group-hover:rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[0]} alt="Locket Photo 1" className="w-full h-full object-cover rounded-full" />
+                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
+                  <img src={photos[0]} alt="Locket Photo 1" loading="eager" className="w-full h-full object-cover rounded-full" />
                 </div>
-                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 ${isLocketOpen ? "rotate-0 scale-110" : "rotate-12 group-hover:rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" className="w-full h-full object-cover rounded-full" />
+                <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
+                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" loading="eager" className="w-full h-full object-cover rounded-full" />
                 </div>
               </div>
             </div>
 
             <div className="w-full flex justify-end pt-1 sm:pt-2">
               <button
-                onClick={() => setStoryStep(7)}
-                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#a83650] hover:bg-[#8e2b42] text-white text-sm sm:text-base font-bold rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-white/30 font-fredoka"
+                onClick={() => goToStep(7)}
+                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-[#a83650] hover:bg-[#8e2b42] text-white text-sm sm:text-base font-bold rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-white/30 font-fredoka animate-glow-ring"
               >
                 <Camera size={16} />
                 <span><u className="decoration-white underline-offset-4">{t.clickHereBtn}</u></span>
@@ -574,7 +664,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 7: VIRTUAL HUG SCREEN (Here is virtual hug for you)   */}
+        {/* STEP 7: VIRTUAL HUG SCREEN (Unique Image: stickerGif)      */}
         {/* ========================================================= */}
         {storyStep === 7 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in">
@@ -583,10 +673,13 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               {t.virtualHug}
             </h1>
 
+            {/* Step 7 Unique Asset: stickerGif */}
             <div className="relative w-56 xs:w-64 sm:w-80 h-56 xs:h-64 sm:h-80 my-1 animate-float">
               <img 
                 src={ASSETS.stickerGif} 
-                alt="Virtual Hug Bears" 
+                alt="Virtual Hug Bears GIF" 
+                loading="eager"
+                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-xl"
                 onError={(e) => {
                   e.target.onerror = null;
@@ -597,10 +690,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
             <button
               onClick={() => {
-                setStoryStep(8);
+                goToStep(8);
                 triggerConfetti();
               }}
-              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka"
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
               <ArrowRight size={22} />
@@ -610,31 +703,33 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 8: HANGING POLAROIDS, CAKE & "I LOVE YOU" WALL        */}
+        {/* STEP 8: POLAROIDS & CAKE WALL (Unique Image: cake)         */}
         {/* ========================================================= */}
         {storyStep === 8 && (
           <div className="w-full h-full min-h-[55vh] sm:min-h-[60vh] flex flex-col justify-between space-y-6 sm:space-y-8 animate-fade-in">
             
             <div className="w-full h-[2px] bg-slate-400 relative top-3 sm:top-4 left-0 right-0 z-0" />
 
-            {/* Swaying Polaroids on Wire */}
+            {/* Swaying Pendulum Wind Polaroids on Wire */}
             <div className="w-full grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 pt-3 sm:pt-4 relative z-10">
               {photos.slice(0, 3).map((src, idx) => (
-                <div key={idx} className="bg-white p-2 xs:p-2.5 sm:p-3.5 pb-6 xs:pb-8 sm:pb-10 rounded-lg shadow-xl border border-slate-200 transform hover:scale-110 transition-transform relative animate-sway" style={{ animationDelay: `${idx * 0.4}s` }}>
+                <div key={idx} className="bg-white p-2 xs:p-2.5 sm:p-3.5 pb-6 xs:pb-8 sm:pb-10 rounded-lg shadow-xl border border-slate-200 transform hover:scale-110 transition-transform relative animate-pendulum" style={{ animationDelay: `${idx * 0.5}s` }}>
                   <div className="w-3 sm:w-4 h-4 sm:h-6 bg-sky-500 rounded-xs mx-auto -mt-4 sm:-mt-6 mb-1 shadow-md" />
                   <div className="w-full h-20 xs:h-28 sm:h-40 bg-slate-100 rounded overflow-hidden">
-                    <img src={src} alt="Polaroid Memory" className="w-full h-full object-cover" />
+                    <img src={src} alt="Polaroid Memory" loading="eager" className="w-full h-full object-cover" />
                   </div>
                 </div>
               ))}
             </div>
 
             <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-4 sm:pt-6 px-1 sm:px-2 gap-4">
-              {/* Cake with Flickering Flame Candle effect */}
+              {/* Step 8 Unique Asset: cake.png */}
               <div className="w-20 h-20 sm:w-36 sm:h-36 relative animate-float flex-shrink-0">
                 <img 
                   src={ASSETS.cake} 
                   alt="Birthday Cake" 
+                  loading="eager"
+                  fetchpriority="high"
                   className="w-full h-full object-contain filter drop-shadow-lg"
                   onError={(e) => {
                     e.target.onerror = null;
