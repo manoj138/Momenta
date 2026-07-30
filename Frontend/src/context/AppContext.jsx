@@ -179,8 +179,12 @@ export const AppProvider = ({ children }) => {
         console.warn("Backend Enquiries API notice:", e.message);
       }
 
-      const userStr = localStorage.getItem("users");
-      const currentUser = userStr ? JSON.parse(userStr) : null;
+      const userStr = localStorage.getItem("users") || localStorage.getItem("user");
+      let currentUser = null;
+      try {
+        currentUser = userStr ? JSON.parse(userStr) : null;
+      } catch (err) {}
+
       if (currentUser && (currentUser.role === "superadmin" || currentUser.role === "super_admin")) {
         try {
           const userRes = await userService.getAll();
@@ -195,7 +199,7 @@ export const AppProvider = ({ children }) => {
             setAdmins(formattedUsers);
           }
         } catch (e) {
-          console.warn("Backend Users API notice:", e.message);
+          // Silently ignore permission notice for user listing
         }
       }
     }
