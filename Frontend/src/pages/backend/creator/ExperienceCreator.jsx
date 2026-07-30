@@ -86,17 +86,41 @@ const ExperienceCreator = () => {
     }
   }, [availableTemplates, selectedTemplateId]);
 
-  // Auto-generate slug from clientName
+  // Auto-generate slug from clientName (only if not manually edited)
+  const slugUserEditedRef = useRef(false);
+
   useEffect(() => {
-    if (enquiry) {
+    if (enquiry && !slugUserEditedRef.current && !slug) {
       const cleanSlug = enquiry.clientName
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9]/g, "-")
         .replace(/-+/g, "-");
-      setSlug(`${cleanSlug}-${enquiry.category}`);
+      setSlug(`${cleanSlug}-${enquiry.category || "birthday"}`);
     }
-  }, [enquiry]);
+  }, [enquiry, slug]);
+
+  const handleSlugChange = (val) => {
+    slugUserEditedRef.current = true;
+    const formatted = val
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/-+/g, "-");
+    setSlug(formatted);
+  };
+
+  const handleAutoSuggestSlug = () => {
+    const targetName = formData.personName || formData.person_name || formData.groomName || enquiry?.clientName || "";
+    if (!targetName) return;
+    slugUserEditedRef.current = true;
+    const formatted = targetName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/-+/g, "-");
+    setSlug(`${formatted}-${enquiry?.category || "birthday"}`);
+  };
 
   // Early return checks must be placed AFTER all Hook declarations to obey rules of hooks
   if (!enquiry) {
@@ -337,15 +361,34 @@ const ExperienceCreator = () => {
           </div>
 
           <div className="space-y-6">
-            <h3 className="text-base font-bold text-brand-400 border-b border-white/5 pb-2">2. Link Configurations</h3>
-            <div className="grid grid-cols-1 gap-4 max-w-sm">
+            <div className="flex items-center justify-between border-b border-white/5 pb-2">
+              <h3 className="text-base font-bold text-brand-400">2. Link Configurations</h3>
+              <button
+                type="button"
+                onClick={handleAutoSuggestSlug}
+                className="text-xs bg-brand-500/10 hover:bg-brand-500/20 text-brand-300 border border-brand-500/30 px-3 py-1 rounded-lg cursor-pointer transition-colors flex items-center gap-1.5 font-semibold"
+              >
+                <Sparkles size={12} className="text-brand-400" />
+                <span>Suggest Slug from Name</span>
+              </button>
+            </div>
+            <div className="grid grid-cols-1 gap-4 max-w-xl">
               <Input
                 label="Custom URL Slug Path"
                 value={slug}
-                onChange={(e) => setSlug(e.target.value.replace(/\s+/g, "-"))}
-                placeholder="e.g. rahul-priya-wedding"
+                onChange={(e) => handleSlugChange(e.target.value)}
+                placeholder="e.g. vinit-dada-birthday"
                 required
               />
+              <div className="bg-slate-950/80 border border-brand-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2 text-gray-300 truncate">
+                  <Globe size={14} className="text-brand-400 shrink-0" />
+                  <span className="text-gray-400 font-medium">Live URL Link:</span>
+                  <span className="font-mono text-brand-300 font-bold truncate">
+                    https://momenta-f9mj.onrender.com/e/<span className="text-amber-300">{slug || "vinit-dada-birthday"}</span>
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
