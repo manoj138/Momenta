@@ -80,9 +80,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   const [isEnvelopeOpened, setIsEnvelopeOpened] = useState(false);
   const [isLocketOpen, setIsLocketOpen] = useState(false);
 
-  // 3D Perspective Tilt & Cursor Spotlight State
-  const [cardTilt, setCardTilt] = useState({ x: 0, y: 0 });
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  // 3D Perspective Tilt & Cursor Spotlight Direct DOM Refs (Zero Re-renders)
+  const cardRef = useRef(null);
+  const spotlightRef = useRef(null);
+  const mouseAnimFrame = useRef(null);
 
   // Language & Font settings
   const [currentLang, setCurrentLang] = useState(data.language || "en");
@@ -115,14 +116,26 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     }
   };
 
-  // Mouse / Touch 3D Tilt & Interactive Cursor Spotlight Tracking
+  // Mouse / Touch 3D Tilt & Interactive Cursor Spotlight Tracking (rAF Direct DOM Update)
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
-    const x = ((clientY / innerHeight) - 0.5) * -8;
-    const y = ((clientX / innerWidth) - 0.5) * 8;
-    setCardTilt({ x, y });
-    setMousePos({ x: clientX, y: clientY });
+
+    if (mouseAnimFrame.current) return;
+
+    mouseAnimFrame.current = requestAnimationFrame(() => {
+      mouseAnimFrame.current = null;
+
+      if (spotlightRef.current) {
+        spotlightRef.current.style.transform = `translate3d(${clientX}px, ${clientY}px, 0) translate(-50%, -50%)`;
+      }
+
+      if (cardRef.current) {
+        const x = ((clientY / innerHeight) - 0.5) * -8;
+        const y = ((clientX / innerWidth) - 0.5) * 8;
+        cardRef.current.style.transform = `perspective(1000px) rotateX(${x}deg) rotateY(${y}deg)`;
+      }
+    });
   };
 
   // Interactive Click Heart Burst Handler
@@ -263,13 +276,20 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         ctx.restore();
       });
 
-      // 2. Draw Fireworks Burst & Click Heart Bursts
-      confettiParticles.current.forEach((p, idx) => {
+      // 2. Draw Fireworks Burst & Click Heart Bursts (Optimized Reverse Loop)
+      const particles = confettiParticles.current;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
         p.vy += p.isEmojiHeart ? 0.08 : 0.25; // lighter gravity for click hearts
         p.alpha -= p.decay;
-        
+
+        if (p.alpha <= 0 || p.y > canvas.height) {
+          particles.splice(i, 1);
+          continue;
+        }
+
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.alpha);
         if (p.isEmojiHeart) {
@@ -282,11 +302,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
           ctx.fill();
         }
         ctx.restore();
-
-        if (p.alpha <= 0 || p.y > canvas.height) {
-          confettiParticles.current.splice(idx, 1);
-        }
-      });
+      }
 
       animationFrameId = requestAnimationFrame(draw);
     };
@@ -324,10 +340,11 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         }}
       />
 
-      {/* Interactive Cursor Spotlight Glow */}
+      {/* Interactive Cursor Spotlight Glow (GPU Accelerated) */}
       <div 
-        className="fixed pointer-events-none z-10 w-96 h-96 rounded-full blur-3xl opacity-30 bg-radial from-pink-300 via-amber-200 to-transparent transition-all duration-75 -translate-x-1/2 -translate-y-1/2"
-        style={{ left: `${mousePos.x}px`, top: `${mousePos.y}px` }}
+        ref={spotlightRef}
+        className="fixed pointer-events-none z-10 w-96 h-96 rounded-full blur-3xl opacity-30 bg-radial from-pink-300 via-amber-200 to-transparent top-0 left-0 will-change-transform"
+        style={{ transform: `translate3d(-1000px, -1000px, 0)` }}
       />
 
       {/* 1. Cinematic Ambient Canvas Overlay */}
@@ -383,9 +400,9 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
       {/* MAIN FULL-SCREEN ORGANIC WAVY CONTAINER (100% Fixed & Uniform Container Dimensions) */}
       <div 
-        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-hidden bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-all duration-500 shadow-[0_35px_80px_rgba(0,0,0,0.45)] ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        ref={cardRef}
+        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-hidden bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         style={{
-          transform: `rotateX(${cardTilt.x}deg) rotateY(${cardTilt.y}deg)`,
           borderRadius: `clamp(30px, 6vw, 60px) clamp(80px, 18vw, 240px) clamp(40px, 8vw, 80px) clamp(70px, 15vw, 200px) / clamp(60px, 12vw, 180px) clamp(35px, 6vw, 80px) clamp(80px, 16vw, 220px) clamp(30px, 5vw, 60px)`,
           backgroundImage: `radial-gradient(#e2d9d2 1.2px, transparent 1.2px)`,
           backgroundSize: `24px 24px`
