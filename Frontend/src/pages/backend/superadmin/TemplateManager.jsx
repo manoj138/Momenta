@@ -72,6 +72,7 @@ const defaultTemplateFields = {
   ],
   "birthday-cinematic-love": [
     { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+    { name: "petName", label: "Nickname / Pet Name (Optional)", type: "text", required: false, placeholder: "e.g. Gurlll / Bbg" },
     { name: "secretPin", label: "4-Digit Secret PIN Lock", type: "text", required: false, placeholder: "e.g. 1234 (Leave blank for no lock)" },
     { name: "letterText", label: "Envelope Love Letter Message", type: "textarea", required: false, placeholder: "Write your special letter for the recipient..." },
     { name: "favNotification", label: "Notification Banner Text", type: "text", required: false, placeholder: "e.g. YOU ARE MY FAVORITE NOTIFICATION 💖" },
@@ -84,8 +85,9 @@ const defaultTemplateFields = {
     { name: "language", label: "Default Language", type: "select", options: [{ label: "English", value: "en" }, { label: "Marathi", value: "mr" }], required: false, placeholder: "" },
     { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
   ],
-  "birthday-cinematic-demo": [
+  "birthday-cinematic": [
     { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+    { name: "petName", label: "Nickname / Pet Name (Optional)", type: "text", required: false, placeholder: "e.g. Gurlll / Bbg" },
     { name: "secretPin", label: "4-Digit Secret PIN Lock", type: "text", required: false, placeholder: "e.g. 1234 (Leave blank for no lock)" },
     { name: "letterText", label: "Envelope Love Letter Message", type: "textarea", required: false, placeholder: "Write your special letter for the recipient..." },
     { name: "favNotification", label: "Notification Banner Text", type: "text", required: false, placeholder: "e.g. YOU ARE MY FAVORITE NOTIFICATION 💖" },
@@ -102,12 +104,16 @@ const defaultTemplateFields = {
 
 const getDefaultFieldsForTemplate = (tpl) => {
   const slug = tpl.demoSlug || tpl.id || "";
+  const id = tpl.id || "";
   const category = tpl.category || "";
   
-  if (defaultTemplateFields[slug]) {
-    return defaultTemplateFields[slug];
-  }
+  if (defaultTemplateFields[slug]) return defaultTemplateFields[slug];
+  if (defaultTemplateFields[id]) return defaultTemplateFields[id];
   
+  if (id.includes("cinematic") || slug.includes("cinematic")) {
+    return defaultTemplateFields["birthday-cinematic-love"];
+  }
+
   // Fallbacks by category
   if (category.toLowerCase().includes("wedding")) {
     return defaultTemplateFields["wedding-royal-gold"];

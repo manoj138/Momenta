@@ -779,7 +779,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
             </div>
 
             <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
-              {t.goodGirl}
+              {data.petName || data.nickname ? `That's a good ${data.petName || data.nickname} 🌻` : t.goodGirl}
             </h1>
 
             <button

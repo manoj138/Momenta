@@ -202,7 +202,9 @@ const ExperienceCreator = () => {
     }
   };
 
-  const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
+  const selectedTemplate = templates.find(
+    (t) => t.id === selectedTemplateId || t.slug === selectedTemplateId || t.demoSlug === selectedTemplateId
+  );
   const activeCategoryObj = categories.find((c) => c.id === enquiry.category);
   const formFields = (selectedTemplate && selectedTemplate.fields && selectedTemplate.fields.length > 0)
     ? selectedTemplate.fields
