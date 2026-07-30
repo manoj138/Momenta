@@ -1002,12 +1002,15 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 className="w-full h-full object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.15)] group-hover:scale-105 transition-transform mix-blend-multiply"
               />
 
-              {/* Single Central High-Contrast Birthday Candle Overlay */}
-              <div className="absolute top-[14%] sm:top-[16%] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center justify-end h-16 sm:h-20 cursor-pointer">
+              {/* Left Side 3D Birthday Candle */}
+              <div 
+                onClick={handleBlowCandles}
+                className="absolute top-[20%] sm:top-[22%] left-[14%] xs:left-[16%] sm:left-[18%] z-30 flex flex-col items-center justify-end h-16 sm:h-20 cursor-pointer -rotate-6 group-hover:scale-110 transition-transform"
+              >
                 {!isCandleBlown ? (
                   <>
                     {/* Glowing Flickering Flame */}
-                    <div className="w-4 sm:w-5 h-6 sm:h-7 rounded-full bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 shadow-[0_0_18px_#f97316,#0_0_35px_#f59e0b] animate-pulse relative flex items-center justify-center">
+                    <div className="w-4 sm:w-5 h-6 sm:h-7 rounded-full bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 shadow-[0_0_20px_#f97316,#0_0_35px_#f59e0b] animate-pulse relative flex items-center justify-center">
                       <div className="w-1.5 h-2.5 bg-white rounded-full opacity-90 animate-ping" />
                     </div>
                     {/* Wick */}
@@ -1024,7 +1027,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
                 {/* Striped 3D Candle Body Stick */}
                 <div 
-                  className={`w-4 sm:w-5 h-9 sm:h-11 rounded-sm border-2 border-white/90 shadow-xl relative overflow-hidden ${
+                  className={`w-4 sm:w-5 h-10 sm:h-12 rounded-sm border-2 border-white/90 shadow-xl relative overflow-hidden ${
                     isCandleBlown ? "bg-gradient-to-b from-gray-400 to-slate-600" : "bg-gradient-to-b from-pink-500 via-red-500 to-rose-600"
                   }`}
                 >
@@ -1032,6 +1035,45 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                     className="absolute inset-0 opacity-40" 
                     style={{
                       backgroundImage: `linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 50%, #ffffff 50%, #ffffff 75%, transparent 75%)`,
+                      backgroundSize: `10px 10px`
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Right Side 3D Birthday Candle */}
+              <div 
+                onClick={handleBlowCandles}
+                className="absolute top-[20%] sm:top-[22%] right-[14%] xs:right-[16%] sm:right-[18%] z-30 flex flex-col items-center justify-end h-16 sm:h-20 cursor-pointer rotate-6 group-hover:scale-110 transition-transform"
+              >
+                {!isCandleBlown ? (
+                  <>
+                    {/* Glowing Flickering Flame */}
+                    <div className="w-4 sm:w-5 h-6 sm:h-7 rounded-full bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 shadow-[0_0_20px_#f97316,#0_0_35px_#f59e0b] animate-pulse relative flex items-center justify-center">
+                      <div className="w-1.5 h-2.5 bg-white rounded-full opacity-90 animate-ping" />
+                    </div>
+                    {/* Wick */}
+                    <div className="w-0.5 h-2 bg-slate-900 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    {/* Extinguished Smoke FX */}
+                    <div className="text-base sm:text-lg animate-bounce text-slate-400">💨</div>
+                    {/* Burnt Wick */}
+                    <div className="w-1 h-2 bg-slate-950 mx-auto rounded-xs shadow-inner" />
+                  </>
+                )}
+
+                {/* Striped 3D Rose/Gold Candle Body Stick */}
+                <div 
+                  className={`w-4 sm:w-5 h-10 sm:h-12 rounded-sm border-2 border-white/90 shadow-xl relative overflow-hidden ${
+                    isCandleBlown ? "bg-gradient-to-b from-gray-400 to-slate-600" : "bg-gradient-to-b from-amber-400 via-pink-500 to-rose-600"
+                  }`}
+                >
+                  <div 
+                    className="absolute inset-0 opacity-40" 
+                    style={{
+                      backgroundImage: `linear-gradient(-45deg, #ffffff 25%, transparent 25%, transparent 50%, #ffffff 50%, #ffffff 75%, transparent 75%)`,
                       backgroundSize: `10px 10px`
                     }}
                   />
