@@ -1,12 +1,12 @@
 import React from "react";
 import { useApp } from "../../../context/AppContext";
 import { useAuth } from "../../../context/AuthContext";
-import { FileText, CheckCircle2, ChevronRight, Activity, PlusCircle } from "lucide-react";
+import { FileText, CheckCircle2, ChevronRight, Activity, PlusCircle, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/common/Button";
 
 const CreatorDashboard = () => {
-  const { enquiries, experiences, categories, fetchApiData } = useApp();
+  const { enquiries, experiences, categories, deleteExperience, fetchApiData } = useApp();
   const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
 
@@ -149,13 +149,14 @@ const CreatorDashboard = () => {
 
                     <div className="flex items-center justify-between text-xs pt-1 border-t border-white/5">
                       <span className="font-mono text-gray-400 truncate">/e/{exp.slug}</span>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(`${window.location.origin}/e/${exp.slug}`);
                             alert(`Copied link: ${window.location.origin}/e/${exp.slug}`);
                           }}
                           className="px-2 py-1 bg-white/5 hover:bg-white/10 rounded text-[10px] text-gray-300 hover:text-white cursor-pointer"
+                          title="Copy URL"
                         >
                           📋 Copy
                         </button>
@@ -164,9 +165,21 @@ const CreatorDashboard = () => {
                           target="_blank"
                           rel="noreferrer"
                           className="px-2 py-1 bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 rounded text-[10px] cursor-pointer"
+                          title="Visit Experience"
                         >
                           🚀 Visit
                         </a>
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Delete experience link "/e/${exp.slug}"?`)) {
+                              deleteExperience(exp.id);
+                            }
+                          }}
+                          className="p-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded text-[10px] cursor-pointer transition-colors"
+                          title="Delete Experience"
+                        >
+                          <Trash2 size={13} />
+                        </button>
                       </div>
                     </div>
                   </div>

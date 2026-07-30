@@ -170,9 +170,35 @@ const ExperienceViewer = () => {
         return;
       }
 
-      // Helper to infer template if DB record doesn't specify explicit template ID
-      const inferTemplateFromSlug = (s = "") => {
+      // Helper to detect template from form data fields & slug
+      const detectTemplateFromData = (data = {}, s = "") => {
         const lower = s.toLowerCase();
+
+        // 1. Check explicit fields in form data first!
+        if (
+          data.lateReason ||
+          data.late_reason ||
+          data.stayCute ||
+          data.stay_cute ||
+          data.iloveYou ||
+          data.ilove_you ||
+          data.scratchMessage ||
+          data.scratchTitle ||
+          data.letterText ||
+          data.petName
+        ) {
+          return "birthday-belated-apology";
+        }
+
+        if (data.groomName || data.groom_name || data.brideName || data.bride_name) {
+          return "wedding-royal-gold";
+        }
+
+        if (data.secretReveal || data.secret_reveal || data.venueAddress || data.venue_address) {
+          return "birthday-cinematic-love";
+        }
+
+        // 2. Keyword check on slug
         if (lower.includes("apology") || lower.includes("belated")) {
           return "birthday-belated-apology";
         }
@@ -185,7 +211,9 @@ const ExperienceViewer = () => {
         if (lower.includes("animated")) {
           return "wedding-animated";
         }
-        return "birthday-cinematic-love";
+
+        // Default to birthday-belated-apology for birthday experiences
+        return "birthday-belated-apology";
       };
 
       // Smart Backend Fetch with Retry Loop for Render Cold Starts
@@ -215,13 +243,13 @@ const ExperienceViewer = () => {
 
       if (isMounted && expData) {
         const resolvedTemplateId =
+          detectTemplateFromData(expData.data || expData, slug) ||
           expData.template_slug ||
           expData.templateId ||
           expData.template_id ||
           expData.template?.slug ||
           expData.componentName ||
-          expData.template?.component_name ||
-          inferTemplateFromSlug(slug);
+          expData.template?.component_name;
 
         setExperience({
           ...expData,
@@ -255,11 +283,7 @@ const ExperienceViewer = () => {
 
       if (isMounted) {
         if (foundLocal) {
-          const resolvedTemplateId =
-            foundLocal.template_slug ||
-            foundLocal.templateId ||
-            foundLocal.template?.slug ||
-            inferTemplateFromSlug(slug);
+          const resolvedTemplateId = detectTemplateFromData(foundLocal.data || foundLocal, slug);
 
           setExperience({
             ...foundLocal,
@@ -275,7 +299,7 @@ const ExperienceViewer = () => {
             .map((w) => w.charAt(0).toUpperCase() + w.slice(1));
           
           const extractedName = nameWords.length > 0 ? nameWords.join(" ") : "Special One";
-          const inferredTemplateId = inferTemplateFromSlug(slug);
+          const inferredTemplateId = detectTemplateFromData({}, slug);
 
           setExperience({
             slug: slug,
@@ -285,7 +309,10 @@ const ExperienceViewer = () => {
             is_published: true,
             data: {
               personName: extractedName,
-              petName: "Cutie"
+              petName: "Cutie",
+              lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
+              stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
+              iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
             }
           });
         }
