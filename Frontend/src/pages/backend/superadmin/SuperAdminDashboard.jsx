@@ -1,8 +1,10 @@
 import React from "react";
 import { useApp } from "../../../context/AppContext";
-import { Layers, Palette, Users, Globe, FileText, CheckCircle2, ChevronRight } from "lucide-react";
-import AnimatedCard from "../../../components/common/AnimatedCard";
+import { Layers, Palette, Users, Globe, FileText, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import PageHeader from "../../../components/dashboard/PageHeader";
+import StatCard from "../../../components/dashboard/StatCard";
+import StatusBadge from "../../../components/dashboard/StatusBadge";
 
 const SuperAdminDashboard = () => {
   const { categories, templates, admins, enquiries, experiences } = useApp();
@@ -20,27 +22,21 @@ const SuperAdminDashboard = () => {
   return (
     <div className="p-6 md:p-10 space-y-8 bg-slate-950 min-h-screen text-white">
       {/* Welcome header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight">Super Admin Hub</h1>
-          <p className="text-gray-400 text-sm">Review global analytics, manage custom schemas, and oversee enquiries.</p>
-        </div>
-      </div>
+      <PageHeader
+        title="Super Admin Hub"
+        subtitle="Review global analytics, manage custom schemas, and oversee enquiries."
+      />
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
         {metrics.map((m, idx) => (
-          <Link key={idx} to={m.path}>
-            <div className="p-5 rounded-2xl bg-slate-900 border border-white/5 shadow-md flex items-center justify-between hover:border-brand-500/30 transition-all duration-300">
-              <div className="space-y-1">
-                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">{m.label}</span>
-                <span className="block text-2xl font-extrabold">{m.value}</span>
-              </div>
-              <div className="p-3 bg-white/5 rounded-xl">
-                {m.icon}
-              </div>
-            </div>
-          </Link>
+          <StatCard
+            key={idx}
+            label={m.label}
+            value={m.value}
+            icon={m.icon}
+            path={m.path}
+          />
         ))}
       </div>
 
@@ -76,11 +72,7 @@ const SuperAdminDashboard = () => {
                   </div>
                   
                   <div className="flex items-center gap-3">
-                    <span className={`text-[10px] uppercase px-2.5 py-1 rounded-full font-bold ${
-                      enq.status === "New" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "bg-blue-500/10 text-blue-400 border border-blue-500/20"
-                    }`}>
-                      {enq.status}
-                    </span>
+                    <StatusBadge status={enq.status} />
                     <Link to="/superadmin/enquiries">
                       <button className="text-xs font-semibold bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/5 cursor-pointer">
                         Manage
@@ -111,9 +103,7 @@ const SuperAdminDashboard = () => {
                         {templates.find(t => t.id === exp.templateId)?.name || exp.templateId}
                       </span>
                     </div>
-                    <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded-full uppercase">
-                      {exp.status}
-                    </span>
+                    <StatusBadge status={exp.status} />
                   </div>
                   <div className="flex items-center justify-between pt-2 border-t border-white/5">
                     <span className="text-[10px] text-brand-400 select-all font-mono">/e/{exp.slug}</span>
@@ -137,3 +127,4 @@ const SuperAdminDashboard = () => {
 };
 
 export default SuperAdminDashboard;
+
