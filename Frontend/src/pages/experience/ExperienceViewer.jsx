@@ -169,20 +169,6 @@ const ExperienceViewer = () => {
         }
       };
 
-      if (demoTemplates[slug]) {
-        const demo = demoTemplates[slug];
-        setExperience({
-          slug: slug,
-          templateId: demo.templateId,
-          data: demo.data,
-          clientName: demo.clientName,
-          status: "published",
-          is_published: true
-        });
-        setLoading(false);
-        return;
-      }
-
       // Helper to detect template from form data fields & slug
       const detectTemplateFromData = (data = {}, s = "") => {
         const lower = s.toLowerCase();
@@ -198,7 +184,9 @@ const ExperienceViewer = () => {
           data.scratchMessage ||
           data.scratchTitle ||
           data.letterText ||
-          data.petName
+          data.petName ||
+          data.photo1 ||
+          data.bgMusic
         ) {
           return "birthday-belated-apology";
         }
@@ -225,11 +213,10 @@ const ExperienceViewer = () => {
           return "wedding-animated";
         }
 
-        // Default to birthday-belated-apology for birthday experiences
         return "birthday-belated-apology";
       };
 
-      // Smart Backend Fetch with Retry Loop for Render Cold Starts
+      // 1. TOP PRIORITY: Smart Backend Fetch with Retry Loop for Render Cold Starts
       let attempts = 0;
       let expData = null;
 
@@ -275,7 +262,7 @@ const ExperienceViewer = () => {
         return;
       }
 
-      // Context & LocalStorage Fallbacks
+      // 2. SECOND PRIORITY: Context & LocalStorage Fallbacks
       let foundLocal = contextExperiences.find(
         (e) => (e.slug || "").toLowerCase() === (slug || "").toLowerCase()
       );
@@ -294,41 +281,58 @@ const ExperienceViewer = () => {
         }
       }
 
+      if (isMounted && foundLocal) {
+        const resolvedTemplateId = detectTemplateFromData(foundLocal.data || foundLocal, slug);
+
+        setExperience({
+          ...foundLocal,
+          templateId: resolvedTemplateId,
+          status: "published",
+          is_published: true
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 3. THIRD PRIORITY: Explicit Demo Templates (only for demo slugs or if DB/local is null)
+      if (demoTemplates[slug]) {
+        const demo = demoTemplates[slug];
+        setExperience({
+          slug: slug,
+          templateId: demo.templateId,
+          data: demo.data,
+          clientName: demo.clientName,
+          status: "published",
+          is_published: true
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 4. FOURTH PRIORITY: Smart Dynamic Experience Generator
       if (isMounted) {
-        if (foundLocal) {
-          const resolvedTemplateId = detectTemplateFromData(foundLocal.data || foundLocal, slug);
+        const nameWords = (slug || "")
+          .split("-")
+          .filter((w) => !["birthday", "wedding", "apology", "belated", "cinematic", "neon", "demo", "e"].includes(w.toLowerCase()))
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1));
+        
+        const extractedName = nameWords.length > 0 ? nameWords.join(" ") : "Special One";
+        const inferredTemplateId = detectTemplateFromData({}, slug);
 
-          setExperience({
-            ...foundLocal,
-            templateId: resolvedTemplateId,
-            status: "published",
-            is_published: true
-          });
-        } else {
-          // Smart Dynamic Experience Generator (Guarantees zero broken 404 screens for any invitation URL)
-          const nameWords = (slug || "")
-            .split("-")
-            .filter((w) => !["birthday", "wedding", "apology", "belated", "cinematic", "neon", "demo", "e"].includes(w.toLowerCase()))
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1));
-          
-          const extractedName = nameWords.length > 0 ? nameWords.join(" ") : "Special One";
-          const inferredTemplateId = detectTemplateFromData({}, slug);
-
-          setExperience({
-            slug: slug,
-            templateId: inferredTemplateId,
-            clientName: extractedName,
-            status: "published",
-            is_published: true,
-            data: {
-              personName: extractedName,
-              petName: "Cutie",
-              lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
-              stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
-              iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
-            }
-          });
-        }
+        setExperience({
+          slug: slug,
+          templateId: inferredTemplateId,
+          clientName: extractedName,
+          status: "published",
+          is_published: true,
+          data: {
+            personName: extractedName,
+            petName: "Cutie",
+            lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
+            stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
+            iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
+          }
+        });
         setLoading(false);
       }
     };
