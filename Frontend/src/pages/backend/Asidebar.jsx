@@ -61,7 +61,7 @@ const Asidebar = () => {
         {/* HEADER */}
         <div className="flex items-center justify-between p-5 mb-4">
           <div className={`flex items-center gap-2 transition-opacity duration-300 ${!isOpen ? "opacity-0 invisible" : "opacity-100 visible"}`}>
-            <Sparkles className="text-brand-500" size={20} />
+            <img src="/momenta logo.png" alt="Momenta Logo" className="w-6 h-6 object-contain" />
             <h1 className="font-bold tracking-tight text-gradient text-lg">
               Momenta Console
             </h1>

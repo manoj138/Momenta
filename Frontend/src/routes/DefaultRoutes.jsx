@@ -37,8 +37,8 @@ import ThemeToggle from "../components/common/ThemeToggle";
 const PublicHeader = () => {
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-gray-250 dark:border-white/5 px-3 sm:px-6 py-3 sm:py-4 flex justify-between items-center text-slate-900 dark:text-white transition-colors duration-300">
-      <Link to="/" className="flex items-center gap-1.5 shrink-0">
-        <Sparkles className="text-brand-500 animate-pulse" size={16} />
+      <Link to="/" className="flex items-center gap-2 shrink-0">
+        <img src="/momenta logo.png" alt="Momenta Logo" className="w-7 h-7 object-contain" />
         <span className="font-extrabold tracking-wider text-sm sm:text-base">Momenta</span>
       </Link>
       <nav className="flex items-center gap-2 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-600 dark:text-gray-300">
