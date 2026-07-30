@@ -69,6 +69,11 @@ const EnquiryForm = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    const isMongoId = (id) => typeof id === "string" && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id);
+
+    const categoryDbId = activeCategoryObj?.dbId;
+    const templateDbId = presetTemplate?.dbId;
+
     const enquiryPayload = {
       clientName: clientName,
       client_name: clientName,
@@ -76,10 +81,12 @@ const EnquiryForm = () => {
       client_email: clientEmail,
       clientPhone: clientPhone,
       client_phone: clientPhone,
-      category_id: activeCategoryObj?.dbId || null,
-      template_id: presetTemplate?.dbId || presetTemplateId || null,
+      category_id: isMongoId(categoryDbId) ? categoryDbId : undefined,
+      template_id: isMongoId(templateDbId) ? templateDbId : undefined,
       category: activeCategoryObj?.id || selectedCategory || null,
       templateId: presetTemplate?.id || presetTemplateId || null,
+      category_slug: activeCategoryObj?.id || selectedCategory || null,
+      template_slug: presetTemplate?.id || presetTemplateId || null,
       submittedDetails: dynamicValues,
       form_data: dynamicValues,
       notes: presetTemplateId ? `Preselected Theme: ${presetTemplate?.name || presetTemplateId}` : "General category enquiry",

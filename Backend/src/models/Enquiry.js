@@ -13,12 +13,18 @@ const EnquirySchema = new mongoose.Schema({
         type: String
     },
     category_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.Mixed,
         ref: 'Category'
     },
     template_id: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.Mixed,
         ref: 'Template'
+    },
+    category_slug: {
+        type: String
+    },
+    template_slug: {
+        type: String
     },
     form_data: {
         type: mongoose.Schema.Types.Mixed

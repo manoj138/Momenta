@@ -2,6 +2,8 @@ const { Enquiry } = require('../models');
 const { handle200, handle201 } = require('../helper/successHandler');
 const { handle404, handle500, formatSequelizeError } = require('../helper/errorHandler');
 
+const mongoose = require('mongoose');
+
 const getAllEnquiries = async (req, res) => {
     try {
         const enquiries = await Enquiry.find({})
@@ -10,15 +12,26 @@ const getAllEnquiries = async (req, res) => {
             .populate('template');
         return handle200(res, enquiries);
     } catch (error) {
+        console.error("Error fetching enquiries:", error);
         return handle500(res, error);
     }
 };
 
 const createEnquiry = async (req, res) => {
     try {
-        const enquiry = await Enquiry.create(req.body);
+        const payload = { ...req.body };
+        if (payload.category_id && !mongoose.Types.ObjectId.isValid(payload.category_id)) {
+            payload.category_slug = String(payload.category_id);
+            delete payload.category_id;
+        }
+        if (payload.template_id && !mongoose.Types.ObjectId.isValid(payload.template_id)) {
+            payload.template_slug = String(payload.template_id);
+            delete payload.template_id;
+        }
+        const enquiry = await Enquiry.create(payload);
         return handle201(res, enquiry, 'Thank you! Your enquiry has been submitted successfully.');
     } catch (error) {
+        console.error("Error creating enquiry:", error);
         return formatSequelizeError(res, error);
     }
 };

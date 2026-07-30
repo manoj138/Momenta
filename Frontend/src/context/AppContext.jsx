@@ -144,18 +144,18 @@ export const AppProvider = ({ children }) => {
         const enqRes = await enquiryService.getAll();
         if (enqRes && enqRes.status && enqRes.data && enqRes.data.length > 0) {
           const formattedEnqs = enqRes.data.map(e => ({
-            id: String(e.id),
-            clientName: e.client_name,
-            clientEmail: e.client_email,
-            clientPhone: e.client_phone,
-            category: e.category?.slug || e.category_id,
-            categoryId: e.category_id,
-            templateId: e.template_id,
-            submittedDetails: e.form_data || {},
+            id: String(e.id || e._id),
+            clientName: e.client_name || e.clientName || "Client",
+            clientEmail: e.client_email || e.clientEmail || "",
+            clientPhone: e.client_phone || e.clientPhone || "",
+            category: e.category?.slug || e.category_slug || e.category_id || e.category || "birthday",
+            categoryId: e.category_id || e.category_slug,
+            templateId: e.template?.slug || e.template_slug || e.template_id || e.templateId || "birthday-cinematic-love",
+            submittedDetails: e.form_data || e.submittedDetails || {},
             status: e.status || "New",
-            assignedTo: e.assigned_to_user_id || "",
+            assignedTo: e.assigned_to_user_id || e.assignedTo || "",
             notes: e.notes || "",
-            createdAt: e.createdAt
+            createdAt: e.createdAt || new Date().toISOString()
           }));
           setEnquiries(formattedEnqs);
         }
