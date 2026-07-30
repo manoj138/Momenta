@@ -87,34 +87,50 @@ export const AppProvider = ({ children }) => {
           status: "published",
           fields: birthdayCinematicFields,
           demoSlug: "birthday-cinematic-love"
-        },
-        {
-          id: "birthday-cinematic",
-          dbId: "local-birthday-cinematic",
-          name: "Birthday Cinematic",
-          category: "birthday",
-          description: "A premium cinematic storytelling surprise gift experience for birthdays with interactive canvas particles, 3D polaroid cards, and virtual envelope.",
-          thumbnail: "",
-          previewUrl: "/e/birthday-cinematic-love",
-          componentName: "BirthdayCinematicLove",
-          status: "published",
-          fields: birthdayCinematicFields,
-          demoSlug: "birthday-cinematic-love"
         }
       ];
 
-      // Merge fetched templates with local ones to prevent duplication & ensure schema fields are full
-      const allTemplates = [...fetchedTpls];
-      localTemplates.forEach(localTpl => {
-        const existingIdx = allTemplates.findIndex(t => t.id === localTpl.id);
-        if (existingIdx >= 0) {
-          allTemplates[existingIdx].fields = localTpl.fields;
-        } else {
-          allTemplates.push(localTpl);
+      // Smart deduplication helper
+      const getTemplateDedupeKey = (t) => {
+        if (
+          t.componentName === "BirthdayCinematicLove" ||
+          t.id === "birthday-cinematic-love" ||
+          t.id === "birthday-cinematic" ||
+          t.slug === "birthday-cinematic-love" ||
+          t.slug === "birthday-cinematic"
+        ) {
+          return "birthday-cinematic-love";
+        }
+        return t.componentName || t.slug || t.id;
+      };
+
+      const uniqueTemplates = [];
+      const seenKeys = new Set();
+
+      // Process fetched DB templates
+      fetchedTpls.forEach((fTpl) => {
+        const key = getTemplateDedupeKey(fTpl);
+        if (!seenKeys.has(key)) {
+          seenKeys.add(key);
+          uniqueTemplates.push(fTpl);
         }
       });
 
-      setTemplates(allTemplates);
+      // Merge local templates safely
+      localTemplates.forEach((localTpl) => {
+        const key = getTemplateDedupeKey(localTpl);
+        const existingIdx = uniqueTemplates.findIndex((t) => getTemplateDedupeKey(t) === key);
+        if (existingIdx >= 0) {
+          if (!uniqueTemplates[existingIdx].fields || uniqueTemplates[existingIdx].fields.length < localTpl.fields.length) {
+            uniqueTemplates[existingIdx].fields = localTpl.fields;
+          }
+        } else {
+          seenKeys.add(key);
+          uniqueTemplates.push(localTpl);
+        }
+      });
+
+      setTemplates(uniqueTemplates);
     } catch (e) {
       console.warn("Backend Templates API unavailable:", e.message);
     }

@@ -59,10 +59,20 @@ const TemplateShowcase = () => {
     setSearchParams(searchParams);
   };
 
-  const filteredTemplates = (activeCategory === "all"
+  const rawFiltered = (activeCategory === "all"
     ? templates
     : templates.filter(t => t.category === activeCategory)
   ).filter(t => t.status === "published");
+
+  const filteredTemplates = [];
+  const seenIds = new Set();
+  rawFiltered.forEach((t) => {
+    const key = t.componentName || t.demoSlug || t.slug || t.id;
+    if (!seenIds.has(key)) {
+      seenIds.add(key);
+      filteredTemplates.push(t);
+    }
+  });
 
   return (
     <div className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen py-16 relative overflow-hidden transition-colors duration-300">
