@@ -11,19 +11,59 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
     onChange(name, value);
   };
 
+  const compressMediaFile = (file, callback) => {
+    if (!file.type.startsWith("image/")) {
+      // Audio or other non-image media files
+      const reader = new FileReader();
+      reader.onload = (event) => callback(event.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1200;
+        const MAX_HEIGHT = 1200;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Export optimized JPEG base64 (~150KB) for instant MongoDB cloud sync
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.82);
+        callback(compressedBase64);
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleFileChange = (name, e) => {
     const file = e.target.value;
     if (!file) return;
 
     if (file instanceof File) {
-      // Read file as a persistent Base64 Data URL so it never expires on page refresh or publish
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target && event.target.result) {
-          handleValueChange(name, event.target.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      compressMediaFile(file, (dataUrl) => {
+        handleValueChange(name, dataUrl);
+      });
     } else {
       handleValueChange(name, file);
     }
