@@ -9,13 +9,14 @@ const CreatorDashboard = () => {
   const { enquiries, experiences, categories } = useApp();
   const { user } = useAuth();
 
-  // Filter tasks assigned to this creator
+  // Filter tasks assigned to this creator OR unassigned new customer submissions
   const creatorTasks = enquiries.filter(
-    (e) => e.assignedTo === user?.id && (e.status !== "Completed" && e.status !== "Cancelled")
+    (e) => (e.assignedTo === user?.id || !e.assignedTo || user?.role === "superadmin") && 
+           (e.status !== "Completed" && e.status !== "Cancelled")
   );
 
   const completedCount = enquiries.filter(
-    (e) => e.assignedTo === user?.id && e.status === "Completed"
+    (e) => (e.assignedTo === user?.id || user?.role === "superadmin") && e.status === "Completed"
   ).length;
 
   const activeExperiences = experiences.filter(

@@ -222,11 +222,23 @@ export const AppProvider = ({ children }) => {
   // Enquiries
   const addEnquiry = (enquiry) => {
     const fullEnquiry = {
-      id: `enq_${Date.now()}`,
+      id: enquiry.id || `enq_${Date.now()}`,
+      clientName: enquiry.clientName || enquiry.client_name || "Client",
+      client_name: enquiry.client_name || enquiry.clientName || "Client",
+      clientEmail: enquiry.clientEmail || enquiry.client_email || "",
+      client_email: enquiry.client_email || enquiry.clientEmail || "",
+      clientPhone: enquiry.clientPhone || enquiry.client_phone || "",
+      client_phone: enquiry.client_phone || enquiry.clientPhone || "",
+      category: enquiry.category || enquiry.category_id || "birthday",
+      categoryId: enquiry.category_id || enquiry.category || "birthday",
+      templateId: enquiry.templateId || enquiry.template_id || "",
+      template_id: enquiry.template_id || enquiry.templateId || "",
+      submittedDetails: enquiry.submittedDetails || enquiry.form_data || {},
+      form_data: enquiry.form_data || enquiry.submittedDetails || {},
       createdAt: new Date().toISOString(),
-      status: "New",
-      assignedTo: "",
-      notes: "",
+      status: enquiry.status || "New",
+      assignedTo: enquiry.assignedTo || enquiry.assigned_to_user_id || "",
+      notes: enquiry.notes || "",
       ...enquiry,
     };
     setEnquiries((prev) => [fullEnquiry, ...prev]);

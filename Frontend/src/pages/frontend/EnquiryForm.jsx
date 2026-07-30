@@ -70,12 +70,17 @@ const EnquiryForm = () => {
     if (!validate()) return;
 
     const enquiryPayload = {
+      clientName: clientName,
       client_name: clientName,
+      clientEmail: clientEmail,
       client_email: clientEmail,
+      clientPhone: clientPhone,
       client_phone: clientPhone,
       category_id: activeCategoryObj?.dbId || null,
-      template_id: presetTemplate?.dbId || null,
-      category: activeCategoryObj?.id || null,
+      template_id: presetTemplate?.dbId || presetTemplateId || null,
+      category: activeCategoryObj?.id || selectedCategory || null,
+      templateId: presetTemplate?.id || presetTemplateId || null,
+      submittedDetails: dynamicValues,
       form_data: dynamicValues,
       notes: presetTemplateId ? `Preselected Theme: ${presetTemplate?.name || presetTemplateId}` : "General category enquiry",
     };
