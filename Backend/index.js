@@ -23,11 +23,19 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 // API Routes Aggregator
 app.use('/api', apiRoutes);
 
+const fs = require('fs');
+
 // Serve frontend static build files from dist folder
+const distIndexPath = path.join(__dirname, 'dist', 'index.html');
 app.use(express.static(path.join(__dirname, 'dist')));
+
 // Fallback to index.html for React Router SPA (placed after API routes)
 app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  if (fs.existsSync(distIndexPath)) {
+    res.sendFile(distIndexPath);
+  } else {
+    res.status(200).send('Momenta API Service is Live 🚀 (Frontend dist bundle building on Render)');
+  }
 });
 const initSuperAdmin = require('./src/config/initSuperAdmin');
 
