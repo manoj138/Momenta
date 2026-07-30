@@ -13,19 +13,63 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
     onChange(name, value);
   };
 
+  const compressMediaFile = (file, callback) => {
+    if (!file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (event) => callback(event.target.result);
+      reader.readAsDataURL(file);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Export light JPEG data URL (~50KB) that works everywhere
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.75);
+        callback(compressedBase64);
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleFileChange = async (name, e) => {
     const file = e.target.value;
     if (!file) return;
 
     if (file instanceof File) {
-      // 1. Upload directly via Cloudinary / Server API to get clean HTTPS URL
       const uploadedUrl = await uploadService.uploadFile(file);
-      if (uploadedUrl) {
+      if (uploadedUrl && uploadedUrl.startsWith("http")) {
         handleValueChange(name, uploadedUrl);
       } else {
-        // Fallback to local URL object (NOT Base64) for preview
-        const localUrl = URL.createObjectURL(file);
-        handleValueChange(name, localUrl);
+        // Compress to lightweight Data URL so it is 100% shareable across devices
+        compressMediaFile(file, (dataUrl) => {
+          handleValueChange(name, dataUrl);
+        });
       }
     } else {
       handleValueChange(name, file);
