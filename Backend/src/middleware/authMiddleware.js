@@ -40,7 +40,22 @@ const requireRole = (allowedRoles = []) => {
   };
 };
 
+/**
+ * Optional Authentication Middleware
+ * Attaches user if token is valid, but allows unauthenticated requests through
+ */
+const optionalAuthenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (token) {
+    const decoded = verifyToken(token);
+    if (decoded) req.user = decoded;
+  }
+  next();
+};
+
 module.exports = {
   authenticateToken,
+  optionalAuthenticateToken,
   requireRole,
 };
