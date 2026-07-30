@@ -66,8 +66,12 @@ const EnquiryForm = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
+    if (e) e.preventDefault();
+    
+    if (!validate()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
 
     const isMongoId = (id) => typeof id === "string" && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id);
 
@@ -75,33 +79,33 @@ const EnquiryForm = () => {
     const templateDbId = presetTemplate?.dbId;
 
     const enquiryPayload = {
-      clientName: clientName,
-      client_name: clientName,
-      clientEmail: clientEmail,
-      client_email: clientEmail,
-      clientPhone: clientPhone,
-      client_phone: clientPhone,
+      clientName: clientName.trim(),
+      client_name: clientName.trim(),
+      clientEmail: clientEmail.trim(),
+      client_email: clientEmail.trim(),
+      clientPhone: clientPhone.trim(),
+      client_phone: clientPhone.trim(),
       category_id: isMongoId(categoryDbId) ? categoryDbId : undefined,
       template_id: isMongoId(templateDbId) ? templateDbId : undefined,
-      category: activeCategoryObj?.id || selectedCategory || null,
-      templateId: presetTemplate?.id || presetTemplateId || null,
-      category_slug: activeCategoryObj?.id || selectedCategory || null,
-      template_slug: presetTemplate?.id || presetTemplateId || null,
+      category: activeCategoryObj?.id || selectedCategory || "birthday",
+      templateId: presetTemplate?.id || presetTemplateId || "birthday-belated-apology",
+      category_slug: activeCategoryObj?.id || selectedCategory || "birthday",
+      template_slug: presetTemplate?.id || presetTemplateId || "birthday-belated-apology",
       submittedDetails: dynamicValues,
       form_data: dynamicValues,
       notes: presetTemplateId ? `Preselected Theme: ${presetTemplate?.name || presetTemplateId}` : "General category enquiry",
     };
 
     try {
-      await enquiryService.create(enquiryPayload);
-      addEnquiry(enquiryPayload);
-      setIsSuccess(true);
+      const res = await enquiryService.create(enquiryPayload);
+      const createdData = res?.data || res;
+      addEnquiry({ ...enquiryPayload, id: createdData?.id || createdData?._id });
     } catch (err) {
-      console.error("Failed to submit enquiry to backend:", err);
-      // Fallback
+      console.warn("Backend enquiry submission notice:", err.message);
       addEnquiry(enquiryPayload);
-      setIsSuccess(true);
     }
+    
+    setIsSuccess(true);
   };
 
   const categoryOptions = categories.map((c) => ({

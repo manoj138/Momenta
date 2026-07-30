@@ -312,7 +312,15 @@ export const AppProvider = ({ children }) => {
       notes: enquiry.notes || "",
       ...enquiry,
     };
-    setEnquiries((prev) => [fullEnquiry, ...prev]);
+    setEnquiries((prev) => {
+      const updated = [fullEnquiry, ...prev.filter(e => e.id !== fullEnquiry.id)];
+      try {
+        localStorage.setItem("momenta_local_enquiries", JSON.stringify(updated));
+      } catch (err) {
+        console.warn("Failed to persist local enquiry:", err);
+      }
+      return updated;
+    });
     return fullEnquiry;
   };
   const updateEnquiryStatus = (id, status, notes = "", assignedTo = null) => {
