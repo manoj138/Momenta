@@ -1,6 +1,34 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 const AppContext = createContext(null);
 
+export const safeSetLocalStorage = (key, data) => {
+  try {
+    const serialized = typeof data === "string" ? data : JSON.stringify(data);
+    localStorage.setItem(key, serialized);
+  } catch (err) {
+    console.warn(`[LocalStorage Quota Shield] Safe fallback active for key "${key}":`, err.message);
+    try {
+      if (typeof data === "object" && data !== null) {
+        const cleaned = JSON.parse(JSON.stringify(data));
+        const stripHeavyMedia = (obj) => {
+          if (!obj || typeof obj !== "object") return;
+          Object.keys(obj).forEach((k) => {
+            if (typeof obj[k] === "string" && obj[k].length > 80000) {
+              obj[k] = ""; // Strip heavy base64 strings from local storage fallback so browser quota never crashes script
+            } else if (typeof obj[k] === "object") {
+              stripHeavyMedia(obj[k]);
+            }
+          });
+        };
+        stripHeavyMedia(cleaned);
+        localStorage.setItem(key, JSON.stringify(cleaned));
+      }
+    } catch (e2) {
+      console.warn(`[LocalStorage Safe Fallback Notice]:`, e2.message);
+    }
+  }
+};
+
 export const AppProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -314,11 +342,7 @@ export const AppProvider = ({ children }) => {
     };
     setEnquiries((prev) => {
       const updated = [fullEnquiry, ...prev.filter(e => e.id !== fullEnquiry.id)];
-      try {
-        localStorage.setItem("momenta_local_enquiries", JSON.stringify(updated));
-      } catch (err) {
-        console.warn("Failed to persist local enquiry:", err);
-      }
+      safeSetLocalStorage("momenta_local_enquiries", updated);
       return updated;
     });
     return fullEnquiry;
@@ -350,11 +374,7 @@ export const AppProvider = ({ children }) => {
     };
     setExperiences((prev) => {
       const updated = [fullExperience, ...prev.filter(e => e.slug !== fullExperience.slug)];
-      try {
-        localStorage.setItem("momenta_local_experiences", JSON.stringify(updated));
-      } catch (e) {
-        console.warn("Failed to persist local experiences:", e);
-      }
+      safeSetLocalStorage("momenta_local_experiences", updated);
       return updated;
     });
     return fullExperience;
@@ -362,22 +382,14 @@ export const AppProvider = ({ children }) => {
   const updateExperience = (id, updatedFields) => {
     setExperiences((prev) => {
       const updated = prev.map((e) => (e.id === id || e.slug === id ? { ...e, ...updatedFields } : e));
-      try {
-        localStorage.setItem("momenta_local_experiences", JSON.stringify(updated));
-      } catch (err) {
-        console.warn("Failed to persist updated experience:", err);
-      }
+      safeSetLocalStorage("momenta_local_experiences", updated);
       return updated;
     });
   };
   const deleteExperience = async (id) => {
     setExperiences((prev) => {
       const updated = prev.filter((e) => e.id !== id && e.slug !== id);
-      try {
-        localStorage.setItem("momenta_local_experiences", JSON.stringify(updated));
-      } catch (e) {
-        console.warn("Failed to update local stored experiences on delete:", e);
-      }
+      safeSetLocalStorage("momenta_local_experiences", updated);
       return updated;
     });
 

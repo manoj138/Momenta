@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useApp } from "../../../context/AppContext";
+import { useApp, safeSetLocalStorage } from "../../../context/AppContext";
 import { ArrowLeft, Save, Globe, Eye, Sparkles, CheckCircle2 } from "lucide-react";
 import Input from "../../../components/common/Input";
 import Select from "../../../components/common/Select";
@@ -182,7 +182,7 @@ const ExperienceCreator = () => {
       clientName: enquiry.clientName
     };
     console.log("Opening preview with payload:", payload);
-    localStorage.setItem("momenta_preview_data", JSON.stringify(payload));
+    safeSetLocalStorage("momenta_preview_data", payload);
     window.open("/e/preview", "_blank");
   };
 
@@ -260,7 +260,7 @@ const ExperienceCreator = () => {
       data: formData,
       clientName: enquiry?.clientName || "Client"
     };
-    localStorage.setItem("momenta_preview_data", JSON.stringify(previewPayload));
+    safeSetLocalStorage("momenta_preview_data", previewPayload);
 
     setIsPublished(true);
     setShowSaveMessage(true);
