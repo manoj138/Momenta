@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useApp } from "../../../../context/AppContext";
-import { Sparkles, ArrowRight, RotateCcw, Camera, Heart, ChevronLeft } from "lucide-react";
-import { guestService } from "../../../../services/guestService";
+import { Sparkles, ArrowRight, RotateCcw, Camera, Heart, ChevronLeft, Mic, Lock, KeyRound } from "lucide-react";
 import TemplateControls from "../../../../components/common/TemplateControls";
 
 const translations = {
@@ -28,7 +27,16 @@ const translations = {
     iloveYou: "I LOVE YOU ❤️",
     meanToMe: "You don't know how much you mean to me",
     loadingText: "आठवणींचा पेटारा उघडत आहे...",
-    backBtn: "Back"
+    backBtn: "Back",
+    passcodeTitle: "खाजगी सरप्राईज अनलॉकिंग...",
+    enterPinLabel: "४-अंकी सिक्रेट पिन प्रविष्ट करा",
+    unlockBtn: "अनलॉक करा",
+    wrongPinMsg: "गलत पिन! कृपया पुन्हा प्रयत्न करा ❌",
+    scratchInstruction: "बोटाने किंवा माऊसने स्क्रॅच करा 🪙",
+    scratchedUnlocked: "वाह! सरप्राईज उघडले! 🎉",
+    makeWishTitle: "MAKE A WISH & BLOW OUT THE CANDLES! 🎂",
+    blowInstructions: "मायक्रोफोनमध्ये फुंकर मारा 🎤 किंवा मेणबत्तीवर टॅप करा!",
+    candlesBlownText: "तुमची इच्छा नक्की पूर्ण होईल! 🎉✨",
   },
   en: {
     heyHeader: "HEY!!",
@@ -53,11 +61,20 @@ const translations = {
     iloveYou: "I LOVE YOU ❤️",
     meanToMe: "You don't know how much you mean to me",
     loadingText: "Unlocking Birthday Wishes...",
-    backBtn: "Back"
+    backBtn: "Back",
+    passcodeTitle: "Private Surprise Unlocking...",
+    enterPinLabel: "Enter 4-digit Secret PIN",
+    unlockBtn: "Unlock Experience",
+    wrongPinMsg: "Wrong Secret PIN! Try again ❌",
+    scratchInstruction: "Scratch with your finger or mouse 🪙",
+    scratchedUnlocked: "Yay! Surprise Unlocked! 🎉",
+    makeWishTitle: "MAKE A WISH & BLOW OUT THE CANDLES! 🎂",
+    blowInstructions: "Breathe into your mic 🎤 or tap the candle flame!",
+    candlesBlownText: "May all your wishes come true! 🎉✨",
   }
 };
 
-// Exact Image Asset Paths from public/birthday/birthday love - 100% Unique & Step-Wise
+// Image Asset Paths from public/birthday/birthday love
 const ASSETS = {
   puppyRose: encodeURI("/birthday/birthday love/It's Nearly Valentine's Day, And This Puppy Is So Ready For It!.png"),
   angryPuppy: encodeURI("/birthday/birthday love/angry puppy.png"),
@@ -66,13 +83,13 @@ const ASSETS = {
   pinkEnvelope: encodeURI("/birthday/birthday love/Pink Valentines Clipart - Romantic Love Art for Celebrations.png"),
   coquetteLollipop: encodeURI("/birthday/birthday love/Download premium png of PNG Coquette red lollipop confectionery furniture sweets_ by Ning about coquette, pink coquette png, coquette png, coquette pink, and coquette aesthetic 14797369.png"),
   stickerGif: encodeURI("/birthday/birthday love/Post by @lovelysticker · 8 images.gif"),
-  cake: encodeURI("/birthday/birthday love/cake.png")
+  cake: encodeURI("/birthday/birthday love/birthday_cake_transparent copy.png")
 };
 
 const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   const { addRSVPToExperience } = useApp();
   
-  // Story Step State Machine: 0 to 8
+  // Story Step State Machine: 0 to 9
   const [storyStep, setStoryStep] = useState(0);
   const [stepHistory, setStepHistory] = useState([0]);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -80,17 +97,33 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   const [isEnvelopeOpened, setIsEnvelopeOpened] = useState(false);
   const [isLocketOpen, setIsLocketOpen] = useState(false);
 
-  // 3D Perspective Tilt & Cursor Spotlight Direct DOM Refs (Zero Re-renders)
+  // Passcode Lock State
+  const secretPasscode = String(data.passcode || data.secretPin || "");
+  const [isPasscodeLocked, setIsPasscodeLocked] = useState(!!secretPasscode);
+  const [enteredPin, setEnteredPin] = useState("");
+  const [pinError, setPinError] = useState(false);
+
+  // Scratch Card State (Step 5)
+  const [isScratched, setIsScratched] = useState(false);
+  const scratchCanvasRef = useRef(null);
+
+  // Blow Candle Interactive State (Step 8)
+  const [isCandleBlown, setIsCandleBlown] = useState(false);
+  const [isListeningMic, setIsListeningMic] = useState(false);
+  const audioContextRef = useRef(null);
+  const micStreamRef = useRef(null);
+
+  // 3D Tilt & Cursor Spotlight Refs
   const cardRef = useRef(null);
   const spotlightRef = useRef(null);
   const mouseAnimFrame = useRef(null);
 
-  // Language & Font settings
+  // Language settings
   const [currentLang, setCurrentLang] = useState(data.language || "en");
   const lang = currentLang;
   const t = translations[lang] || translations.en;
 
-  // Background Image Preloading Hook (Preloads ALL assets into memory for instant step transitions)
+  // Preload Images
   useEffect(() => {
     Object.values(ASSETS).forEach((src) => {
       const img = new Image();
@@ -98,7 +131,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     });
   }, []);
 
-  // Navigation Helpers (Step Forward & Back History Stack)
+  // Navigation Helpers
   const goToStep = (nextStep) => {
     setStoryStep(nextStep);
     setStepHistory((prev) => [...prev, nextStep]);
@@ -116,7 +149,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     }
   };
 
-  // Mouse / Touch 3D Tilt & Interactive Cursor Spotlight Tracking (rAF Direct DOM Update)
+  // 3D Tilt & Spotlight Tracking
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
@@ -138,7 +171,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     });
   };
 
-  // Interactive Click Heart Burst Handler
+  // Click Heart Burst Handler
   const handleGlobalClick = (e) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -160,7 +193,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     }
   };
 
-  // 1. 0-100 Loader simulation
+  // Loader simulation
   useEffect(() => {
     let interval = null;
     if (!loadingDone) {
@@ -178,7 +211,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     return () => clearInterval(interval);
   }, [loadingDone]);
 
-  // Synchronize language if data changes
   useEffect(() => {
     if (data.language) {
       setCurrentLang(data.language);
@@ -200,18 +232,16 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     return raw;
   };
 
-  // Canvas Real-Time Fireworks & Heart Rain System
+  // Canvas Fireworks & Particle System
   const canvasRef = useRef(null);
   const confettiParticles = useRef([]);
   const heartParticles = useRef([]);
 
-  // Upgraded Fireworks Rockets & Golden Sparkle Explosions
   const triggerConfetti = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const colors = ["#ffd700", "#f472b6", "#ec4899", "#3b82f6", "#ffffff", "#fbbf24", "#e11d48"];
     
-    // Launch 3 simultaneous Firework Rockets from bottom
     for (let rocket = 0; rocket < 3; rocket++) {
       const startX = (canvas.width / 4) * (rocket + 1);
       for (let i = 0; i < 60; i++) {
@@ -246,7 +276,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // Initialize rising heart sparkles
     for (let i = 0; i < 35; i++) {
       heartParticles.current.push({
         x: Math.random() * window.innerWidth,
@@ -261,7 +290,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Draw Rising Heart Particles
       heartParticles.current.forEach((h) => {
         h.y -= h.speedY;
         h.x += h.speedX;
@@ -276,13 +304,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         ctx.restore();
       });
 
-      // 2. Draw Fireworks Burst & Click Heart Bursts (Optimized Reverse Loop)
       const particles = confettiParticles.current;
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += p.isEmojiHeart ? 0.08 : 0.25; // lighter gravity for click hearts
+        p.vy += p.isEmojiHeart ? 0.08 : 0.25;
         p.alpha -= p.decay;
 
         if (p.alpha <= 0 || p.y > canvas.height) {
@@ -314,6 +341,166 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     };
   }, [loadingDone]);
 
+  // Scratch Card Canvas Overlay Hook (Step 5)
+  useEffect(() => {
+    if (storyStep !== 5 || isScratched) return;
+    const canvas = scratchCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    const w = (canvas.width = canvas.offsetWidth || 260);
+    const h = (canvas.height = canvas.offsetHeight || 260);
+
+    // Fill Canvas with metallic pink gradient
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, "#f472b6");
+    grad.addColorStop(0.5, "#ec4899");
+    grad.addColorStop(1, "#be185d");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Scratch Text Overlay
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 16px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🪙 " + (t.scratchInstruction || "Scratch Me!"), w / 2, h / 2);
+
+    let isDrawing = false;
+
+    const scratch = (x, y) => {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, 24, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Check scratched percentage
+      const imgData = ctx.getImageData(0, 0, w, h);
+      let cleared = 0;
+      for (let i = 3; i < imgData.data.length; i += 16) {
+        if (imgData.data[i] === 0) cleared++;
+      }
+      if (cleared / (imgData.data.length / 16) > 0.4) {
+        setIsScratched(true);
+        triggerConfetti();
+      }
+    };
+
+    const getPos = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    };
+
+    const onStart = (e) => {
+      isDrawing = true;
+      const pos = getPos(e);
+      scratch(pos.x, pos.y);
+    };
+
+    const onMove = (e) => {
+      if (!isDrawing) return;
+      e.preventDefault();
+      const pos = getPos(e);
+      scratch(pos.x, pos.y);
+    };
+
+    const onEnd = () => {
+      isDrawing = false;
+    };
+
+    canvas.addEventListener("mousedown", onStart);
+    canvas.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onEnd);
+    canvas.addEventListener("touchstart", onStart, { passive: false });
+    canvas.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", onEnd);
+
+    return () => {
+      canvas.removeEventListener("mousedown", onStart);
+      canvas.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onEnd);
+      canvas.removeEventListener("touchstart", onStart);
+      canvas.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, [storyStep, isScratched, t.scratchInstruction]);
+
+  // Blow Candle Microphone Listener Hook (Step 8)
+  useEffect(() => {
+    if (storyStep !== 8 || isCandleBlown) return;
+
+    let animId = null;
+
+    const startMic = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        micStreamRef.current = stream;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioCtx();
+        audioContextRef.current = audioCtx;
+
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        const source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        const dataArray = new Uint8Array(analyser.frequencyBinCount);
+        setIsListeningMic(true);
+
+        const checkVolume = () => {
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            sum += dataArray[i];
+          }
+          const average = sum / dataArray.length;
+
+          // If blow intensity is high
+          if (average > 42) {
+            handleBlowCandles();
+            return;
+          }
+          animId = requestAnimationFrame(checkVolume);
+        };
+        checkVolume();
+      } catch (err) {
+        console.warn("Microphone access not granted or unavailable for blow feature:", err);
+        setIsListeningMic(false);
+      }
+    };
+
+    startMic();
+
+    return () => {
+      if (animId) cancelAnimationFrame(animId);
+      if (micStreamRef.current) {
+        micStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+      if (audioContextRef.current) {
+        audioContextRef.current.close();
+      }
+    };
+  }, [storyStep, isCandleBlown]);
+
+  const handleBlowCandles = () => {
+    if (isCandleBlown) return;
+    setIsCandleBlown(true);
+    triggerConfetti();
+  };
+
+  const handlePinSubmit = (e) => {
+    e.preventDefault();
+    if (enteredPin.trim() === secretPasscode.trim()) {
+      setIsPasscodeLocked(false);
+      setPinError(false);
+      triggerConfetti();
+    } else {
+      setPinError(true);
+      setTimeout(() => setPinError(false), 1200);
+    }
+  };
+
   const getPhotos = () => {
     if (data.gallery && data.gallery.length > 0) return data.gallery;
     return [
@@ -340,7 +527,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         }}
       />
 
-      {/* Interactive Cursor Spotlight Glow (GPU Accelerated) */}
+      {/* Interactive Cursor Spotlight Glow */}
       <div 
         ref={spotlightRef}
         className="fixed pointer-events-none z-10 w-96 h-96 rounded-full blur-3xl opacity-30 bg-radial from-pink-300 via-amber-200 to-transparent top-0 left-0 will-change-transform"
@@ -353,12 +540,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         className="fixed inset-0 z-10 pointer-events-none"
       />
 
-      {/* 2. Premium Intro Loader with Dual Energy Rings */}
+      {/* 2. Premium Intro Loader */}
       {!loadingDone && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#b83854] transition-opacity duration-500">
           <div className="space-y-6 text-center max-w-sm px-6">
-            
-            {/* Dual Spinning Energy Rings */}
             <div className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto flex items-center justify-center">
               <div className="absolute inset-0 rounded-full border-2 border-dashed border-amber-300 animate-spin-slow" />
               <div className="absolute inset-1 rounded-full border-2 border-pink-200 animate-reverse-spin" />
@@ -387,7 +572,49 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         </div>
       )}
 
-      {/* Reusable Template Controls */}
+      {/* Secret Passcode Gate Modal */}
+      {loadingDone && isPasscodeLocked && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fade-in">
+          <form
+            onSubmit={handlePinSubmit}
+            className={`w-full max-w-sm bg-slate-900 border border-white/10 p-6 sm:p-8 rounded-3xl text-center space-y-6 shadow-2xl text-white ${
+              pinError ? "animate-bounce border-red-500" : ""
+            }`}
+          >
+            <div className="p-4 bg-pink-500/10 rounded-2xl w-16 h-16 mx-auto flex items-center justify-center text-pink-400 border border-pink-500/20">
+              <KeyRound size={32} />
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-xl font-bold text-white font-fredoka">{t.passcodeTitle}</h3>
+              <p className="text-xs text-gray-400 font-medium">{t.enterPinLabel}</p>
+            </div>
+
+            <input
+              type="password"
+              maxLength={6}
+              value={enteredPin}
+              onChange={(e) => setEnteredPin(e.target.value)}
+              placeholder="••••"
+              className="w-full text-center text-3xl font-mono tracking-[0.5em] py-3 bg-slate-950 border border-white/10 rounded-xl text-white focus:outline-none focus:border-pink-500"
+              autoFocus
+            />
+
+            {pinError && (
+              <p className="text-xs text-red-400 font-bold animate-pulse">{t.wrongPinMsg}</p>
+            )}
+
+            <button
+              type="submit"
+              className="w-full py-3.5 bg-pink-600 hover:bg-pink-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-pink-600/30 cursor-pointer font-fredoka"
+            >
+              {t.unlockBtn}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Template Controls */}
       <TemplateControls
         currentLang={currentLang}
         onToggleLanguage={toggleLanguage}
@@ -398,10 +625,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         borderClass="border-pink-300/30"
       />
 
-      {/* MAIN FULL-SCREEN ORGANIC WAVY CONTAINER (100% Fixed & Uniform Container Dimensions) */}
+      {/* MAIN FULL-SCREEN ORGANIC CONTAINER */}
       <div 
         ref={cardRef}
-        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-hidden bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-hidden bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-transform duration-300 ease-out shadow-[0_35px_80px_rgba(0,0,0,0.45)] will-change-transform ${loadingDone && !isPasscodeLocked ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         style={{
           borderRadius: `clamp(30px, 6vw, 60px) clamp(80px, 18vw, 240px) clamp(40px, 8vw, 80px) clamp(70px, 15vw, 200px) / clamp(60px, 12vw, 180px) clamp(35px, 6vw, 80px) clamp(80px, 16vw, 220px) clamp(30px, 5vw, 60px)`,
           backgroundImage: `radial-gradient(#e2d9d2 1.2px, transparent 1.2px)`,
@@ -409,7 +636,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         }}
       >
 
-        {/* FLOATING BACK BUTTON (When storyStep > 0) */}
+        {/* FLOATING BACK BUTTON */}
         {storyStep > 0 && (
           <button
             onClick={handleGoBack}
@@ -425,8 +652,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* ========================================================= */}
         {storyStep === 0 && (
           <div className="w-full h-full flex flex-col md:flex-row items-center justify-between animate-fade-in gap-4 sm:gap-6 my-auto py-1">
-            
-            {/* Left Text Content Deck */}
             <div className="flex-1 flex flex-col justify-center space-y-2 sm:space-y-4 text-center md:text-left z-20">
               <h1 className="text-4xl xs:text-5xl sm:text-6xl font-extrabold text-[#c2395d] uppercase tracking-tight font-fredoka drop-shadow-sm leading-tight">
                 {t.heyHeader}
@@ -441,41 +666,30 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 </p>
               </div>
 
-              {/* Pill Buttons with Magnetic Shimmer FX */}
               <div className="flex items-center justify-center md:justify-start gap-3 pt-2 sm:pt-4 font-fredoka">
                 <button
                   onClick={() => goToStep(2)}
                   className="relative overflow-hidden px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:-rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 group"
                 >
                   <span className="relative z-10"><u className="decoration-white underline-offset-4">{t.yesBtn}</u></span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 </button>
                 <button
                   onClick={() => goToStep(1)}
                   className="relative overflow-hidden px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 group"
                 >
                   <span className="relative z-10"><u className="decoration-white underline-offset-4">{t.noBtn}</u></span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 </button>
               </div>
-
             </div>
 
-            {/* Right Puppy Mascot: puppyRose */}
             <div className="w-40 xs:w-52 sm:w-72 h-40 xs:h-52 sm:h-72 z-10 animate-float flex-shrink-0">
               <img 
                 src={ASSETS.puppyRose} 
                 alt="Cute Puppy with Rose" 
                 loading="eager"
-                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.2)]"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/birthday/birthday baby boy.png";
-                }}
               />
             </div>
-
           </div>
         )}
 
@@ -484,18 +698,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* ========================================================= */}
         {storyStep === 1 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-wobble-card my-auto py-1">
-            
             <div className="relative w-44 xs:w-56 sm:w-72 h-44 xs:h-56 sm:h-72 my-1">
               <img 
                 src={ASSETS.angryPuppy} 
                 alt="Angry Puppy" 
                 loading="eager"
-                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.2)] animate-pulse"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = ASSETS.stickerGif;
-                }}
               />
               <span className="absolute top-0 right-2 text-3xl xs:text-5xl animate-bounce">💢</span>
             </div>
@@ -511,7 +719,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               <RotateCcw size={20} className="animate-spin-slow" />
               <span><u className="decoration-white underline-offset-4">{t.goBackBtn}</u></span>
             </button>
-
           </div>
         )}
 
@@ -520,18 +727,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* ========================================================= */}
         {storyStep === 2 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            
             <div className="relative w-48 xs:w-60 sm:w-76 h-48 xs:h-60 sm:h-76 my-1 animate-float">
               <img 
                 src={ASSETS.flowerBouquet} 
                 alt="Puppy with Flower Bouquet" 
                 loading="eager"
-                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.2)]"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = ASSETS.puppyRose;
-                }}
               />
               <span className="absolute bottom-2 right-2 text-3xl xs:text-4xl animate-bounce">💋🌻</span>
             </div>
@@ -550,27 +751,20 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               <span><u className="decoration-white underline-offset-4">{t.clickToContinue}</u></span>
               <ArrowRight size={22} />
             </button>
-
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 3: MAIN REVEAL CARD (Fireworks Particle Launch)      */}
+        {/* STEP 3: MAIN REVEAL CARD                                  */}
         {/* ========================================================= */}
         {storyStep === 3 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            
             <div className="relative w-48 xs:w-60 sm:w-76 h-48 xs:h-60 sm:h-76 my-1 animate-float">
               <img 
                 src={ASSETS.partyCakePuppy} 
                 alt="Party Pup with Cake" 
                 loading="eager"
-                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.2)]"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "/birthday/birthday adult woman.png";
-                }}
               />
             </div>
 
@@ -590,7 +784,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
               <ArrowRight size={22} />
             </button>
-
           </div>
         )}
 
@@ -599,7 +792,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* ========================================================= */}
         {storyStep === 4 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            
             <div 
               onClick={() => {
                 setIsEnvelopeOpened(true);
@@ -615,7 +807,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                   src={ASSETS.pinkEnvelope} 
                   alt="Pink Romantic Envelope" 
                   loading="eager"
-                  fetchpriority="high"
                   className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
                 />
               </div>
@@ -624,59 +815,53 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 {t.tapToOpen}
               </h3>
             </div>
-
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 5: GIFT BOX SCREEN (Fireworks Launch)                */}
+        {/* STEP 5: CANVAS SCRATCH-TO-REVEAL SURPRISE CARD            */}
         {/* ========================================================= */}
         {storyStep === 5 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 relative animate-fade-in my-auto py-1">
-            
             <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
               {t.hereSurprise}
             </h1>
 
-            <div 
-              onClick={() => {
-                goToStep(6);
-                triggerConfetti();
-              }}
-              className="relative w-56 xs:w-68 sm:w-80 h-56 xs:h-68 sm:h-80 my-1 flex flex-col items-center justify-center cursor-pointer group"
-            >
-              <div className="w-full h-full p-2 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                <img 
-                  src={ASSETS.coquetteLollipop} 
-                  alt="Surprise Gift Sweets" 
-                  loading="eager"
-                  fetchpriority="high"
-                  className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)] animate-float"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = ASSETS.pinkEnvelope;
-                  }}
-                />
-              </div>
+            <div className="relative w-56 xs:w-64 sm:w-72 h-56 xs:h-64 sm:h-72 my-1 flex items-center justify-center rounded-3xl overflow-hidden shadow-2xl border-4 border-pink-300 bg-white">
+              {/* Underlying Gift Image */}
+              <img 
+                src={ASSETS.coquetteLollipop} 
+                alt="Surprise Sweets" 
+                className="w-full h-full object-contain p-4"
+              />
 
-              <div className="absolute -bottom-2 sm:-bottom-3 right-2 sm:right-4 bg-[#a83650] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-1.5 rounded-full shadow-[0_10px_20px_rgba(168,54,80,0.4)] flex items-center gap-2 animate-pulse font-fredoka">
-                <span>{t.tapHere}</span>
-                <ArrowRight size={14} />
-              </div>
+              {/* Canvas Scratch Overlay */}
+              {!isScratched && (
+                <canvas
+                  ref={scratchCanvasRef}
+                  className="absolute inset-0 w-full h-full cursor-pointer touch-none z-10"
+                />
+              )}
             </div>
 
-            <div className="w-full flex justify-end pt-1">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 relative animate-bounce">
-                <img 
-                  src={ASSETS.flowerBouquet} 
-                  alt="Flower Bouquet Mascot" 
-                  loading="eager"
-                  fetchpriority="high"
-                  className="w-full h-full object-contain filter drop-shadow-md"
-                />
+            {isScratched ? (
+              <div className="space-y-3 animate-fade-in">
+                <p className="text-sm font-bold text-pink-600 uppercase tracking-wider font-fredoka">
+                  {t.scratchedUnlocked}
+                </p>
+                <button
+                  onClick={() => goToStep(6)}
+                  className="px-8 py-3 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base font-bold rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer font-fredoka flex items-center gap-2 mx-auto"
+                >
+                  <span>{t.nextBtn}</span>
+                  <ArrowRight size={18} />
+                </button>
               </div>
-            </div>
-
+            ) : (
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest animate-pulse font-fredoka">
+                {t.scratchInstruction}
+              </p>
+            )}
           </div>
         )}
 
@@ -685,14 +870,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* ========================================================= */}
         {storyStep === 6 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            
             <div className="w-full bg-pink-50 border-2 border-pink-200 rounded-3xl p-4 sm:p-8 space-y-4 text-center relative shadow-inner">
               <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto -mt-10 sm:-mt-14 drop-shadow-lg animate-float">
                 <img 
                   src={ASSETS.flowerBouquet} 
                   alt="Flower Bouquet Mascot" 
                   loading="eager"
-                  fetchpriority="high"
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -701,16 +884,15 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 "{data.message || t.letterText}"
               </p>
 
-              {/* Interactive 3D Golden Locket Hinge Opening */}
               <div 
                 onClick={() => setIsLocketOpen(!isLocketOpen)}
                 className="flex items-center justify-center gap-3 sm:gap-5 pt-1 cursor-pointer group"
               >
                 <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[0]} alt="Locket Photo 1" loading="eager" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
+                  <img src={photos[0]} alt="Locket Photo 1" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
                 </div>
                 <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" loading="eager" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
+                  <img src={photos[1] || photos[0]} alt="Locket Photo 2" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
                 </div>
               </div>
             </div>
@@ -724,7 +906,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 <span><u className="decoration-white underline-offset-4">{t.clickHereBtn}</u></span>
               </button>
             </div>
-
           </div>
         )}
 
@@ -733,7 +914,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* ========================================================= */}
         {storyStep === 7 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            
             <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
               {t.virtualHug}
             </h1>
@@ -743,38 +923,118 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 src={ASSETS.stickerGif} 
                 alt="Virtual Hug Bears GIF" 
                 loading="eager"
-                fetchpriority="high"
                 className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = ASSETS.puppyRose;
-                }}
               />
             </div>
 
             <button
               onClick={() => {
                 goToStep(8);
-                triggerConfetti();
               }}
               className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
               <ArrowRight size={22} />
             </button>
-
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 8: POLAROIDS & CAKE WALL (Grand Fireworks Finale)    */}
+        {/* STEP 8: DEDICATED BLOW CANDLES INTERACTIVE SCREEN          */}
         {/* ========================================================= */}
         {storyStep === 8 && (
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-3 sm:space-y-4 animate-fade-in my-auto pt-8 sm:pt-10 pb-1 px-4">
+            {/* Header with clear padding from top-left Back button */}
+            <div className="space-y-1 max-w-md px-6 sm:px-10">
+              <h1 className="text-lg xs:text-xl sm:text-3xl font-extrabold text-[#c2395d] font-fredoka uppercase leading-tight">
+                {t.makeWishTitle}
+              </h1>
+              <p className="text-[11px] sm:text-xs text-slate-600 font-semibold font-fredoka flex items-center justify-center gap-1.5">
+                <Mic size={14} className={isListeningMic ? "text-pink-500 animate-pulse" : "text-gray-400"} />
+                <span>{t.blowInstructions}</span>
+              </p>
+            </div>
+
+            {/* Giant Birthday Cake with Burning/Extinguished Candles */}
+            <div 
+              onClick={handleBlowCandles}
+              className="relative w-48 xs:w-56 sm:w-68 h-48 xs:h-56 sm:h-68 my-1 flex flex-col items-center justify-center cursor-pointer group"
+            >
+              {/* Cake image with mix-blend-multiply to remove white background */}
+              <img 
+                src={ASSETS.cake} 
+                alt="Birthday Cake" 
+                className="w-full h-full object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.15)] group-hover:scale-105 transition-transform mix-blend-multiply"
+              />
+
+              {/* Single Central High-Contrast Birthday Candle Overlay */}
+              <div className="absolute top-[14%] sm:top-[16%] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center justify-end h-16 sm:h-20 cursor-pointer">
+                {!isCandleBlown ? (
+                  <>
+                    {/* Glowing Flickering Flame */}
+                    <div className="w-4 sm:w-5 h-6 sm:h-7 rounded-full bg-gradient-to-t from-amber-500 via-orange-400 to-yellow-200 shadow-[0_0_18px_#f97316,#0_0_35px_#f59e0b] animate-pulse relative flex items-center justify-center">
+                      <div className="w-1.5 h-2.5 bg-white rounded-full opacity-90 animate-ping" />
+                    </div>
+                    {/* Wick */}
+                    <div className="w-0.5 h-2 bg-slate-900 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    {/* Extinguished Smoke FX */}
+                    <div className="text-base sm:text-lg animate-bounce text-slate-400">💨</div>
+                    {/* Burnt Wick */}
+                    <div className="w-1 h-2 bg-slate-950 mx-auto rounded-xs shadow-inner" />
+                  </>
+                )}
+
+                {/* Striped 3D Candle Body Stick */}
+                <div 
+                  className={`w-4 sm:w-5 h-9 sm:h-11 rounded-sm border-2 border-white/90 shadow-xl relative overflow-hidden ${
+                    isCandleBlown ? "bg-gradient-to-b from-gray-400 to-slate-600" : "bg-gradient-to-b from-pink-500 via-red-500 to-rose-600"
+                  }`}
+                >
+                  <div 
+                    className="absolute inset-0 opacity-40" 
+                    style={{
+                      backgroundImage: `linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 50%, #ffffff 50%, #ffffff 75%, transparent 75%)`,
+                      backgroundSize: `10px 10px`
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {isCandleBlown ? (
+              <div className="space-y-3 animate-fade-in">
+                <p className="text-xs sm:text-sm font-bold text-pink-600 uppercase tracking-wider font-fredoka animate-pulse">
+                  {t.candlesBlownText}
+                </p>
+                <button
+                  onClick={() => {
+                    goToStep(9);
+                    triggerConfetti();
+                  }}
+                  className="px-8 sm:px-12 py-2.5 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base sm:text-lg font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer font-fredoka flex items-center gap-2 mx-auto border-2 border-white/30 animate-glow-ring"
+                >
+                  <span>{t.nextBtn}</span>
+                  <ArrowRight size={20} />
+                </button>
+              </div>
+            ) : (
+              <div className="p-2.5 px-4 bg-pink-100/90 rounded-2xl border border-pink-300 text-[11px] sm:text-xs text-pink-700 font-bold font-fredoka animate-pulse">
+                👇 Tap the candles or blow into mic to extinguish!
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========================================================= */}
+        {/* STEP 9: POLAROIDS & CAKE WALL (Grand Finale)               */}
+        {/* ========================================================= */}
+        {storyStep === 9 && (
           <div className="w-full h-full flex flex-col justify-between space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            
             <div className="w-full h-[2px] bg-slate-400 relative top-2 sm:top-3 left-0 right-0 z-0" />
 
-            {/* Swaying Pendulum Wind Polaroids on Wire */}
             <div className="w-full grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 pt-2 sm:pt-3 relative z-10">
               {photos.slice(0, 3).map((src, idx) => (
                 <div key={idx} className="bg-white p-1.5 xs:p-2 sm:p-3 pb-5 xs:pb-6 sm:pb-8 rounded-lg shadow-xl border border-slate-200 transform hover:scale-110 transition-transform relative animate-pendulum" style={{ animationDelay: `${idx * 0.5}s` }}>
@@ -792,14 +1052,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                   src={ASSETS.cake} 
                   alt="Birthday Cake" 
                   loading="eager"
-                  fetchpriority="high"
-                  className="w-full h-full object-contain filter drop-shadow-lg"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = ASSETS.partyCakePuppy;
-                  }}
+                  className="w-full h-full object-contain filter drop-shadow-lg mix-blend-multiply"
                 />
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 text-xl sm:text-2xl animate-flame">🕯️</span>
               </div>
 
               <div className="text-center sm:text-right space-y-0.5 sm:space-y-1 flex-1 pl-0 sm:pl-3">
@@ -811,7 +1065,6 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 </p>
               </div>
             </div>
-
           </div>
         )}
 
