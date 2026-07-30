@@ -8,9 +8,7 @@ const getAllExperiences = async (req, res) => {
         const whereClause = isStaff ? {} : { is_published: true };
 
         const experiences = await Experience.find(whereClause)
-            .sort({ createdAt: -1 })
-            .populate('template')
-            .populate('category');
+            .sort({ createdAt: -1 });
         return handle200(res, experiences);
     } catch (error) {
         return handle500(res, error);
@@ -19,21 +17,21 @@ const getAllExperiences = async (req, res) => {
 
 const getExperienceBySlug = async (req, res) => {
     try {
-        const slugRegex = new RegExp('^' + req.params.slug.trim() + '$', 'i');
-        const experience = await Experience.findOne({ slug: slugRegex })
-            .populate('template')
-            .populate('category')
-            .populate('rsvps')
-            .populate('wishes');
+        const cleanSlug = req.params.slug.trim();
+        const slugRegex = new RegExp('^' + cleanSlug + '$', 'i');
+        const experience = await Experience.findOne({ slug: slugRegex });
 
         if (!experience) return handle404(res, 'Digital Experience not found');
 
-        // Increment view count
-        experience.view_count = (experience.view_count || 0) + 1;
-        await experience.save();
+        // Safely increment view count
+        try {
+            experience.view_count = (experience.view_count || 0) + 1;
+            await experience.save();
+        } catch (e) {}
 
         return handle200(res, experience);
     } catch (error) {
+        console.error("Error in getExperienceBySlug:", error);
         return handle500(res, error);
     }
 };
