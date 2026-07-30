@@ -19,7 +19,8 @@ const getAllExperiences = async (req, res) => {
 
 const getExperienceBySlug = async (req, res) => {
     try {
-        const experience = await Experience.findOne({ slug: req.params.slug })
+        const slugRegex = new RegExp('^' + req.params.slug.trim() + '$', 'i');
+        const experience = await Experience.findOne({ slug: slugRegex })
             .populate('template')
             .populate('category')
             .populate('rsvps')
@@ -28,7 +29,7 @@ const getExperienceBySlug = async (req, res) => {
         if (!experience) return handle404(res, 'Digital Experience not found');
 
         // Increment view count
-        experience.view_count += 1;
+        experience.view_count = (experience.view_count || 0) + 1;
         await experience.save();
 
         return handle200(res, experience);

@@ -170,31 +170,79 @@ const ExperienceViewer = () => {
         return;
       }
 
-      try {
-        const res = await experienceService.getBySlug(slug);
-        if (isMounted && res.status && res.data) {
-          setExperience({
-            ...res.data,
-            templateId: res.data.template?.slug || res.data.template_id,
-            componentName: res.data.template?.component_name,
-            status: res.data.is_published ? "published" : "draft"
-          });
-          setLoading(false);
-          return;
+      // Helper to infer template if DB record doesn't specify explicit template ID
+      const inferTemplateFromSlug = (s = "") => {
+        const lower = s.toLowerCase();
+        if (lower.includes("apology") || lower.includes("belated")) {
+          return "birthday-belated-apology";
         }
-      } catch (err) {
-        console.warn("API lookup failed, checking local context fallback:", err);
+        if (lower.includes("neon")) {
+          return "birthday-neon-surprise";
+        }
+        if (lower.includes("wedding") || lower.includes("royal") || lower.includes("marriage")) {
+          return "wedding-royal-gold";
+        }
+        if (lower.includes("animated")) {
+          return "wedding-animated";
+        }
+        return "birthday-cinematic-love";
+      };
+
+      // Smart Backend Fetch with Retry Loop for Render Cold Starts
+      let attempts = 0;
+      let expData = null;
+
+      while (attempts < 3 && !expData && isMounted) {
+        try {
+          attempts++;
+          const res = await experienceService.getBySlug(slug);
+          const raw = res?.data || res;
+          if (raw && (raw.slug || raw.data)) {
+            expData = raw.data || raw;
+            break;
+          }
+        } catch (err) {
+          console.warn(`API lookup attempt ${attempts} failed for slug: ${slug}`, err);
+          if (attempts < 3) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }
+        }
+      }
+
+      if (isMounted && expData) {
+        const resolvedTemplateId =
+          expData.template_slug ||
+          expData.templateId ||
+          expData.template_id ||
+          expData.template?.slug ||
+          expData.componentName ||
+          expData.template?.component_name ||
+          inferTemplateFromSlug(slug);
+
+        setExperience({
+          ...expData,
+          templateId: resolvedTemplateId,
+          componentName: expData.template?.component_name || expData.componentName,
+          status: expData.is_published !== false ? "published" : "draft",
+          is_published: expData.is_published !== false
+        });
+        setLoading(false);
+        return;
       }
 
       // Context & LocalStorage Fallbacks
-      let foundLocal = contextExperiences.find((e) => e.slug === slug);
+      let foundLocal = contextExperiences.find(
+        (e) => (e.slug || "").toLowerCase() === (slug || "").toLowerCase()
+      );
 
       if (!foundLocal) {
         try {
           const storedExps = localStorage.getItem("momenta_local_experiences");
           if (storedExps) {
             const parsedList = JSON.parse(storedExps);
-            foundLocal = parsedList.find((e) => e.slug === slug);
+            foundLocal = parsedList.find(
+              (e) => (e.slug || "").toLowerCase() === (slug || "").toLowerCase()
+            );
           }
         } catch (e) {
           console.warn("Failed to parse local stored experiences:", e);
@@ -203,9 +251,15 @@ const ExperienceViewer = () => {
 
       if (isMounted) {
         if (foundLocal) {
+          const resolvedTemplateId =
+            foundLocal.template_slug ||
+            foundLocal.templateId ||
+            foundLocal.template?.slug ||
+            inferTemplateFromSlug(slug);
+
           setExperience({
             ...foundLocal,
-            templateId: foundLocal.templateId || foundLocal.template?.slug || "birthday-cinematic-love",
+            templateId: resolvedTemplateId,
             status: "published",
             is_published: true
           });
