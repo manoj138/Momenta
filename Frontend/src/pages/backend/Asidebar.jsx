@@ -28,7 +28,7 @@ const Asidebar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/");
   };
 
   // Define links based on user role

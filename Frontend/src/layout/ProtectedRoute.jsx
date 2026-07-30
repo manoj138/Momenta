@@ -8,8 +8,8 @@ const ProtectedRoute = ({ allowedRoles = [] }) => {
   const { user } = useAuth();
 
   if (!user) {
-    // Unauthenticated -> Redirect to Console Login
-    return <Navigate to="/login" replace />;
+    // Unauthenticated -> Redirect to Home Page
+    return <Navigate to="/" replace />;
   }
 
   // Normalize roles check (e.g. superadmin or super_admin)

@@ -186,7 +186,13 @@ const DefaultRoutes = () => {
         />
       </Route>
 
-      {/* 5. Public Experience Viewer Page */}
+      {/* 5. Dedicated Logout Route */}
+      <Route
+        path="/logout"
+        element={<Navigate to="/" replace />}
+      />
+
+      {/* 6. Public Experience Viewer Page */}
       <Route path="/e/:slug" element={<ExperienceViewer />} />
 
       {/* 6. Fallback Catch-all Route */}
