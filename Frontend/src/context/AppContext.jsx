@@ -73,6 +73,25 @@ export const AppProvider = ({ children }) => {
         { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
       ];
 
+      const birthdayBelatedApologyFields = [
+        { name: "personName", label: "Birthday Person's Name", type: "text", required: true, placeholder: "e.g. Sneha Shinde" },
+        { name: "petName", label: "Nickname / Pet Name (Optional)", type: "text", required: false, placeholder: "e.g. Cutie / Champion" },
+        { name: "secretPin", label: "4-Digit Secret PIN Lock", type: "text", required: false, placeholder: "e.g. 1234 (Leave blank for no lock)" },
+        { name: "lateReason", label: "Late Apology Excuse / Reason", type: "textarea", required: false, placeholder: "Finding the perfect words for someone as special as you took a little extra time! ✨" },
+        { name: "scratchTitle", label: "Scratch Coupon Gift Title", type: "text", required: false, placeholder: "SURPRISE GIFT COUPON 🎁" },
+        { name: "scratchMessage", label: "Scratch Coupon Gift Message", type: "textarea", required: false, placeholder: "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨" },
+        { name: "letterText", label: "Envelope Heartfelt Letter Message", type: "textarea", required: false, placeholder: "Write your heartfelt belated birthday letter..." },
+        { name: "stayCute", label: "Finale Subheading / Tagline", type: "text", required: false, placeholder: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨" },
+        { name: "iloveYou", label: "Grand Finale Main Heading", type: "text", required: false, placeholder: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖" },
+        { name: "meanToMe", label: "Grand Finale Closing Quote", type: "textarea", required: false, placeholder: "Finding the perfect words took a little extra time, but my wishes for you are timeless. ❤️" },
+        { name: "photo1", label: "Memory Photo 1", type: "file_upload", required: true, placeholder: "" },
+        { name: "photo2", label: "Memory Photo 2", type: "file_upload", required: true, placeholder: "" },
+        { name: "photo3", label: "Memory Photo 3 (Center Hero Photo)", type: "file_upload", required: true, placeholder: "" },
+        { name: "photo4", label: "Memory Photo 4", type: "file_upload", required: true, placeholder: "" },
+        { name: "photo5", label: "Memory Photo 5", type: "file_upload", required: true, placeholder: "" },
+        { name: "bgMusic", label: "Background Music Track", type: "file_upload", required: false, placeholder: "" }
+      ];
+
       // Local template injection to ensure it is always loaded and customizable in UI
       const localTemplates = [
         {
@@ -98,7 +117,7 @@ export const AppProvider = ({ children }) => {
           previewUrl: "/e/birthday-belated-apology",
           componentName: "BirthdayBelatedApology",
           status: "published",
-          fields: birthdayCinematicFields,
+          fields: birthdayBelatedApologyFields,
           demoSlug: "birthday-belated-apology"
         }
       ];
