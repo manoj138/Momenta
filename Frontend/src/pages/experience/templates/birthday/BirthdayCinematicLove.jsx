@@ -118,8 +118,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   const handleMouseMove = (e) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
-    const x = ((clientY / innerHeight) - 0.5) * -10;
-    const y = ((clientX / innerWidth) - 0.5) * 10;
+    const x = ((clientY / innerHeight) - 0.5) * -8;
+    const y = ((clientX / innerWidth) - 0.5) * 8;
     setCardTilt({ x, y });
   };
 
@@ -274,7 +274,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   return (
     <div 
       onMouseMove={handleMouseMove}
-      className="relative min-h-screen bg-[#c2395d] text-slate-900 select-none overflow-x-hidden font-sans flex flex-col items-center justify-center p-3 sm:p-6 perspective-1000"
+      className="relative min-h-screen bg-[#c2395d] text-slate-900 select-none overflow-hidden font-sans flex flex-col items-center justify-center p-2.5 sm:p-5 perspective-1000"
     >
       
       {/* Background Deep Pink Striped Pattern */}
@@ -330,9 +330,9 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         borderClass="border-pink-300/30"
       />
 
-      {/* MAIN FULL-SCREEN ORGANIC WAVY CONTAINER (Optimized Proportions & Zero Empty Void) */}
+      {/* MAIN FULL-SCREEN ORGANIC WAVY CONTAINER (100% Fixed & Uniform Container Dimensions) */}
       <div 
-        className={`relative z-20 w-full max-w-3xl min-h-[55vh] sm:min-h-[62vh] max-h-[90vh] overflow-y-auto no-scrollbar bg-[#f8f4f1] text-slate-800 p-6 sm:p-10 flex flex-col items-center justify-center transition-all duration-500 shadow-[0_35px_80px_rgba(0,0,0,0.45)] ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+        className={`relative z-20 w-full max-w-3xl h-[480px] xs:h-[530px] sm:h-[580px] md:h-[610px] max-h-[85vh] overflow-hidden bg-[#f8f4f1] text-slate-800 p-4 xs:p-6 sm:p-8 flex flex-col items-center justify-center transition-all duration-500 shadow-[0_35px_80px_rgba(0,0,0,0.45)] ${loadingDone ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
         style={{
           transform: `rotateX(${cardTilt.x}deg) rotateY(${cardTilt.y}deg)`,
           borderRadius: `clamp(30px, 6vw, 60px) clamp(80px, 18vw, 240px) clamp(40px, 8vw, 80px) clamp(70px, 15vw, 200px) / clamp(60px, 12vw, 180px) clamp(35px, 6vw, 80px) clamp(80px, 16vw, 220px) clamp(30px, 5vw, 60px)`,
@@ -345,7 +345,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {storyStep > 0 && (
           <button
             onClick={handleGoBack}
-            className="absolute top-4 left-4 sm:top-6 sm:left-6 z-40 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/95 hover:bg-white text-[#c2395d] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1 text-xs sm:text-sm font-bold font-fredoka border border-pink-200"
+            className="absolute top-3 left-3 sm:top-5 sm:left-5 z-40 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/95 hover:bg-white text-[#c2395d] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1 text-xs sm:text-sm font-bold font-fredoka border border-pink-200"
           >
             <ChevronLeft size={18} />
             <span>{t.backBtn}</span>
@@ -353,37 +353,37 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
         
         {/* ========================================================= */}
-        {/* STEP 0: INITIAL TEASER SCREEN (Large & Rich Mascot)       */}
+        {/* STEP 0: INITIAL TEASER SCREEN (Fixed Frame Fit)           */}
         {/* ========================================================= */}
         {storyStep === 0 && (
-          <div className="w-full h-full flex flex-col md:flex-row items-center justify-between animate-fade-in gap-6 sm:gap-8 my-auto py-2">
+          <div className="w-full h-full flex flex-col md:flex-row items-center justify-between animate-fade-in gap-4 sm:gap-6 my-auto py-1">
             
             {/* Left Text Content Deck */}
-            <div className="flex-1 flex flex-col justify-center space-y-3 sm:space-y-5 text-center md:text-left z-20">
-              <h1 className="text-5xl xs:text-6xl sm:text-7xl font-extrabold text-[#c2395d] uppercase tracking-tight font-fredoka drop-shadow-sm leading-tight">
+            <div className="flex-1 flex flex-col justify-center space-y-2 sm:space-y-4 text-center md:text-left z-20">
+              <h1 className="text-4xl xs:text-5xl sm:text-6xl font-extrabold text-[#c2395d] uppercase tracking-tight font-fredoka drop-shadow-sm leading-tight">
                 {t.heyHeader}
               </h1>
 
-              <div className="space-y-1">
-                <p className="font-kalam font-bold text-2xl xs:text-3xl sm:text-4xl text-slate-800">
+              <div className="space-y-0.5 sm:space-y-1">
+                <p className="font-kalam font-bold text-xl xs:text-2xl sm:text-3xl text-slate-800">
                   {t.madeSomething}
                 </p>
-                <p className="font-sacramento text-3xl xs:text-4xl sm:text-5xl text-slate-700 font-bold">
+                <p className="font-sacramento text-2xl xs:text-3xl sm:text-4xl text-slate-700 font-bold">
                   {t.wantToSee}
                 </p>
               </div>
 
               {/* Pill Buttons */}
-              <div className="flex items-center justify-center md:justify-start gap-4 pt-4 font-fredoka">
+              <div className="flex items-center justify-center md:justify-start gap-3 pt-2 sm:pt-4 font-fredoka">
                 <button
                   onClick={() => goToStep(2)}
-                  className="px-8 xs:px-10 sm:px-12 py-3 xs:py-3.5 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:-rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 animate-glow-ring"
+                  className="px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:-rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30 animate-glow-ring"
                 >
                   <u className="decoration-white underline-offset-4">{t.yesBtn}</u>
                 </button>
                 <button
                   onClick={() => goToStep(1)}
-                  className="px-8 xs:px-10 sm:px-12 py-3 xs:py-3.5 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30"
+                  className="px-7 xs:px-9 sm:px-11 py-2.5 xs:py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 hover:rotate-3 active:scale-95 transition-all cursor-pointer border-2 border-white/30"
                 >
                   <u className="decoration-white underline-offset-4">{t.noBtn}</u>
                 </button>
@@ -391,8 +391,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
 
             </div>
 
-            {/* Right Large Puppy Mascot: puppyRose */}
-            <div className="w-48 xs:w-60 sm:w-80 h-48 xs:h-60 sm:h-80 z-10 animate-float flex-shrink-0">
+            {/* Right Puppy Mascot: puppyRose */}
+            <div className="w-40 xs:w-52 sm:w-72 h-40 xs:h-52 sm:h-72 z-10 animate-float flex-shrink-0">
               <img 
                 src={ASSETS.puppyRose} 
                 alt="Cute Puppy with Rose" 
@@ -410,12 +410,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 1: ANGRY TEASE SCREEN (Large & Rich Mascot)          */}
+        {/* STEP 1: ANGRY TEASE SCREEN (Fixed Frame Fit)              */}
         {/* ========================================================= */}
         {storyStep === 1 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 animate-wobble-card my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-wobble-card my-auto py-1">
             
-            <div className="relative w-52 xs:w-64 sm:w-76 h-52 xs:h-64 sm:h-76 my-1">
+            <div className="relative w-44 xs:w-56 sm:w-72 h-44 xs:h-56 sm:h-72 my-1">
               <img 
                 src={ASSETS.angryPuppy} 
                 alt="Angry Puppy" 
@@ -427,18 +427,18 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                   e.target.src = ASSETS.stickerGif;
                 }}
               />
-              <span className="absolute top-0 right-2 text-4xl xs:text-6xl animate-bounce">💢</span>
+              <span className="absolute top-0 right-2 text-3xl xs:text-5xl animate-bounce">💢</span>
             </div>
 
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl font-extrabold tracking-tight text-[#c2395d] uppercase font-fredoka leading-tight">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-extrabold tracking-tight text-[#c2395d] uppercase font-fredoka leading-tight">
               {t.howDareYou}
             </h1>
 
             <button
               onClick={handleGoBack}
-              className="px-10 xs:px-12 sm:px-14 py-3.5 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka"
+              className="px-8 xs:px-10 sm:px-12 py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base xs:text-lg sm:text-xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka"
             >
-              <RotateCcw size={22} className="animate-spin-slow" />
+              <RotateCcw size={20} className="animate-spin-slow" />
               <span><u className="decoration-white underline-offset-4">{t.goBackBtn}</u></span>
             </button>
 
@@ -446,12 +446,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 2: PRAISE SCREEN (Large & Rich Mascot)                */}
+        {/* STEP 2: PRAISE SCREEN (Fixed Frame Fit)                   */}
         {/* ========================================================= */}
         {storyStep === 2 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             
-            <div className="relative w-56 xs:w-68 sm:w-84 h-56 xs:h-68 sm:h-84 my-1 animate-float">
+            <div className="relative w-48 xs:w-60 sm:w-76 h-48 xs:h-60 sm:h-76 my-1 animate-float">
               <img 
                 src={ASSETS.flowerBouquet} 
                 alt="Puppy with Flower Bouquet" 
@@ -463,10 +463,10 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                   e.target.src = ASSETS.puppyRose;
                 }}
               />
-              <span className="absolute bottom-2 right-2 text-4xl xs:text-5xl animate-bounce">💋🌻</span>
+              <span className="absolute bottom-2 right-2 text-3xl xs:text-4xl animate-bounce">💋🌻</span>
             </div>
 
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl font-sacramento font-bold text-[#c2395d]">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
               {t.goodGirl}
             </h1>
 
@@ -475,22 +475,22 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 goToStep(3);
                 triggerConfetti();
               }}
-              className="px-12 xs:px-14 sm:px-18 py-3.5 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xl xs:text-2xl sm:text-3xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.clickToContinue}</u></span>
-              <ArrowRight size={24} />
+              <ArrowRight size={22} />
             </button>
 
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 3: MAIN REVEAL CARD (Large & Rich Mascot)            */}
+        {/* STEP 3: MAIN REVEAL CARD (Fixed Frame Fit)                */}
         {/* ========================================================= */}
         {storyStep === 3 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             
-            <div className="relative w-56 xs:w-68 sm:w-84 h-56 xs:h-68 sm:h-84 my-1 animate-float">
+            <div className="relative w-48 xs:w-60 sm:w-76 h-48 xs:h-60 sm:h-76 my-1 animate-float">
               <img 
                 src={ASSETS.partyCakePuppy} 
                 alt="Party Pup with Cake" 
@@ -504,31 +504,31 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               />
             </div>
 
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl font-extrabold tracking-tight text-[#c2395d] uppercase leading-none font-fredoka drop-shadow-md">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-extrabold tracking-tight text-[#c2395d] uppercase leading-none font-fredoka drop-shadow-md">
               HAPPY BIRTHDAY {getPersonName()} ❤️
             </h1>
 
-            <div className="space-y-1 sm:space-y-2 text-sm xs:text-base sm:text-lg font-bold text-slate-700 uppercase tracking-wide font-fredoka">
+            <div className="space-y-1 text-xs xs:text-sm sm:text-base font-bold text-slate-700 uppercase tracking-wide font-fredoka">
               <p className="text-[#a83650] animate-pulse">{t.favNotification}</p>
               <p>{t.stayCute}</p>
             </div>
 
             <button
               onClick={() => goToStep(4)}
-              className="px-12 xs:px-14 sm:px-18 py-3.5 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xl xs:text-2xl sm:text-3xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
-              <ArrowRight size={24} />
+              <ArrowRight size={22} />
             </button>
 
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 4: PINK ENVELOPE SCREEN (Large & Rich Mascot)        */}
+        {/* STEP 4: PINK ENVELOPE SCREEN (Fixed Frame Fit)            */}
         {/* ========================================================= */}
         {storyStep === 4 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             
             <div 
               onClick={() => {
@@ -540,7 +540,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               }}
               className="w-full max-w-lg flex flex-col items-center justify-center cursor-pointer group"
             >
-              <div className={`w-64 xs:w-80 sm:w-96 h-56 xs:h-68 sm:h-80 my-2 relative transition-all duration-700 ${isEnvelopeOpened ? "scale-125 rotate-12 opacity-80" : "group-hover:scale-105"}`}>
+              <div className={`w-56 xs:w-72 sm:w-88 h-48 xs:h-60 sm:h-72 my-1 relative transition-all duration-700 ${isEnvelopeOpened ? "scale-125 rotate-12 opacity-80" : "group-hover:scale-105"}`}>
                 <img 
                   src={ASSETS.pinkEnvelope} 
                   alt="Pink Romantic Envelope" 
@@ -550,7 +550,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 />
               </div>
 
-              <h3 className="text-4xl xs:text-5xl sm:text-6xl font-sacramento font-bold text-[#c2395d] underline decoration-pink-400 decoration-2 underline-offset-8 mt-2 animate-bounce">
+              <h3 className="text-3xl xs:text-4xl sm:text-5xl font-sacramento font-bold text-[#c2395d] underline decoration-pink-400 decoration-2 underline-offset-8 mt-2 animate-bounce">
                 {t.tapToOpen}
               </h3>
             </div>
@@ -559,12 +559,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 5: GIFT BOX SCREEN (Large & Rich Mascot)             */}
+        {/* STEP 5: GIFT BOX SCREEN (Fixed Frame Fit)                 */}
         {/* ========================================================= */}
         {storyStep === 5 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 relative animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 relative animate-fade-in my-auto py-1">
             
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl font-sacramento font-bold text-[#c2395d]">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
               {t.hereSurprise}
             </h1>
 
@@ -573,7 +573,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 goToStep(6);
                 triggerConfetti();
               }}
-              className="relative w-64 xs:w-76 sm:w-88 h-64 xs:h-76 sm:h-88 my-1 sm:my-2 flex flex-col items-center justify-center cursor-pointer group"
+              className="relative w-56 xs:w-68 sm:w-80 h-56 xs:h-68 sm:h-80 my-1 flex flex-col items-center justify-center cursor-pointer group"
             >
               <div className="w-full h-full p-2 flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform">
                 <img 
@@ -589,14 +589,14 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 />
               </div>
 
-              <div className="absolute -bottom-3 sm:-bottom-4 right-2 sm:right-4 bg-[#a83650] text-white text-xs sm:text-base font-bold px-5 sm:px-6 py-2 rounded-full shadow-[0_10px_20px_rgba(168,54,80,0.4)] flex items-center gap-2 animate-pulse font-fredoka">
+              <div className="absolute -bottom-2 sm:-bottom-3 right-2 sm:right-4 bg-[#a83650] text-white text-xs sm:text-sm font-bold px-4 sm:px-5 py-1.5 rounded-full shadow-[0_10px_20px_rgba(168,54,80,0.4)] flex items-center gap-2 animate-pulse font-fredoka">
                 <span>{t.tapHere}</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={14} />
               </div>
             </div>
 
-            <div className="w-full flex justify-end pt-1 sm:pt-2">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 relative animate-bounce">
+            <div className="w-full flex justify-end pt-1">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 relative animate-bounce">
                 <img 
                   src={ASSETS.flowerBouquet} 
                   alt="Flower Bouquet Mascot" 
@@ -611,13 +611,13 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 6: LETTER WITH 3D GOLDEN LOCKET                       */}
+        {/* STEP 6: LETTER WITH 3D GOLDEN LOCKET (Fixed Frame Fit)    */}
         {/* ========================================================= */}
         {storyStep === 6 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             
-            <div className="w-full bg-pink-50 border-2 border-pink-200 rounded-3xl p-6 sm:p-10 space-y-6 text-center relative shadow-inner">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto -mt-12 sm:-mt-16 drop-shadow-lg animate-float">
+            <div className="w-full bg-pink-50 border-2 border-pink-200 rounded-3xl p-4 sm:p-8 space-y-4 text-center relative shadow-inner">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto -mt-10 sm:-mt-14 drop-shadow-lg animate-float">
                 <img 
                   src={ASSETS.flowerBouquet} 
                   alt="Flower Bouquet Mascot" 
@@ -627,30 +627,30 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 />
               </div>
 
-              <p className="text-slate-800 font-kalam text-lg xs:text-xl sm:text-3xl leading-relaxed px-2 font-bold">
+              <p className="text-slate-800 font-kalam text-base xs:text-lg sm:text-2xl leading-relaxed px-1 font-bold">
                 "{data.message || t.letterText}"
               </p>
 
               {/* Interactive 3D Golden Locket Hinge Opening */}
               <div 
                 onClick={() => setIsLocketOpen(!isLocketOpen)}
-                className="flex items-center justify-center gap-4 sm:gap-6 pt-2 cursor-pointer group"
+                className="flex items-center justify-center gap-3 sm:gap-5 pt-1 cursor-pointer group"
               >
-                <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
+                <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
                   <img src={photos[0]} alt="Locket Photo 1" loading="eager" className="w-full h-full object-cover rounded-full" />
                 </div>
-                <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
+                <div className={`w-18 h-18 sm:w-22 sm:h-22 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
                   <img src={photos[1] || photos[0]} alt="Locket Photo 2" loading="eager" className="w-full h-full object-cover rounded-full" />
                 </div>
               </div>
             </div>
 
-            <div className="w-full flex justify-end pt-1 sm:pt-2">
+            <div className="w-full flex justify-end pt-1">
               <button
                 onClick={() => goToStep(7)}
-                className="px-8 sm:px-10 py-3 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base sm:text-lg font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-white/30 font-fredoka animate-glow-ring"
+                className="px-7 sm:px-9 py-2.5 sm:py-3 bg-[#a83650] hover:bg-[#8e2b42] text-white text-sm sm:text-base font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 border-2 border-white/30 font-fredoka animate-glow-ring"
               >
-                <Camera size={18} />
+                <Camera size={16} />
                 <span><u className="decoration-white underline-offset-4">{t.clickHereBtn}</u></span>
               </button>
             </div>
@@ -659,16 +659,16 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 7: VIRTUAL HUG SCREEN (Large & Rich Mascot)          */}
+        {/* STEP 7: VIRTUAL HUG SCREEN (Fixed Frame Fit)              */}
         {/* ========================================================= */}
         {storyStep === 7 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-6 sm:space-y-8 animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             
-            <h1 className="text-4xl xs:text-5xl sm:text-7xl font-sacramento font-bold text-[#c2395d]">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
               {t.virtualHug}
             </h1>
 
-            <div className="relative w-60 xs:w-72 sm:w-88 h-60 xs:h-72 sm:h-88 my-1 animate-float">
+            <div className="relative w-52 xs:w-64 sm:w-80 h-52 xs:h-64 sm:h-80 my-1 animate-float">
               <img 
                 src={ASSETS.stickerGif} 
                 alt="Virtual Hug Bears GIF" 
@@ -687,37 +687,37 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 goToStep(8);
                 triggerConfetti();
               }}
-              className="px-12 xs:px-14 sm:px-18 py-3.5 sm:py-5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xl xs:text-2xl sm:text-3xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
             >
               <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
-              <ArrowRight size={24} />
+              <ArrowRight size={22} />
             </button>
 
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 8: POLAROIDS & CAKE WALL                              */}
+        {/* STEP 8: POLAROIDS & CAKE WALL (Fixed Frame Fit)           */}
         {/* ========================================================= */}
         {storyStep === 8 && (
-          <div className="w-full h-full flex flex-col justify-between space-y-6 sm:space-y-8 animate-fade-in my-auto py-2">
+          <div className="w-full h-full flex flex-col justify-between space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             
-            <div className="w-full h-[2px] bg-slate-400 relative top-3 sm:top-4 left-0 right-0 z-0" />
+            <div className="w-full h-[2px] bg-slate-400 relative top-2 sm:top-3 left-0 right-0 z-0" />
 
             {/* Swaying Pendulum Wind Polaroids on Wire */}
-            <div className="w-full grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 pt-3 sm:pt-4 relative z-10">
+            <div className="w-full grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 pt-2 sm:pt-3 relative z-10">
               {photos.slice(0, 3).map((src, idx) => (
-                <div key={idx} className="bg-white p-2 xs:p-2.5 sm:p-3.5 pb-6 xs:pb-8 sm:pb-10 rounded-lg shadow-xl border border-slate-200 transform hover:scale-110 transition-transform relative animate-pendulum" style={{ animationDelay: `${idx * 0.5}s` }}>
-                  <div className="w-3 sm:w-4 h-4 sm:h-6 bg-sky-500 rounded-xs mx-auto -mt-4 sm:-mt-6 mb-1 shadow-md" />
-                  <div className="w-full h-24 xs:h-32 sm:h-44 bg-slate-100 rounded overflow-hidden">
+                <div key={idx} className="bg-white p-1.5 xs:p-2 sm:p-3 pb-5 xs:pb-6 sm:pb-8 rounded-lg shadow-xl border border-slate-200 transform hover:scale-110 transition-transform relative animate-pendulum" style={{ animationDelay: `${idx * 0.5}s` }}>
+                  <div className="w-3 sm:w-4 h-4 sm:h-5 bg-sky-500 rounded-xs mx-auto -mt-3.5 sm:-mt-5 mb-1 shadow-md" />
+                  <div className="w-full h-20 xs:h-28 sm:h-36 bg-slate-100 rounded overflow-hidden">
                     <img src={src} alt="Polaroid Memory" loading="eager" className="w-full h-full object-cover" />
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-4 sm:pt-6 px-1 sm:px-2 gap-4">
-              <div className="w-24 h-24 sm:w-40 sm:h-40 relative animate-float flex-shrink-0">
+            <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-2 sm:pt-4 px-1 gap-3">
+              <div className="w-20 h-20 sm:w-32 sm:h-32 relative animate-float flex-shrink-0">
                 <img 
                   src={ASSETS.cake} 
                   alt="Birthday Cake" 
@@ -729,14 +729,14 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                     e.target.src = ASSETS.partyCakePuppy;
                   }}
                 />
-                <span className="absolute top-0 left-1/2 -translate-x-1/2 text-2xl sm:text-3xl animate-flame">🕯️</span>
+                <span className="absolute top-0 left-1/2 -translate-x-1/2 text-xl sm:text-2xl animate-flame">🕯️</span>
               </div>
 
-              <div className="text-center sm:text-right space-y-1 sm:space-y-2 flex-1 pl-0 sm:pl-4">
-                <h1 className="text-4xl xs:text-5xl sm:text-7xl font-extrabold text-[#c2395d] tracking-wider uppercase font-fredoka drop-shadow-sm">
+              <div className="text-center sm:text-right space-y-0.5 sm:space-y-1 flex-1 pl-0 sm:pl-3">
+                <h1 className="text-3xl xs:text-4xl sm:text-6xl font-extrabold text-[#c2395d] tracking-wider uppercase font-fredoka drop-shadow-sm">
                   {t.iloveYou}
                 </h1>
-                <p className="text-slate-700 font-kalam text-base xs:text-lg sm:text-2xl font-bold">
+                <p className="text-slate-700 font-kalam text-xs xs:text-sm sm:text-xl font-bold">
                   "{t.meanToMe}"
                 </p>
               </div>
@@ -748,7 +748,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
       </div>
 
       {/* CINEMATIC FOOTER SIGN-OFF */}
-      <footer className="w-full pt-4 sm:pt-6 text-center text-[10px] text-pink-200 uppercase tracking-widest relative z-20 font-fredoka">
+      <footer className="w-full pt-3 sm:pt-5 text-center text-[10px] text-pink-200 uppercase tracking-widest relative z-20 font-fredoka">
         <p>© {new Date().getFullYear()} Momenta. All rights reserved.</p>
       </footer>
 
