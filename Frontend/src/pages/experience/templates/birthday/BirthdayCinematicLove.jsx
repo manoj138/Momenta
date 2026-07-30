@@ -680,7 +680,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {storyStep === 0 && (
           <div className="w-full h-full flex flex-col md:flex-row items-center justify-between animate-fade-in gap-4 sm:gap-6 my-auto py-1">
             <div className="flex-1 flex flex-col justify-center space-y-2 sm:space-y-4 text-center md:text-left z-20">
-              <h1 className="text-4xl xs:text-5xl sm:text-6xl font-extrabold text-[#c2395d] uppercase tracking-tight font-fredoka drop-shadow-sm leading-tight">
+              <h1 className="text-5xl xs:text-6xl sm:text-7xl md:text-8xl font-black text-[#c2395d] uppercase tracking-tight font-fredoka drop-shadow-md leading-none mb-1">
                 {t.heyHeader}
               </h1>
 
