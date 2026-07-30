@@ -788,159 +788,182 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 4: PINK ENVELOPE SCREEN                              */}
+        {/* STEP 4: UNIFIED SEAMLESS ENVELOPE & SLIDING LETTER CARD   */}
         {/* ========================================================= */}
         {storyStep === 4 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
+          <div className="w-full h-full flex flex-col items-center justify-center relative animate-fade-in my-auto py-1 overflow-visible">
             <div 
               onClick={() => {
-                setIsEnvelopeOpened(true);
-                setTimeout(() => {
-                  goToStep(5);
+                if (!isEnvelopeOpened) {
+                  setIsEnvelopeOpened(true);
                   triggerConfetti();
-                }, 600);
+                }
               }}
-              className="w-full max-w-lg flex flex-col items-center justify-center cursor-pointer group"
+              className={`relative w-full max-w-lg h-[410px] xs:h-[450px] sm:h-[490px] flex flex-col items-center justify-center transition-all ${
+                !isEnvelopeOpened ? "cursor-pointer group" : ""
+              }`}
             >
-              <div className={`w-56 xs:w-72 sm:w-88 h-48 xs:h-60 sm:h-72 my-1 relative transition-all duration-700 ${isEnvelopeOpened ? "scale-110 opacity-90" : "group-hover:scale-105"}`}>
-                <img 
-                  src={ASSETS.pinkEnvelope} 
-                  alt="Pink Romantic Envelope" 
-                  loading="eager"
-                  className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
-                />
+              {/* 0. Top Teaser Header & Mascot (Fills top empty space when closed) */}
+              <div 
+                className={`absolute top-4 sm:top-7 inset-x-0 mx-auto flex flex-col items-center justify-center space-y-1 transition-all duration-500 z-10 ${
+                  isEnvelopeOpened 
+                    ? "opacity-0 -translate-y-6 scale-90 pointer-events-none" 
+                    : "opacity-100 translate-y-0 scale-100 animate-float"
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2 px-4">
+                  <span className="text-xl sm:text-2xl animate-bounce">✨</span>
+                  <h2 className="text-2xl xs:text-3xl sm:text-4xl font-sacramento font-bold text-[#c2395d] drop-shadow-sm text-center">
+                    {t.hereSurprise}
+                  </h2>
+                  <span className="text-xl sm:text-2xl animate-bounce delay-150">✨</span>
+                </div>
               </div>
 
-              <h3 className="text-3xl xs:text-4xl sm:text-5xl font-sacramento font-bold text-[#c2395d] underline decoration-pink-400 decoration-2 underline-offset-8 mt-2 animate-bounce">
+              {/* 1. Open Pink Envelope Back Flap Wall + Animated Top Flap (z-0) */}
+              <div className="absolute bottom-16 sm:bottom-20 z-0 w-64 xs:w-72 sm:w-84 transition-transform duration-500 group-hover:scale-105">
+                <svg className="w-full h-auto drop-shadow-md" viewBox="0 0 300 220" fill="none">
+                  {/* Envelope Interior Back Wall */}
+                  <rect x="0" y="90" width="300" height="130" fill="#f4a7bb" rx="10" />
+                  
+                  {/* Animated Top Flap (Flips 180deg from down to up) */}
+                  <g 
+                    style={{ 
+                      transformOrigin: "150px 90px", 
+                      transform: isEnvelopeOpened ? "rotateX(180deg)" : "rotateX(0deg)", 
+                      transition: "transform 0.7s ease-in-out" 
+                    }}
+                  >
+                    <polygon points="0,90 150,180 300,90" fill="#fbcfe8" stroke="#f472b6" strokeWidth="2" />
+                  </g>
+                </svg>
+
+                {/* Heart Seal (fades out on open) */}
+                <div 
+                  className={`absolute top-[61%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-rose-500 rounded-full shadow-lg border-2 border-white flex items-center justify-center text-white text-lg transition-all duration-300 z-10 ${
+                    isEnvelopeOpened ? "opacity-0 scale-0 pointer-events-none" : "opacity-100 scale-100 animate-pulse"
+                  }`}
+                >
+                  💖
+                </div>
+              </div>
+
+              {/* 2. White Paper Letter Card Emerging UP from Envelope Cavity (z-20) */}
+              <div 
+                className={`absolute z-20 w-56 xs:w-64 sm:w-76 bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-2xl text-center flex flex-col items-center justify-between transition-all duration-700 ease-out ${
+                  isEnvelopeOpened 
+                    ? "bottom-24 sm:bottom-28 -translate-y-8 sm:-translate-y-12 opacity-100 scale-100 pointer-events-auto delay-300" 
+                    : "bottom-16 sm:bottom-20 translate-y-6 opacity-0 scale-95 pointer-events-none"
+                }`}
+              >
+                {/* Top-Left Pink Ribbon & Puppy Mascot */}
+                <div className="absolute -top-7 -left-7 sm:-top-9 sm:-left-9 z-30 flex flex-col items-center pointer-events-none">
+                  {/* Pink Ribbon Bow */}
+                  <div className="w-8 sm:w-10 h-8 sm:h-10 text-pink-400 font-bold text-2xl animate-pulse">
+                    🎀
+                  </div>
+                  {/* Cute Puppy Mascot */}
+                  <div className="w-14 h-14 sm:w-18 sm:h-18 -mt-3 filter drop-shadow-md">
+                    <img 
+                      src={ASSETS.flowerBouquet} 
+                      alt="Puppy Ribbon Mascot" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </div>
+
+                {/* Styled Handwritten Message */}
+                <div className="space-y-0.5 pt-1 pb-3 px-2 font-kalam text-slate-900 text-xs xs:text-sm sm:text-base font-bold leading-snug">
+                  <p>You are seen, you are</p>
+                  <p>heard, and you are</p>
+                  <p>loved, no matter what.</p>
+                  <p>If you ever feel</p>
+                  <p>unloved, remember</p>
+                  <p>that my love for you is</p>
+                  <p className="text-base sm:text-lg pt-0.5">
+                    <span className="text-pink-400 font-extrabold">boundless</span>{" "}
+                    and{" "}
+                    <span className="text-slate-900 font-extrabold">endless!</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* 3. Open Pink Envelope Front Pocket (z-30) */}
+              <div className="absolute bottom-16 sm:bottom-20 z-30 w-64 xs:w-72 sm:w-84 pointer-events-none">
+                <svg className="w-full h-auto filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.2)]" viewBox="0 0 300 130" fill="none">
+                  {/* Left Envelope Pocket Fold */}
+                  <polygon points="0,0 145,65 0,130" fill="#f4a7bb" opacity="0.9" />
+                  {/* Right Envelope Pocket Fold */}
+                  <polygon points="300,0 155,65 300,130" fill="#f4a7bb" opacity="0.9" />
+                  {/* Bottom Triangular Pocket V-Fold */}
+                  <polygon points="0,130 150,55 300,130" fill="#f472b6" stroke="#f43f5e" strokeWidth="1.5" />
+                </svg>
+              </div>
+
+              {/* 4. Tap Prompt (Positioned cleanly at absolute bottom-2 with zero overlap) */}
+              <h3 
+                className={`absolute bottom-2 sm:bottom-3 z-40 text-3xl xs:text-4xl sm:text-5xl font-sacramento font-bold text-[#c2395d] underline decoration-pink-400 decoration-2 underline-offset-8 transition-all duration-500 ${
+                  isEnvelopeOpened ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100 animate-bounce"
+                }`}
+              >
                 {t.tapToOpen}
               </h3>
+
+              {/* 5. Bottom-Right Action Button: "Click here 📷" (Visible when opened) */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToStep(5);
+                }}
+                className={`absolute bottom-2 right-2 sm:bottom-3 sm:right-4 z-40 px-3.5 py-2 rounded-2xl bg-white/95 hover:bg-white text-slate-800 text-xs sm:text-sm font-extrabold shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 border border-pink-200 group font-fredoka animate-glow-ring ${
+                  isEnvelopeOpened 
+                    ? "opacity-100 scale-100 pointer-events-auto delay-700 duration-500" 
+                    : "opacity-0 scale-90 pointer-events-none"
+                }`}
+              >
+                <div className="w-6 h-6 sm:w-7 sm:h-7 bg-pink-500/10 text-pink-500 rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
+                  📷
+                </div>
+                <span><u className="decoration-pink-400 underline-offset-4 font-sacramento text-lg sm:text-xl text-[#c2395d]">Click here</u></span>
+              </button>
             </div>
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 5: SLIDING LETTER CARD OUT OF ENVELOPE WITH LOCKET   */}
+        {/* STEP 5: VIRTUAL HUG SCREEN                                */}
         {/* ========================================================= */}
         {storyStep === 5 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center relative animate-fade-in my-auto py-1">
-            <div className="relative w-full max-w-lg flex flex-col items-center justify-center">
-              
-              {/* Slid-out Paper Letter Card */}
-              <div className="w-full bg-[#fffefb] border-2 border-pink-200 rounded-3xl p-4 sm:p-6 space-y-3 text-center relative shadow-2xl z-20 transform -translate-y-4 sm:-translate-y-6 animate-fade-in">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto -mt-9 sm:-mt-11 drop-shadow-md animate-float">
-                  <img 
-                    src={ASSETS.flowerBouquet} 
-                    alt="Flower Bouquet Mascot" 
-                    loading="eager"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
+          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
+            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
+              {t.virtualHug}
+            </h1>
 
-                <p className="text-slate-800 font-kalam text-sm xs:text-base sm:text-xl leading-relaxed px-1 font-bold">
-                  "{data.message || t.letterText}"
-                </p>
-
-                {/* Interactive 3D Golden Locket Hinge Opening */}
-                <div 
-                  onClick={() => setIsLocketOpen(!isLocketOpen)}
-                  className="flex items-center justify-center gap-3 sm:gap-4 pt-1 cursor-pointer group"
-                >
-                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-left ${isLocketOpen ? "-rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                    <img src={photos[0]} alt="Locket Photo 1" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
-                  </div>
-                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-amber-300 overflow-hidden shadow-lg transform transition-all duration-700 locket-hinge-right ${isLocketOpen ? "rotate-45 scale-110" : "rotate-0"} bg-pink-200 p-0.5`}>
-                    <img src={photos[1] || photos[0]} alt="Locket Photo 2" className="w-full h-full object-cover rounded-full transition-transform duration-700 hover:scale-125" />
-                  </div>
-                </div>
-                
-                <div className="w-full flex justify-end pt-1">
-                  <button
-                    onClick={() => goToStep(6)}
-                    className="px-6 sm:px-8 py-2 sm:py-2.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-xs sm:text-sm font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5 border-2 border-white/30 font-fredoka animate-glow-ring"
-                  >
-                    <Camera size={14} />
-                    <span><u className="decoration-white underline-offset-4">{t.clickHereBtn}</u></span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Envelope Body Base behind bottom of letter */}
-              <div className="w-48 xs:w-56 sm:w-64 h-20 sm:h-24 -mt-16 sm:-mt-20 z-10 opacity-75">
-                <img 
-                  src={ASSETS.pinkEnvelope} 
-                  alt="Pink Envelope Base" 
-                  className="w-full h-full object-contain filter drop-shadow-md"
-                />
-              </div>
-
+            <div className="relative w-52 xs:w-64 sm:w-80 h-52 xs:h-64 sm:h-80 my-1 animate-float">
+              <img 
+                src={ASSETS.stickerGif} 
+                alt="Virtual Hug Bears GIF" 
+                loading="eager"
+                className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
+              />
             </div>
+
+            <button
+              onClick={() => {
+                goToStep(6);
+              }}
+              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
+            >
+              <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
+              <ArrowRight size={22} />
+            </button>
           </div>
         )}
 
         {/* ========================================================= */}
-        {/* STEP 6: VIRTUAL HUG SCREEN                                */}
+        {/* STEP 6: DEDICATED BLOW CANDLES INTERACTIVE SCREEN          */}
         {/* ========================================================= */}
         {storyStep === 6 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
-              {t.virtualHug}
-            </h1>
-
-            <div className="relative w-52 xs:w-64 sm:w-80 h-52 xs:h-64 sm:h-80 my-1 animate-float">
-              <img 
-                src={ASSETS.stickerGif} 
-                alt="Virtual Hug Bears GIF" 
-                loading="eager"
-                className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
-              />
-            </div>
-
-            <button
-              onClick={() => {
-                goToStep(7);
-              }}
-              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
-            >
-              <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
-              <ArrowRight size={22} />
-            </button>
-          </div>
-        )}
-
-        {/* ========================================================= */}
-        {/* STEP 7: VIRTUAL HUG SCREEN                                */}
-        {/* ========================================================= */}
-        {storyStep === 7 && (
-          <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            <h1 className="text-3xl xs:text-4xl sm:text-6xl font-sacramento font-bold text-[#c2395d]">
-              {t.virtualHug}
-            </h1>
-
-            <div className="relative w-52 xs:w-64 sm:w-80 h-52 xs:h-64 sm:h-80 my-1 animate-float">
-              <img 
-                src={ASSETS.stickerGif} 
-                alt="Virtual Hug Bears GIF" 
-                loading="eager"
-                className="w-full h-full object-contain filter drop-shadow-[0_20px_35px_rgba(0,0,0,0.25)]"
-              />
-            </div>
-
-            <button
-              onClick={() => {
-                goToStep(8);
-              }}
-              className="px-10 xs:px-12 sm:px-16 py-3 sm:py-4 bg-[#a83650] hover:bg-[#8e2b42] text-white text-lg xs:text-xl sm:text-2xl font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer border-2 border-white/30 flex items-center gap-2 font-fredoka animate-glow-ring"
-            >
-              <span><u className="decoration-white underline-offset-4">{t.nextBtn}</u></span>
-              <ArrowRight size={22} />
-            </button>
-          </div>
-        )}
-
-        {/* ========================================================= */}
-        {/* STEP 8: DEDICATED BLOW CANDLES INTERACTIVE SCREEN          */}
-        {/* ========================================================= */}
-        {storyStep === 8 && (
           <div className="w-full h-full flex flex-col items-center justify-center text-center space-y-3 sm:space-y-4 animate-fade-in my-auto pt-8 sm:pt-10 pb-1 px-4">
             {/* Header with clear padding from top-left Back button */}
             <div className="space-y-1 max-w-md px-6 sm:px-10">
@@ -1009,7 +1032,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 </p>
                 <button
                   onClick={() => {
-                    goToStep(9);
+                    goToStep(7);
                     triggerConfetti();
                   }}
                   className="px-8 sm:px-12 py-2.5 sm:py-3.5 bg-[#a83650] hover:bg-[#8e2b42] text-white text-base sm:text-lg font-bold rounded-full shadow-[0_10px_25px_rgba(168,54,80,0.4)] hover:scale-110 active:scale-95 transition-all cursor-pointer font-fredoka flex items-center gap-2 mx-auto border-2 border-white/30 animate-glow-ring"
@@ -1027,9 +1050,9 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         )}
 
         {/* ========================================================= */}
-        {/* STEP 9: POLAROIDS & CAKE WALL (Grand Finale)               */}
+        {/* STEP 7: POLAROIDS & CAKE WALL (Grand Finale)               */}
         {/* ========================================================= */}
-        {storyStep === 9 && (
+        {storyStep === 7 && (
           <div className="w-full h-full flex flex-col justify-between space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
             <div className="w-full h-[2px] bg-slate-400 relative top-2 sm:top-3 left-0 right-0 z-0" />
 
