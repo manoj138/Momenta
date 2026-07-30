@@ -125,6 +125,28 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     setMousePos({ x: clientX, y: clientY });
   };
 
+  // Interactive Click Heart Burst Handler
+  const handleGlobalClick = (e) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const hearts = ["❤️", "💖", "💕", "✨", "🌸"];
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 6 + 2;
+      confettiParticles.current.push({
+        x: e.clientX,
+        y: e.clientY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 2.5,
+        r: Math.random() * 8 + 14,
+        color: hearts[Math.floor(Math.random() * hearts.length)],
+        alpha: 1,
+        decay: Math.random() * 0.025 + 0.015,
+        isEmojiHeart: true
+      });
+    }
+  };
+
   // 1. 0-100 Loader simulation
   useEffect(() => {
     let interval = null;
@@ -241,19 +263,24 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         ctx.restore();
       });
 
-      // 2. Draw Fireworks Burst
+      // 2. Draw Fireworks Burst & Click Heart Bursts
       confettiParticles.current.forEach((p, idx) => {
         p.x += p.vx;
         p.y += p.vy;
-        p.vy += 0.25; // gravity
+        p.vy += p.isEmojiHeart ? 0.08 : 0.25; // lighter gravity for click hearts
         p.alpha -= p.decay;
         
         ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.globalAlpha = Math.max(0, p.alpha);
+        if (p.isEmojiHeart) {
+          ctx.font = `${p.r}px sans-serif`;
+          ctx.fillText(p.color, p.x, p.y);
+        } else {
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
         ctx.restore();
 
         if (p.alpha <= 0 || p.y > canvas.height) {
@@ -285,6 +312,7 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
   return (
     <div 
       onMouseMove={handleMouseMove}
+      onClick={handleGlobalClick}
       className="relative min-h-screen bg-[#c2395d] text-slate-900 select-none overflow-hidden font-sans flex flex-col items-center justify-center p-2.5 sm:p-5 perspective-1000"
     >
       
