@@ -803,12 +803,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 !isEnvelopeOpened ? "cursor-pointer group" : ""
               }`}
             >
-              {/* 0. Top Teaser Header & Mascot (Fills top empty space when closed) */}
+              {/* 0. Top Teaser Header (Positioned right above envelope when closed) */}
               <div 
-                className={`absolute top-4 sm:top-7 inset-x-0 mx-auto flex flex-col items-center justify-center space-y-1 transition-all duration-500 z-10 ${
+                className={`absolute inset-x-0 mx-auto flex flex-col items-center justify-center space-y-1 transition-all duration-500 z-10 ${
                   isEnvelopeOpened 
-                    ? "opacity-0 -translate-y-6 scale-90 pointer-events-none" 
-                    : "opacity-100 translate-y-0 scale-100 animate-float"
+                    ? "bottom-[72%] opacity-0 -translate-y-8 scale-90 pointer-events-none" 
+                    : "bottom-[67%] xs:bottom-[68%] sm:bottom-[70%] opacity-100 translate-y-0 scale-100 animate-float"
                 }`}
               >
                 <div className="flex items-center justify-center gap-2 px-4">
@@ -821,7 +821,13 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               </div>
 
               {/* 1. Open Pink Envelope Back Flap Wall + Animated Top Flap (z-0) */}
-              <div className="absolute bottom-16 sm:bottom-20 z-0 w-64 xs:w-72 sm:w-84 transition-transform duration-500 group-hover:scale-105">
+              <div 
+                className={`absolute z-0 w-64 xs:w-72 sm:w-84 transition-all duration-700 group-hover:scale-105 ${
+                  isEnvelopeOpened
+                    ? "bottom-10 sm:bottom-12"
+                    : "bottom-[24%] xs:bottom-[25%] sm:bottom-[26%]"
+                }`}
+              >
                 <svg className="w-full h-auto drop-shadow-md" viewBox="0 0 300 220" fill="none">
                   {/* Envelope Interior Back Wall */}
                   <rect x="0" y="90" width="300" height="130" fill="#f4a7bb" rx="10" />
@@ -852,8 +858,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               <div 
                 className={`absolute z-20 w-56 xs:w-64 sm:w-76 bg-white border border-slate-200 rounded-xl p-4 sm:p-5 shadow-2xl text-center flex flex-col items-center justify-between transition-all duration-700 ease-out ${
                   isEnvelopeOpened 
-                    ? "bottom-24 sm:bottom-28 -translate-y-8 sm:-translate-y-12 opacity-100 scale-100 pointer-events-auto delay-300" 
-                    : "bottom-16 sm:bottom-20 translate-y-6 opacity-0 scale-95 pointer-events-none"
+                    ? "bottom-20 sm:bottom-24 -translate-y-6 sm:-translate-y-10 opacity-100 scale-100 pointer-events-auto delay-300" 
+                    : "bottom-[24%] xs:bottom-[25%] sm:bottom-[26%] translate-y-6 opacity-0 scale-95 pointer-events-none"
                 }`}
               >
                 {/* Top-Left Pink Ribbon & Puppy Mascot */}
@@ -889,7 +895,13 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
               </div>
 
               {/* 3. Open Pink Envelope Front Pocket (z-30) */}
-              <div className="absolute bottom-16 sm:bottom-20 z-30 w-64 xs:w-72 sm:w-84 pointer-events-none">
+              <div 
+                className={`absolute z-30 w-64 xs:w-72 sm:w-84 pointer-events-none transition-all duration-700 ${
+                  isEnvelopeOpened
+                    ? "bottom-10 sm:bottom-12"
+                    : "bottom-[24%] xs:bottom-[25%] sm:bottom-[26%]"
+                }`}
+              >
                 <svg className="w-full h-auto filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.2)]" viewBox="0 0 300 130" fill="none">
                   {/* Left Envelope Pocket Fold */}
                   <polygon points="0,0 145,65 0,130" fill="#f4a7bb" opacity="0.9" />
@@ -900,10 +912,12 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
                 </svg>
               </div>
 
-              {/* 4. Tap Prompt (Positioned cleanly at absolute bottom-2 with zero overlap) */}
+              {/* 4. Tap Prompt (Positioned right below envelope when closed) */}
               <h3 
-                className={`absolute bottom-2 sm:bottom-3 z-40 text-3xl xs:text-4xl sm:text-5xl font-sacramento font-bold text-[#c2395d] underline decoration-pink-400 decoration-2 underline-offset-8 transition-all duration-500 ${
-                  isEnvelopeOpened ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100 animate-bounce"
+                className={`absolute z-40 text-3xl xs:text-4xl sm:text-5xl font-sacramento font-bold text-[#c2395d] underline decoration-pink-400 decoration-2 underline-offset-8 transition-all duration-500 ${
+                  isEnvelopeOpened 
+                    ? "bottom-[10%] opacity-0 scale-90 pointer-events-none" 
+                    : "bottom-[8%] xs:bottom-[9%] sm:bottom-[10%] opacity-100 scale-100 animate-bounce"
                 }`}
               >
                 {t.tapToOpen}
@@ -1053,18 +1067,55 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
         {/* STEP 7: POLAROIDS & CAKE WALL (Grand Finale)               */}
         {/* ========================================================= */}
         {storyStep === 7 && (
-          <div className="w-full h-full flex flex-col justify-between space-y-4 sm:space-y-6 animate-fade-in my-auto py-1">
-            <div className="w-full h-[2px] bg-slate-400 relative top-2 sm:top-3 left-0 right-0 z-0" />
+          <div className="w-full h-full flex flex-col justify-between space-y-3 sm:space-y-5 animate-fade-in my-auto pt-10 sm:pt-14 pb-1 relative overflow-visible">
+            
+            {/* 1. Curved Vector Hanging String w/ Pin Tacks at ends (Clear of Back Button) */}
+            <div className="absolute top-10 sm:top-14 left-2 right-2 sm:left-4 sm:right-4 z-0 w-auto pointer-events-none">
+              <svg className="w-full h-10 sm:h-12 overflow-visible" viewBox="0 0 600 40" preserveAspectRatio="none" fill="none">
+                {/* Soft Drop Shadow Path */}
+                <path d="M 10 8 Q 150 28 300 22 Q 450 32 590 8" stroke="#000000" strokeWidth="3" opacity="0.12" fill="none" />
+                {/* Main Pink Dotted String Line */}
+                <path d="M 10 6 Q 150 26 300 20 Q 450 30 590 6" stroke="#e11d48" strokeWidth="2.5" strokeDasharray="6 3" strokeLinecap="round" fill="none" />
+                {/* Left Pin Tack 📌 */}
+                <circle cx="10" cy="6" r="4.5" fill="#f59e0b" stroke="#78350f" strokeWidth="1.5" />
+                {/* Right Pin Tack 📌 */}
+                <circle cx="590" cy="6" r="4.5" fill="#f59e0b" stroke="#78350f" strokeWidth="1.5" />
+              </svg>
+            </div>
 
-            <div className="w-full grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 pt-2 sm:pt-3 relative z-10">
-              {photos.slice(0, 3).map((src, idx) => (
-                <div key={idx} className="bg-white p-1.5 xs:p-2 sm:p-3 pb-5 xs:pb-6 sm:pb-8 rounded-lg shadow-xl border border-slate-200 transform hover:scale-110 transition-transform relative animate-pendulum" style={{ animationDelay: `${idx * 0.5}s` }}>
-                  <div className="w-3 sm:w-4 h-4 sm:h-5 bg-sky-500 rounded-xs mx-auto -mt-3.5 sm:-mt-5 mb-1 shadow-md" />
-                  <div className="w-full h-20 xs:h-28 sm:h-36 bg-slate-100 rounded overflow-hidden">
-                    <img src={src} alt="Polaroid Memory" loading="eager" className="w-full h-full object-cover" />
+            {/* 2. Polaroid Photos Hanging from Clips on the Curved String */}
+            <div className="w-full grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 pt-3 sm:pt-5 relative z-10">
+              {photos.slice(0, 3).map((src, idx) => {
+                // Curved alignment offsets to match the hanging string curve
+                const cardCurveOffsets = [
+                  { transform: "rotate(-4deg) translateY(1px)" }, // Left photo
+                  { transform: "rotate(2deg) translateY(12px)" },  // Center photo (sags with curve)
+                  { transform: "rotate(5deg) translateY(3px)" }   // Right photo
+                ];
+
+                return (
+                  <div 
+                    key={idx} 
+                    className="bg-white p-1.5 xs:p-2 sm:p-3 pb-5 xs:pb-6 sm:pb-8 rounded-lg shadow-xl border border-slate-200 relative transition-transform duration-300 hover:scale-110 hover:z-30 animate-pendulum" 
+                    style={{ 
+                      ...cardCurveOffsets[idx % cardCurveOffsets.length],
+                      animationDelay: `${idx * 0.4}s` 
+                    }}
+                  >
+                    {/* Realistic Wooden Peg Clip clamping onto the string */}
+                    <div className="absolute -top-3.5 sm:-top-4.5 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                      <div className="w-3.5 sm:w-4.5 h-5 sm:h-6 bg-gradient-to-b from-amber-200 via-amber-300 to-amber-400 rounded-xs shadow-md border border-amber-600/40 relative flex items-center justify-center">
+                        {/* Metallic Spring Clip Center Ring */}
+                        <div className="w-full h-1 bg-slate-800/80 my-auto" />
+                      </div>
+                    </div>
+
+                    <div className="w-full h-20 xs:h-28 sm:h-36 bg-slate-100 rounded overflow-hidden mt-1">
+                      <img src={src} alt="Polaroid Memory" loading="eager" className="w-full h-full object-cover" />
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <div className="w-full flex flex-col sm:flex-row items-center justify-between pt-2 sm:pt-4 px-1 gap-3">
