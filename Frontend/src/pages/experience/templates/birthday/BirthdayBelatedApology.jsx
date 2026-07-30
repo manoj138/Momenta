@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Heart, Clock, Mail, Sparkles, Volume2, VolumeX, Lock, Unlock, ArrowRight, RefreshCw, Smile, Gift, Award, Music } from "lucide-react";
+import { Heart, Clock, Mail, Sparkles, Volume2, VolumeX, Lock, Unlock, ArrowRight, RefreshCw, Smile, Gift, Award, Music, Layers } from "lucide-react";
 
 const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
-  // Default values for dynamic fields
+  // Dynamic fields with fallback values
   const personName = data.personName || data.person_name || "Sneha";
   const petName = data.petName || data.pet_name || "Cutie";
   const secretPin = data.secretPin || data.secret_pin || "";
@@ -14,12 +14,16 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
   const stayCute = data.stayCute || data.stay_cute || "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨";
   const iloveYou = data.iloveYou || data.ilove_you || "BEST WISHES ALWAYS ❤️";
   const meanToMe = data.meanToMe || data.mean_to_me || "You don't know how much you mean to me.";
+  const scratchTitle = data.scratchTitle || data.scratch_title || "SORRY BHAI / BESTIE! 🥺❤️";
+  const scratchMessage = data.scratchMessage || data.scratch_message || "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨";
   const musicUrl = data.bgMusic || data.musicUrl || data.music_url || "https://assets.mixkit.co/music/preview/mixkit-romantic-sunburst-241.mp3";
 
-  // Photos resolution
+  // 5 Photos resolution
   const photo1 = data.photo1 || data.photo_1 || "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
   const photo2 = data.photo2 || data.photo_2 || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80";
   const photo3 = data.photo3 || data.photo_3 || "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&auto=format&fit=crop&q=80";
+  const photo4 = data.photo4 || data.photo_4 || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80";
+  const photo5 = data.photo5 || data.photo_5 || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80";
 
   // App States
   const [currentStep, setCurrentStep] = useState(secretPin ? 0 : 1);
@@ -28,9 +32,12 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
   const [isPlaying, setIsPlaying] = useState(!isDemo);
   const [letterOpen, setLetterOpen] = useState(false);
   const [noButtonPos, setNoButtonPos] = useState({ x: 0, y: 0 });
+  const [isScratched, setIsScratched] = useState(false);
 
   const audioRef = useRef(null);
-  const canvasRef = useRef(null);
+  const fireworksCanvasRef = useRef(null);
+  const scratchCanvasRef = useRef(null);
+  const isDrawing = useRef(false);
 
   // Audio Playback
   useEffect(() => {
@@ -66,10 +73,87 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
     setNoButtonPos({ x: randomX, y: randomY });
   };
 
-  // Canvas Fireworks Effect on Step 5
+  // Interactive Scratch Canvas Logic (Step 4)
   useEffect(() => {
-    if (currentStep !== 5 || !canvasRef.current) return;
-    const canvas = canvasRef.current;
+    if (currentStep !== 4 || !scratchCanvasRef.current) return;
+    const canvas = scratchCanvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+
+    // Fill with metallic gold foil texture
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, "#F59E0B");
+    gradient.addColorStop(0.5, "#FCD34D");
+    gradient.addColorStop(1, "#D97706");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Scratch instruction text on gold foil
+    ctx.font = "bold 14px sans-serif";
+    ctx.fillStyle = "#78350F";
+    ctx.textAlign = "center";
+    ctx.fillText("✨ SCRATCH WITH MOUSE OR FINGER TO REVEAL ✨", canvas.width / 2, canvas.height / 2);
+
+    const getPos = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: clientX - rect.left,
+        y: clientY - rect.top,
+      };
+    };
+
+    const scratch = (e) => {
+      if (!isDrawing.current) return;
+      const { x, y } = getPos(e);
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.arc(x, y, 25, 0, Math.PI * 2);
+      ctx.fill();
+      setIsScratched(true);
+    };
+
+    const startScratch = (e) => {
+      isDrawing.current = true;
+      scratch(e);
+    };
+
+    const stopScratch = () => {
+      isDrawing.current = false;
+    };
+
+    canvas.addEventListener("mousedown", startScratch);
+    canvas.addEventListener("mousemove", scratch);
+    canvas.addEventListener("mouseup", stopScratch);
+    canvas.addEventListener("touchstart", startScratch);
+    canvas.addEventListener("touchmove", scratch);
+    canvas.addEventListener("touchend", stopScratch);
+
+    return () => {
+      canvas.removeEventListener("mousedown", startScratch);
+      canvas.removeEventListener("mousemove", scratch);
+      canvas.removeEventListener("mouseup", stopScratch);
+      canvas.removeEventListener("touchstart", startScratch);
+      canvas.removeEventListener("touchmove", scratch);
+      canvas.removeEventListener("touchend", stopScratch);
+    };
+  }, [currentStep]);
+
+  const handleInstantReveal = () => {
+    if (scratchCanvasRef.current) {
+      const ctx = scratchCanvasRef.current.getContext("2d");
+      ctx.clearRect(0, 0, scratchCanvasRef.current.width, scratchCanvasRef.current.height);
+      setIsScratched(true);
+    }
+  };
+
+  // Canvas Fireworks Effect on Step 6
+  useEffect(() => {
+    if (currentStep !== 6 || !fireworksCanvasRef.current) return;
+    const canvas = fireworksCanvasRef.current;
     const ctx = canvas.getContext("2d");
     let animationFrameId;
 
@@ -79,7 +163,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
     const particles = [];
     const colors = ["#F43F5E", "#8B5CF6", "#F59E0B", "#EC4899", "#3B82F6"];
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 90; i++) {
       particles.push({
         x: canvas.width / 2,
         y: canvas.height / 2,
@@ -256,44 +340,98 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
         </main>
       )}
 
-      {/* STEP 3: 3D Memory Polaroid Reel */}
+      {/* STEP 3: 5-Photo 3D Memory Gallery */}
       {currentStep === 3 && (
-        <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-4xl mx-auto">
+        <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-5xl mx-auto">
           <div className="space-y-2">
-            <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Memories That Never Expire</span>
-            <h2 className="text-2xl md:text-4xl font-extrabold text-white">Celebrating You & Our Favorite Moments 📸</h2>
+            <span className="text-xs font-bold text-purple-400 uppercase tracking-widest font-mono">Memories That Never Expire</span>
+            <h2 className="text-2xl md:text-4xl font-extrabold text-white">5 Special Moments With You 📸</h2>
           </div>
 
-          {/* 3D Polaroid Reel */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full my-4">
-            <div className="bg-white p-3 rounded-xl shadow-2xl text-slate-900 rotate-[-3deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
-              <img src={photo1} alt="Memory 1" className="w-full h-52 object-cover rounded-lg mb-3" />
-              <p className="font-serif italic text-xs font-semibold text-slate-700">"Your smile makes every moment timeless ✨"</p>
+          {/* 5-Photo 3D Polaroid Reel */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 w-full my-4">
+            <div className="bg-white p-2.5 rounded-xl shadow-2xl text-slate-900 rotate-[-4deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
+              <img src={photo1} alt="Memory 1" className="w-full h-44 object-cover rounded-lg mb-2" />
+              <p className="font-serif italic text-[11px] font-bold text-slate-800">"Timeless Smile ✨"</p>
             </div>
 
-            <div className="bg-white p-3 rounded-xl shadow-2xl text-slate-900 rotate-[3deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
-              <img src={photo2} alt="Memory 2" className="w-full h-52 object-cover rounded-lg mb-3" />
-              <p className="font-serif italic text-xs font-semibold text-slate-700">"Every adventure with you is my favorite 💖"</p>
+            <div className="bg-white p-2.5 rounded-xl shadow-2xl text-slate-900 rotate-[3deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
+              <img src={photo2} alt="Memory 2" className="w-full h-44 object-cover rounded-lg mb-2" />
+              <p className="font-serif italic text-[11px] font-bold text-slate-800">"Favorite Adventures 💖"</p>
             </div>
 
-            <div className="bg-white p-3 rounded-xl shadow-2xl text-slate-900 rotate-[-2deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
-              <img src={photo3} alt="Memory 3" className="w-full h-52 object-cover rounded-lg mb-3" />
-              <p className="font-serif italic text-xs font-semibold text-slate-700">"Forever grateful for your warmth & laughter 🌟"</p>
+            <div className="bg-white p-2.5 rounded-xl shadow-2xl text-slate-900 rotate-[-2deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
+              <img src={photo3} alt="Memory 3" className="w-full h-44 object-cover rounded-lg mb-2" />
+              <p className="font-serif italic text-[11px] font-bold text-slate-800">"Warmth & Laughter 🌟"</p>
+            </div>
+
+            <div className="bg-white p-2.5 rounded-xl shadow-2xl text-slate-900 rotate-[4deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
+              <img src={photo4} alt="Memory 4" className="w-full h-44 object-cover rounded-lg mb-2" />
+              <p className="font-serif italic text-[11px] font-bold text-slate-800">"Unforgettable Joy 🥳"</p>
+            </div>
+
+            <div className="bg-white p-2.5 rounded-xl shadow-2xl text-slate-900 rotate-[-3deg] hover:rotate-0 hover:scale-105 transition-all duration-300">
+              <img src={photo5} alt="Memory 5" className="w-full h-44 object-cover rounded-lg mb-2" />
+              <p className="font-serif italic text-[11px] font-bold text-slate-800">"Pure Magic Together 💖"</p>
             </div>
           </div>
 
           <button
             onClick={() => setCurrentStep(4)}
-            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-rose-500 text-white font-bold text-sm rounded-full shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-2"
+            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-amber-500 text-white font-bold text-sm rounded-full shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-2"
           >
-            <span>Read Special Birthday Letter</span>
-            <Mail size={16} />
+            <span>Scratch Your Surprise Coupon</span>
+            <Gift size={16} />
           </button>
         </main>
       )}
 
-      {/* STEP 4: Wax-Sealed Virtual Letter Envelope */}
+      {/* STEP 4: Interactive Scratch Card Surprise */}
       {currentStep === 4 && (
+        <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-lg mx-auto">
+          <div className="space-y-2">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Special Secret Gift</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-white">Scratch To Reveal Your Coupon 🎁</h2>
+          </div>
+
+          {/* Scratch Container */}
+          <div className="relative w-full h-56 bg-slate-900 border border-amber-500/30 rounded-3xl overflow-hidden shadow-2xl flex flex-col items-center justify-center p-6 text-center">
+            {/* Hidden Message Behind Scratch Layer */}
+            <div className="space-y-2 z-10 px-4">
+              <Gift size={32} className="mx-auto text-amber-400 animate-bounce" />
+              <h3 className="text-sm font-extrabold text-amber-300 uppercase tracking-widest font-mono">
+                {scratchTitle}
+              </h3>
+              <p className="text-white font-serif italic text-xs md:text-sm leading-relaxed">
+                "{scratchMessage}"
+              </p>
+            </div>
+
+            {/* Canvas Foil Overlay */}
+            <canvas ref={scratchCanvasRef} className="absolute inset-0 z-20 cursor-crosshair touch-none" />
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+            <button
+              onClick={handleInstantReveal}
+              className="px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 text-gray-300 text-xs font-semibold rounded-full cursor-pointer transition-all"
+            >
+              Instant Reveal Scratch 🪄
+            </button>
+
+            <button
+              onClick={() => setCurrentStep(5)}
+              className="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-extrabold text-sm rounded-full shadow-xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2"
+            >
+              <span>Read Birthday Letter</span>
+              <Mail size={16} />
+            </button>
+          </div>
+        </main>
+      )}
+
+      {/* STEP 5: Wax-Sealed Virtual Letter Envelope */}
+      {currentStep === 5 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-lg mx-auto">
           <div className="space-y-2">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">Heartfelt Apology & Love</span>
@@ -336,7 +474,7 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
 
           {letterOpen && (
             <button
-              onClick={() => setCurrentStep(5)}
+              onClick={() => setCurrentStep(6)}
               className="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-rose-500 text-white font-extrabold text-sm rounded-full shadow-xl hover:scale-105 transition-all cursor-pointer flex items-center gap-2"
             >
               <span>Grand Finale Wish 🎉</span>
@@ -346,11 +484,11 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
         </main>
       )}
 
-      {/* STEP 5: Grand Finale Celebration Fireworks */}
-      {currentStep === 5 && (
+      {/* STEP 6: Grand Finale Celebration Fireworks */}
+      {currentStep === 6 && (
         <main className="relative z-20 flex-1 flex flex-col items-center justify-center p-6 text-center space-y-6 max-w-xl mx-auto">
           {/* Fireworks Canvas Background */}
-          <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-10" />
+          <canvas ref={fireworksCanvasRef} className="absolute inset-0 pointer-events-none z-10" />
 
           <div className="relative z-20 space-y-4">
             <div className="mx-auto w-20 h-20 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 p-1 shadow-2xl animate-bounce">

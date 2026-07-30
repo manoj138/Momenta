@@ -127,6 +127,32 @@ const ExperienceViewer = () => {
             secretReveal: "Join us for cake cutting and special announcement!",
             description: "Join us for an elegant evening of cinematic storytelling, celebration, and love."
           }
+        },
+        "birthday-belated-apology": {
+          templateId: "birthday-belated-apology",
+          clientName: "Sneha Shinde",
+          data: {
+            personName: "Sneha",
+            petName: "Cutie",
+            lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
+            letterText: "Dearest Sneha,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
+            favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
+            stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
+            iloveYou: "BEST WISHES ALWAYS ❤️"
+          }
+        },
+        "belated-apology-demo": {
+          templateId: "birthday-belated-apology",
+          clientName: "Sneha Shinde",
+          data: {
+            personName: "Sneha",
+            petName: "Cutie",
+            lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
+            letterText: "Dearest Sneha,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
+            favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
+            stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
+            iloveYou: "BEST WISHES ALWAYS ❤️"
+          }
         }
       };
 
