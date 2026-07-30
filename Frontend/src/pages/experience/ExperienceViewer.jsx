@@ -267,26 +267,14 @@ const ExperienceViewer = () => {
         (e) => (e.slug || "").toLowerCase() === (slug || "").toLowerCase()
       );
 
-      if (!foundLocal) {
-        try {
-          const storedExps = localStorage.getItem("momenta_local_experiences");
-          if (storedExps) {
-            const parsedList = JSON.parse(storedExps);
-            foundLocal = parsedList.find(
-              (e) => (e.slug || "").toLowerCase() === (slug || "").toLowerCase()
-            );
-          }
-        } catch (e) {
-          console.warn("Failed to parse local stored experiences:", e);
-        }
-      }
-
-      if (isMounted && foundLocal) {
-        const resolvedTemplateId = detectTemplateFromData(foundLocal.data || foundLocal, slug);
-
+      // 2. SECOND PRIORITY: Explicit Demo Templates (only for explicit -demo slugs)
+      if (slug.endsWith("-demo") && demoTemplates[slug]) {
+        const demo = demoTemplates[slug];
         setExperience({
-          ...foundLocal,
-          templateId: resolvedTemplateId,
+          slug: slug,
+          templateId: demo.templateId,
+          data: demo.data,
+          clientName: demo.clientName,
           status: "published",
           is_published: true
         });
