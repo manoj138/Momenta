@@ -352,7 +352,15 @@ export const AppProvider = ({ children }) => {
     return fullExperience;
   };
   const updateExperience = (id, updatedFields) => {
-    setExperiences((prev) => prev.map((e) => (e.id === id ? { ...e, ...updatedFields } : e)));
+    setExperiences((prev) => {
+      const updated = prev.map((e) => (e.id === id || e.slug === id ? { ...e, ...updatedFields } : e));
+      try {
+        localStorage.setItem("momenta_local_experiences", JSON.stringify(updated));
+      } catch (err) {
+        console.warn("Failed to persist updated experience:", err);
+      }
+      return updated;
+    });
   };
   const deleteExperience = async (id) => {
     setExperiences((prev) => {

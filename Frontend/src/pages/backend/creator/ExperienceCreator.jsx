@@ -20,7 +20,7 @@ import BirthdayBelatedApology from "../../experience/templates/birthday/Birthday
 const ExperienceCreator = () => {
   const { enquiryId, expId } = useParams();
   const navigate = useNavigate();
-  const { enquiries, experiences, templates, categories, addExperience, updateEnquiryStatus, fetchApiData } = useApp();
+  const { enquiries, experiences, templates, categories, addExperience, updateExperience, updateEnquiryStatus, fetchApiData } = useApp();
 
   const [activeEnquiry, setActiveEnquiry] = useState(null);
 
@@ -186,27 +186,11 @@ const ExperienceCreator = () => {
     window.open("/e/preview", "_blank");
   };
 
-  const handleUpdatePreview = (e) => {
-    if (e) e.preventDefault();
-    const payload = {
-      templateId: selectedTemplateId,
-      data: formData,
-      clientName: enquiry.clientName
-    };
-    console.log("Saving & updating preview with payload:", payload);
-    localStorage.setItem("momenta_preview_data", JSON.stringify(payload));
-    setShowSaveMessage(true);
-    setTimeout(() => {
-      setShowSaveMessage(false);
-    }, 3000);
-  };
-
-  const handleSave = async (e) => {
-    e.preventDefault();
-    if (!slug) return;
+  const performSave = async () => {
+    if (!slug) return false;
 
     const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
-    const activeCategoryObj = categories.find((c) => c.id === enquiry.category);
+    const activeCategoryObj = categories.find((c) => c.id === enquiry?.category);
 
     const isMongoId = (id) => typeof id === "string" && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id);
 
@@ -222,32 +206,79 @@ const ExperienceCreator = () => {
       data: formData,
     };
 
+    // Save to Backend API
     try {
-      await experienceService.create(experiencePayload);
+      if (targetExp?.dbId || targetExp?.id) {
+        const idToUpdate = targetExp.dbId || targetExp.id;
+        if (isMongoId(idToUpdate)) {
+          await experienceService.update(idToUpdate, experiencePayload);
+        } else {
+          await experienceService.create(experiencePayload);
+        }
+      } else {
+        await experienceService.create(experiencePayload);
+      }
     } catch (err) {
-      console.warn("Failed to create experience on backend:", err);
+      console.warn("Backend experience save notice:", err.message);
     }
 
-    addExperience({
-      slug: slug.trim(),
-      templateId: selectedTemplateId,
-      category: enquiry.category,
-      clientName: enquiry.clientName,
-      status: "published",
-      data: formData,
-    });
-
-    // Mark enquiry status as "Completed" on backend API and local state
-    try {
-      await enquiryService.updateStatus(enquiry.id, {
-        status: "Completed",
-        notes: `Published live link: /e/${slug}`
+    // Save to App Context State & LocalStorage
+    if (targetExp) {
+      updateExperience(targetExp.id || targetExp.slug, {
+        slug: slug.trim(),
+        templateId: selectedTemplateId,
+        category: enquiry?.category || "birthday",
+        clientName: enquiry?.clientName || "Client",
+        status: "published",
+        data: formData,
       });
-    } catch (err) {
-      console.warn("Failed to update enquiry status on backend:", err);
+    } else {
+      addExperience({
+        slug: slug.trim(),
+        templateId: selectedTemplateId,
+        category: enquiry?.category || "birthday",
+        clientName: enquiry?.clientName || "Client",
+        status: "published",
+        data: formData,
+      });
     }
-    updateEnquiryStatus(enquiry.id, "Completed", `Published live link: /e/${slug}`);
+
+    // Mark enquiry status as "Completed" if creating from enquiry
+    if (enquiry && enquiry.id && !targetExp) {
+      try {
+        await enquiryService.updateStatus(enquiry.id, {
+          status: "Completed",
+          notes: `Published live link: /e/${slug}`
+        });
+      } catch (err) {}
+      updateEnquiryStatus(enquiry.id, "Completed", `Published live link: /e/${slug}`);
+    }
+
+    // Save preview payload
+    const previewPayload = {
+      templateId: selectedTemplateId,
+      data: formData,
+      clientName: enquiry?.clientName || "Client"
+    };
+    localStorage.setItem("momenta_preview_data", JSON.stringify(previewPayload));
+
     setIsPublished(true);
+    setShowSaveMessage(true);
+    setTimeout(() => {
+      setShowSaveMessage(false);
+    }, 3000);
+
+    return true;
+  };
+
+  const handleUpdatePreview = async (e) => {
+    if (e) e.preventDefault();
+    await performSave();
+  };
+
+  const handleSave = async (e) => {
+    if (e) e.preventDefault();
+    await performSave();
   };
 
   // Resolve template selected for real-time live preview
