@@ -74,8 +74,9 @@ const createExperience = async (req, res) => {
         if (payload.slug) {
             const existing = await Experience.findOne({ slug: payload.slug });
             if (existing) {
-                // If it already exists, update it instead of crashing with 422!
                 existing.set(payload);
+                existing.markModified('data');
+                if (payload.custom_styles) existing.markModified('custom_styles');
                 await existing.save();
                 return handle200(res, existing, 'Experience updated successfully');
             }
@@ -102,6 +103,8 @@ const updateExperience = async (req, res) => {
         if (!experience) return handle404(res, 'Experience not found');
         
         experience.set(req.body);
+        experience.markModified('data');
+        if (req.body.custom_styles) experience.markModified('custom_styles');
         await experience.save();
         
         return handle200(res, experience, 'Experience updated successfully');
