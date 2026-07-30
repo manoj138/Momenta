@@ -141,6 +141,19 @@ const ExperienceViewer = () => {
             iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
           }
         },
+        "vinit-dada-birthday": {
+          templateId: "birthday-belated-apology",
+          clientName: "Vinit Dada",
+          data: {
+            personName: "Vinit Dada",
+            petName: "Cutie",
+            lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
+            letterText: "Dearest Vinit Dada,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
+            favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
+            stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
+            iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
+          }
+        },
         "belated-apology-demo": {
           templateId: "birthday-belated-apology",
           clientName: "Sneha Shinde",

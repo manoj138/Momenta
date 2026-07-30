@@ -354,8 +354,22 @@ export const AppProvider = ({ children }) => {
   const updateExperience = (id, updatedFields) => {
     setExperiences((prev) => prev.map((e) => (e.id === id ? { ...e, ...updatedFields } : e)));
   };
-  const deleteExperience = (id) => {
-    setExperiences((prev) => prev.filter((e) => e.id !== id));
+  const deleteExperience = async (id) => {
+    setExperiences((prev) => {
+      const updated = prev.filter((e) => e.id !== id && e.slug !== id);
+      try {
+        localStorage.setItem("momenta_local_experiences", JSON.stringify(updated));
+      } catch (e) {
+        console.warn("Failed to update local stored experiences on delete:", e);
+      }
+      return updated;
+    });
+
+    try {
+      await experienceService.delete(id);
+    } catch (e) {
+      console.warn("Backend experience delete API notice:", e.message);
+    }
   };
   const addRSVPToExperience = (slug, rsvp) => {
     setExperiences((prev) => prev.map((exp) => {
