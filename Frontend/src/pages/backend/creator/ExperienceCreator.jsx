@@ -15,6 +15,7 @@ import WeddingRoyalGold from "../../experience/templates/wedding/WeddingRoyalGol
 import WeddingAnimated from "../../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../../experience/templates/birthday/BirthdayNeonSurprise";
 import BirthdayCinematicLove from "../../experience/templates/birthday/BirthdayCinematicLove";
+import BirthdayBelatedApology from "../../experience/templates/birthday/BirthdayBelatedApology";
 
 const ExperienceCreator = () => {
   const { enquiryId } = useParams();
@@ -214,6 +215,8 @@ const ExperienceCreator = () => {
       case "birthday-cinematic":
       case "birthday-cinematic-love":
         return <BirthdayCinematicLove data={formData} isDemo={true} />;
+      case "birthday-belated-apology":
+        return <BirthdayBelatedApology data={formData} isDemo={true} />;
       default:
         return (
           <div className="flex flex-col items-center justify-center h-full p-8 text-center bg-amber-50/40 text-slate-800">

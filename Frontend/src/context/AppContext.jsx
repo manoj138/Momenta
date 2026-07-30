@@ -87,6 +87,19 @@ export const AppProvider = ({ children }) => {
           status: "published",
           fields: birthdayCinematicFields,
           demoSlug: "birthday-cinematic-love"
+        },
+        {
+          id: "birthday-belated-apology",
+          dbId: "local-birthday-belated-apology",
+          name: "Belated Birthday Apology & Love",
+          category: "birthday",
+          description: "An emotional belated birthday surprise gift with interactive time-rewind clock, cute forgiveness quiz, 3D polaroid reel, and wax-sealed love letter.",
+          thumbnail: "",
+          previewUrl: "/e/birthday-belated-apology",
+          componentName: "BirthdayBelatedApology",
+          status: "published",
+          fields: birthdayCinematicFields,
+          demoSlug: "birthday-belated-apology"
         }
       ];
 

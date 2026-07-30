@@ -10,6 +10,7 @@ import WeddingRoyalGold from "../experience/templates/wedding/WeddingRoyalGold";
 import WeddingAnimated from "../experience/templates/wedding/WeddingAnimated";
 import BirthdayNeonSurprise from "../experience/templates/birthday/BirthdayNeonSurprise";
 import BirthdayCinematicLove from "../experience/templates/birthday/BirthdayCinematicLove";
+import BirthdayBelatedApology from "../experience/templates/birthday/BirthdayBelatedApology";
 
 const TemplateShowcase = () => {
   const { templates, categories } = useApp();
@@ -45,6 +46,9 @@ const TemplateShowcase = () => {
       case "birthday-cinematic-love":
       case "birthday-cinematic":
         return <BirthdayCinematicLove data={mockData} isDemo={true} />;
+      case "birthday-belated-apology":
+      case "belated-apology-demo":
+        return <BirthdayBelatedApology data={mockData} isDemo={true} />;
       default:
         return null;
     }
