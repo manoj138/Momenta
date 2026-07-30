@@ -147,21 +147,28 @@ const ApologyEmojiSvg = ({ className = "w-28 h-28" }) => (
 );
 
 const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
+  let parsedData = data || {};
+  if (typeof parsedData === "string") {
+    try {
+      parsedData = JSON.parse(parsedData);
+    } catch (e) {}
+  }
+
   // Dynamic fields with fallback values
-  const personName = data.personName || data.person_name || "Sneha";
-  const petName = data.petName || data.pet_name || "Cutie";
-  const secretPin = data.secretPin || data.secret_pin || "";
-  const lateReason = data.lateReason || data.late_reason || "Finding the perfect words for someone as special as you took a little extra time! ✨";
-  const letterText = data.letterText || data.letter_text || data.letter || 
+  const personName = parsedData.personName || parsedData.person_name || "Sneha";
+  const petName = parsedData.petName || parsedData.pet_name || "Cutie";
+  const secretPin = parsedData.secretPin || parsedData.secret_pin || "";
+  const lateReason = parsedData.lateReason || parsedData.late_reason || "Finding the perfect words for someone as special as you took a little extra time! ✨";
+  const letterText = parsedData.letterText || parsedData.letter_text || parsedData.letter || 
     `Dearest ${personName},\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Birthday to my favorite person in the world! 💖`;
   
-  const favNotification = data.favNotification || data.fav_notification || "A SPECIAL SURPRISE CRAFTED FOR YOU 💖";
-  const stayCute = data.stayCute || data.stay_cute || "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨";
-  const iloveYou = data.iloveYou || data.ilove_you || "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖";
-  const meanToMe = data.meanToMe || data.mean_to_me || "Finding the perfect words took a little extra time, but my wishes for you are timeless. ❤️";
-  const scratchTitle = data.scratchTitle || data.scratch_title || "SURPRISE GIFT COUPON 🎁";
-  const scratchMessage = data.scratchMessage || data.scratch_message || "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨";
-  const musicUrl = data.bgMusic || data.musicUrl || data.music_url || "https://assets.mixkit.co/music/preview/mixkit-romantic-sunburst-241.mp3";
+  const favNotification = parsedData.favNotification || parsedData.fav_notification || "A SPECIAL SURPRISE CRAFTED FOR YOU 💖";
+  const stayCute = parsedData.stayCute || parsedData.stay_cute || "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨";
+  const iloveYou = parsedData.iloveYou || parsedData.ilove_you || "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖";
+  const meanToMe = parsedData.meanToMe || parsedData.mean_to_me || "Finding the perfect words took a little extra time, but my wishes for you are timeless. ❤️";
+  const scratchTitle = parsedData.scratchTitle || parsedData.scratch_title || "SURPRISE GIFT COUPON 🎁";
+  const scratchMessage = parsedData.scratchMessage || parsedData.scratch_message || "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨";
+  const musicUrl = parsedData.bgMusic || parsedData.musicUrl || parsedData.music_url || "https://assets.mixkit.co/music/preview/mixkit-romantic-sunburst-241.mp3";
 
   // Default Unsplash fallbacks
   const defaultPhoto1 = "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
@@ -171,11 +178,11 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
   const defaultPhoto5 = "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80";
 
   // 5 Photos
-  const photo1 = data.photo1 || data.photo_1 || defaultPhoto1;
-  const photo2 = data.photo2 || data.photo_2 || defaultPhoto2;
-  const photo3 = data.photo3 || data.photo_3 || defaultPhoto3;
-  const photo4 = data.photo4 || data.photo_4 || defaultPhoto4;
-  const photo5 = data.photo5 || data.photo_5 || defaultPhoto5;
+  const photo1 = parsedData.photo1 || parsedData.photo_1 || defaultPhoto1;
+  const photo2 = parsedData.photo2 || parsedData.photo_2 || defaultPhoto2;
+  const photo3 = parsedData.photo3 || parsedData.photo_3 || defaultPhoto3;
+  const photo4 = parsedData.photo4 || parsedData.photo_4 || defaultPhoto4;
+  const photo5 = parsedData.photo5 || parsedData.photo_5 || defaultPhoto5;
 
   // App States
   const [currentStep, setCurrentStep] = useState(secretPin ? 0 : 1);
@@ -202,6 +209,26 @@ const BirthdayBelatedApology = ({ data = {}, isDemo = false }) => {
       }
     }
   }, [isPlaying, isDemo]);
+
+  // Unlock Audio Playback on First User Interaction (Touch / Click) for Mobile Browsers
+  useEffect(() => {
+    if (isDemo) return;
+    const unlockAudio = () => {
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play().then(() => {
+          setIsPlaying(true);
+        }).catch(() => {});
+      }
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+    };
+    window.addEventListener("click", unlockAudio);
+    window.addEventListener("touchstart", unlockAudio);
+    return () => {
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+    };
+  }, [isDemo]);
 
   const toggleAudio = () => {
     setIsPlaying(!isPlaying);

@@ -242,8 +242,15 @@ const ExperienceViewer = () => {
       }
 
       if (isMounted && expData) {
+        let rawData = expData.data || expData;
+        if (typeof rawData === "string") {
+          try {
+            rawData = JSON.parse(rawData);
+          } catch (e) {}
+        }
+
         const resolvedTemplateId =
-          detectTemplateFromData(expData.data || expData, slug) ||
+          detectTemplateFromData(rawData, slug) ||
           expData.template_slug ||
           expData.templateId ||
           expData.template_id ||
@@ -253,6 +260,7 @@ const ExperienceViewer = () => {
 
         setExperience({
           ...expData,
+          data: rawData,
           templateId: resolvedTemplateId,
           componentName: expData.template?.component_name || expData.componentName,
           status: expData.is_published !== false ? "published" : "draft",
