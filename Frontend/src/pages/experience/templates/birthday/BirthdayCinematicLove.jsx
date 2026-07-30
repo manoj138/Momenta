@@ -429,9 +429,9 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
     };
   }, [storyStep, isScratched, t.scratchInstruction]);
 
-  // Blow Candle Microphone Listener Hook (Step 8)
+  // Blow Candle Microphone Listener Hook (Step 6)
   useEffect(() => {
-    if (storyStep !== 8 || isCandleBlown) return;
+    if (storyStep !== 6 || isCandleBlown) return;
 
     let animId = null;
 
@@ -459,8 +459,8 @@ const BirthdayCinematicLove = ({ data = {}, isDemo = false }) => {
           }
           const average = sum / dataArray.length;
 
-          // If blow intensity is high
-          if (average > 42) {
+          // If blow intensity is detected
+          if (average > 25) {
             handleBlowCandles();
             return;
           }
