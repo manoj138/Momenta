@@ -103,13 +103,25 @@ const ExperienceCreator = () => {
     }
   }, [enquiry, targetExp]);
 
-  // Synchronize template selection once the available templates list loads
+  // Synchronize template selection from enquiry preferences
   useEffect(() => {
     if (availableTemplates.length > 0 && !selectedTemplateId) {
-      console.log("Defaulting selected template to:", availableTemplates[0].id);
-      setSelectedTemplateId(availableTemplates[0].id);
+      const preferredId = enquiry?.templateId || 
+                          enquiry?.template_slug || 
+                          enquiry?.template_id || 
+                          (typeof enquiry?.template === "object" ? (enquiry?.template?.slug || enquiry?.template?.id) : enquiry?.template);
+
+      const foundMatching = preferredId
+        ? availableTemplates.find(
+            (t) => t.id === preferredId || t.dbId === preferredId || String(t.id).includes(String(preferredId)) || String(preferredId).includes(String(t.id))
+          )
+        : null;
+
+      const targetId = foundMatching ? foundMatching.id : availableTemplates[0].id;
+      console.log("Auto-selecting template for enquiry:", targetId, "preferred was:", preferredId);
+      setSelectedTemplateId(targetId);
     }
-  }, [availableTemplates, selectedTemplateId]);
+  }, [availableTemplates, selectedTemplateId, enquiry]);
 
   // Auto-generate slug from clientName (only if not manually edited)
   const slugUserEditedRef = useRef(false);
