@@ -117,7 +117,9 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
                                 field.name.toLowerCase().includes("song") ||
                                 (typeof val === "string" && (val.endsWith(".mp3") || val.endsWith(".wav") || val.endsWith(".ogg")));
 
-            const hasValidMedia = typeof val === "string" && val.length > 0 && (val.startsWith("http") || val.startsWith("/uploads"));
+            const hasValidMedia = typeof val === "string" && 
+                                 val.trim().length > 0 && 
+                                 (val.startsWith("http") || val.startsWith("/uploads") || val.startsWith("data:") || val.startsWith("blob:"));
 
             return (
               <div key={field.name} className="col-span-1 md:col-span-2 border border-gray-200 dark:border-slate-800 p-4 rounded-2xl space-y-3 bg-gray-50/50 dark:bg-slate-900/40">
@@ -148,7 +150,7 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
                       <div className="space-y-2 pt-1">
                         <div className="flex items-center gap-2 text-xs font-semibold text-gray-600 dark:text-gray-300">
                           <Music size={16} className="text-brand-500 animate-pulse" />
-                          <span className="truncate max-w-xs">{val.split("/").pop()}</span>
+                          <span className="truncate max-w-xs">{val.startsWith("http") ? val.split("/").pop() : "Audio Track"}</span>
                         </div>
                         <audio controls src={val} className="w-full h-10 rounded-lg focus:outline-none" />
                       </div>
@@ -157,13 +159,13 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
                         <img 
                           src={val} 
                           alt={field.label} 
-                          className="max-h-64 object-contain rounded-lg"
+                          className="max-h-64 object-contain rounded-lg shadow-sm"
                         />
                       </div>
                     )}
 
                     <div className="pt-1 flex items-center justify-between">
-                      <span className="text-[11px] text-gray-400 font-mono truncate max-w-sm">{val}</span>
+                      <span className="text-[11px] text-gray-400 font-mono truncate max-w-sm">{val.startsWith("data:") ? "Data Image Payload" : val}</span>
                       <label className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline cursor-pointer flex items-center gap-1">
                         <RefreshCw size={13} />
                         <span>Change File</span>
@@ -177,13 +179,28 @@ const DynamicFormRenderer = ({ fields = [], formData = {}, onChange, errors = {}
                     </div>
                   </div>
                 ) : (
-                  <FileUpload
-                    name={field.name}
-                    label={field.label}
-                    accept={isAudioField ? "audio/*" : "image/*"}
-                    onChange={(e) => handleFileChange(field.name, e)}
-                    error={error}
-                  />
+                  <>
+                    <FileUpload
+                      name={field.name}
+                      label={field.label}
+                      accept={isAudioField ? "audio/*" : "image/*"}
+                      onChange={(e) => handleFileChange(field.name, e)}
+                      error={error}
+                    />
+
+                    {/* Direct song URL input ONLY for audio/music fields */}
+                    {isAudioField && (
+                      <div className="pt-2">
+                        <Input
+                          label="Or paste direct song URL instead"
+                          value={typeof val === "string" ? val : ""}
+                          onChange={(e) => handleValueChange(field.name, e.target.value)}
+                          placeholder="https://assets.mixkit.co/music/preview/..."
+                          className="text-xs"
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             );
