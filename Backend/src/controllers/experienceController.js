@@ -18,7 +18,8 @@ const getAllExperiences = async (req, res) => {
 const getExperienceBySlug = async (req, res) => {
     try {
         const cleanSlug = req.params.slug.trim();
-        const slugRegex = new RegExp('^' + cleanSlug + '$', 'i');
+        const safeSlug = cleanSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const slugRegex = new RegExp('^' + safeSlug + '$', 'i');
         let experience = await Experience.findOne({ slug: slugRegex });
 
         if (!experience) {

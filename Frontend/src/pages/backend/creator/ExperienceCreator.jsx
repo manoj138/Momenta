@@ -62,6 +62,7 @@ const ExperienceCreator = () => {
   const [slug, setSlug] = useState("");
   const [isPublished, setIsPublished] = useState(false);
   const [showSaveMessage, setShowSaveMessage] = useState(false);
+  const [saveError, setSaveError] = useState("");
 
   const initialLoadRef = useRef(false);
 
@@ -208,6 +209,7 @@ const ExperienceCreator = () => {
 
     // Save to Backend API
     try {
+      setSaveError("");
       if (targetExp?.dbId || targetExp?.id) {
         const idToUpdate = targetExp.dbId || targetExp.id;
         if (isMongoId(idToUpdate)) {
@@ -219,7 +221,9 @@ const ExperienceCreator = () => {
         await experienceService.create(experiencePayload);
       }
     } catch (err) {
-      console.warn("Backend experience save notice:", err.message);
+      const errorMsg = err.response?.data?.message || err.message || "Failed to publish experience";
+      console.warn("Backend experience save notice:", errorMsg);
+      setSaveError(errorMsg);
     }
 
     // Save to App Context State & LocalStorage
@@ -470,6 +474,11 @@ const ExperienceCreator = () => {
                 {showSaveMessage && (
                   <span className="text-xs text-emerald-400 font-semibold animate-pulse">
                     ✓ Preview data updated! Check your preview tab.
+                  </span>
+                )}
+                {saveError && (
+                  <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/20 px-3 py-1.5 rounded-lg font-semibold">
+                    ⚠️ {saveError}
                   </span>
                 )}
               </div>
