@@ -1,5 +1,7 @@
 import { Api } from '../components/common/Api/api';
 
+const BASE_SERVER_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:3000" : window.location.origin);
+
 export const uploadService = {
   uploadFile: async (file) => {
     try {
@@ -11,10 +13,18 @@ export const uploadService = {
         },
       });
       const media = response.data?.data || response.data;
-      return media?.file_path || media?.url || media?.path || "";
+      let rawPath = media?.file_path || media?.url || media?.path || "";
+
+      if (rawPath && !rawPath.startsWith("http://") && !rawPath.startsWith("https://")) {
+        const cleanPath = rawPath.startsWith("/") ? rawPath : `/${rawPath}`;
+        return `${BASE_SERVER_URL}${cleanPath}`;
+      }
+
+      return rawPath;
     } catch (err) {
-      console.warn("Media upload failed, using direct object URL fallback:", err.message);
+      console.error("Media upload failed:", err);
       return "";
     }
   }
 };
+

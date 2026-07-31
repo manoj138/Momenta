@@ -6,26 +6,7 @@ export const safeSetLocalStorage = (key, data) => {
     const serialized = typeof data === "string" ? data : JSON.stringify(data);
     localStorage.setItem(key, serialized);
   } catch (err) {
-    console.warn(`[LocalStorage Quota Shield] Safe fallback active for key "${key}":`, err.message);
-    try {
-      if (typeof data === "object" && data !== null) {
-        const cleaned = JSON.parse(JSON.stringify(data));
-        const stripHeavyMedia = (obj) => {
-          if (!obj || typeof obj !== "object") return;
-          Object.keys(obj).forEach((k) => {
-            if (typeof obj[k] === "string" && obj[k].length > 80000) {
-              obj[k] = ""; // Strip heavy base64 strings from local storage fallback so browser quota never crashes script
-            } else if (typeof obj[k] === "object") {
-              stripHeavyMedia(obj[k]);
-            }
-          });
-        };
-        stripHeavyMedia(cleaned);
-        localStorage.setItem(key, JSON.stringify(cleaned));
-      }
-    } catch (e2) {
-      console.warn(`[LocalStorage Safe Fallback Notice]:`, e2.message);
-    }
+    console.warn(`[LocalStorage Shield] Storage limit exceeded for key "${key}":`, err.message);
   }
 };
 

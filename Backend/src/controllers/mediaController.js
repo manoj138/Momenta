@@ -8,10 +8,20 @@ const uploadMedia = async (req, res) => {
             return res.status(400).json({ status: false, message: 'No file uploaded' });
         }
 
+        let subFolder = 'others';
+        if (req.file.mimetype.startsWith('image/')) {
+            subFolder = 'images';
+        } else if (req.file.mimetype.startsWith('audio/')) {
+            subFolder = 'audio';
+        }
+
+        // Relative web path for serving static files
+        const webPath = `/uploads/${subFolder}/${req.file.filename}`;
+
         const media = await MediaAsset.create({
             uploaded_by_user_id: req.user ? req.user.id : null,
             filename: req.file.originalname || req.file.filename,
-            file_path: req.file.path, // Direct Cloudinary secure URL
+            file_path: webPath,
             file_type: req.file.mimetype.startsWith('image/') ? 'image' : (req.file.mimetype.startsWith('audio/') ? 'audio' : 'other'),
             file_size: req.file.size,
             mime_type: req.file.mimetype

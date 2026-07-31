@@ -22,37 +22,7 @@ const getExperienceBySlug = async (req, res) => {
         let experience = await Experience.findOne({ slug: slugRegex });
 
         if (!experience) {
-            if (cleanSlug.toLowerCase() === 'vinit-dada-birthday') {
-                experience = await Experience.create({
-                    slug: 'vinit-dada-birthday',
-                    template_slug: 'birthday-belated-apology',
-                    category_slug: 'birthday',
-                    title: "Vinit Dada's Birthday Experience",
-                    client_name: 'Vinit Dada',
-                    is_published: true,
-                    data: {
-                        personName: 'Vinit Dada',
-                        petName: 'Vinit Dada',
-                        secretPin: '',
-                        lateReason: 'Finding the perfect words for someone as special as you took a little extra time! ✨',
-                        letterText: `Dearest Vinit Dada,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Birthday to my favorite person in the world! 💖`,
-                        favNotification: 'A SPECIAL SURPRISE CRAFTED FOR VINIT DADA 💖',
-                        stayCute: 'HAPPY BELATED BIRTHDAY TO VINIT DADA 🎂✨',
-                        iloveYou: 'ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY VINIT DADA! 🎉💖',
-                        meanToMe: 'Finding the perfect words took a little extra time, but my wishes for you are timeless. ❤️',
-                        scratchTitle: 'SURPRISE GIFT COUPON 🎁',
-                        scratchMessage: "I know I was a bit late, but you'll always be my #1! Enjoy your special week 🎉✨",
-                        bgMusic: 'https://assets.mixkit.co/music/preview/mixkit-romantic-sunburst-241.mp3',
-                        photo1: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80',
-                        photo2: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop&q=80',
-                        photo3: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&auto=format&fit=crop&q=80',
-                        photo4: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&auto=format&fit=crop&q=80',
-                        photo5: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&auto=format&fit=crop&q=80'
-                    }
-                });
-            } else {
-                return handle404(res, 'Digital Experience not found');
-            }
+            return handle404(res, 'Digital Experience not found');
         }
 
         // Safely increment view count

@@ -32,6 +32,29 @@ const TemplateControls = ({
     };
   }, [audioUrl]);
 
+  // Unlock Audio Playback on First User Interaction (Touch / Click) for Mobile Browsers
+  useEffect(() => {
+    if (!audioUrl) return;
+
+    const handleFirstInteraction = () => {
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play()
+          .then(() => setIsPlaying(true))
+          .catch((err) => console.warn("Auto-play on touch failed:", err));
+      }
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+
+    window.addEventListener("click", handleFirstInteraction);
+    window.addEventListener("touchstart", handleFirstInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+  }, [audioUrl]);
+
   const toggleMusic = (e) => {
     e.stopPropagation();
     if (!audioRef.current) return;
