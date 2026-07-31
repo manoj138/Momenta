@@ -201,8 +201,9 @@ export const AppProvider = ({ children }) => {
 
       try {
         const enqRes = await enquiryService.getAll();
-        if (enqRes && enqRes.status && enqRes.data && enqRes.data.length > 0) {
-          const formattedEnqs = enqRes.data.map(e => ({
+        const rawList = Array.isArray(enqRes?.data) ? enqRes.data : (Array.isArray(enqRes) ? enqRes : []);
+        if (rawList.length > 0) {
+          const formattedEnqs = rawList.map(e => ({
             id: String(e.id || e._id),
             clientName: e.client_name || e.clientName || "Client",
             clientEmail: e.client_email || e.clientEmail || "",

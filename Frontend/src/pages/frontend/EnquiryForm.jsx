@@ -26,6 +26,7 @@ const EnquiryForm = () => {
   const [dynamicValues, setDynamicValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get active fields schema
   const activeCategoryObj = categories.find(c => c.id === selectedCategory);
@@ -97,12 +98,15 @@ const EnquiryForm = () => {
     };
 
     try {
+      setIsSubmitting(true);
       const res = await enquiryService.create(enquiryPayload);
       const createdData = res?.data || res;
       addEnquiry({ ...enquiryPayload, id: createdData?.id || createdData?._id });
     } catch (err) {
       console.warn("Backend enquiry submission notice:", err.message);
       addEnquiry(enquiryPayload);
+    } finally {
+      setIsSubmitting(false);
     }
     
     setIsSuccess(true);
@@ -268,8 +272,20 @@ const EnquiryForm = () => {
               <span>Cancel & Back</span>
             </button>
             
-            <Button type="submit" variant="primary" className="cursor-pointer shadow-lg shadow-brand-500/20 px-8 py-3">
-              Submit Request Form
+            <Button 
+              type="submit" 
+              variant="primary" 
+              disabled={isSubmitting}
+              className="cursor-pointer shadow-lg shadow-brand-500/20 px-8 py-3 flex items-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Submitting Request...</span>
+                </>
+              ) : (
+                <span>Submit Request Form</span>
+              )}
             </Button>
           </div>
         </form>
