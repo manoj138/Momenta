@@ -198,7 +198,7 @@ const WeddingRoyalGold = ({ data = {}, isDemo = false }) => {
 
     try {
       await guestService.submitRsvp({
-        experience_id: data.id || 1,
+        experience_id: data._id || data.dbId || data.id || data.slug,
         guest_name: guestName,
         attending_status: rsvpStatus,
         guest_count: Number(guestCount),

@@ -42,10 +42,25 @@ const getAllMedia = async (req, res) => {
     }
 };
 
+const path = require('path');
+const fs = require('fs');
+
 const deleteMedia = async (req, res) => {
     try {
         const media = await MediaAsset.findById(req.params.id);
         if (!media) return handle404(res, 'Media not found');
+
+        if (media.file_path && media.file_path.startsWith('/uploads')) {
+            try {
+                const diskPath = path.join(process.cwd(), 'public', media.file_path.replace(/^\//, ''));
+                if (fs.existsSync(diskPath)) {
+                    fs.unlinkSync(diskPath);
+                }
+            } catch (unlinkErr) {
+                console.warn("Notice unlinking media file:", unlinkErr.message);
+            }
+        }
+
         await media.deleteOne();
         return handle200(res, null, 'Media asset deleted successfully');
     } catch (error) {
