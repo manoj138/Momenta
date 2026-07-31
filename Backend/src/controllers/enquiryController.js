@@ -7,7 +7,8 @@ const mongoose = require('mongoose');
 const getAllEnquiries = async (req, res) => {
     try {
         const enquiries = await Enquiry.find({})
-            .sort({ createdAt: -1 })
+            .select('-form_data')
+            .sort({ _id: -1 })
             .lean();
 
         const formattedEnquiries = (enquiries || []).map(e => ({
@@ -18,7 +19,7 @@ const getAllEnquiries = async (req, res) => {
         return handle200(res, formattedEnquiries);
     } catch (error) {
         console.error("Error fetching enquiries safely:", error);
-        return handle200(res, []);
+        return handle500(res, error);
     }
 };
 

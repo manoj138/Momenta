@@ -202,23 +202,21 @@ export const AppProvider = ({ children }) => {
       try {
         const enqRes = await enquiryService.getAll();
         const rawList = Array.isArray(enqRes?.data) ? enqRes.data : (Array.isArray(enqRes) ? enqRes : []);
-        if (rawList.length > 0) {
-          const formattedEnqs = rawList.map(e => ({
-            id: String(e.id || e._id),
-            clientName: e.client_name || e.clientName || "Client",
-            clientEmail: e.client_email || e.clientEmail || "",
-            clientPhone: e.client_phone || e.clientPhone || "",
-            category: e.category?.slug || e.category_slug || e.category_id || e.category || "birthday",
-            categoryId: e.category_id || e.category_slug,
-            templateId: e.template?.slug || e.template_slug || e.template_id || e.templateId || "birthday-cinematic-love",
-            submittedDetails: e.form_data || e.submittedDetails || {},
-            status: e.status || "New",
-            assignedTo: e.assigned_to_user_id || e.assignedTo || "",
-            notes: e.notes || "",
-            createdAt: e.createdAt || new Date().toISOString()
-          }));
-          setEnquiries(formattedEnqs);
-        }
+        const formattedEnqs = rawList.map(e => ({
+          id: String(e.id || e._id),
+          clientName: e.client_name || e.clientName || "Client",
+          clientEmail: e.client_email || e.clientEmail || "",
+          clientPhone: e.client_phone || e.clientPhone || "",
+          category: typeof e.category === "object" ? (e.category?.slug || e.category?.name) : (e.category_slug || e.category || "birthday"),
+          categoryId: String(e.category_id || e.category_slug || "birthday"),
+          templateId: typeof e.template === "object" ? (e.template?.slug || e.template?.name) : (e.template_slug || e.templateId || "birthday-cinematic-love"),
+          submittedDetails: e.form_data || e.submittedDetails || {},
+          status: e.status || "New",
+          assignedTo: e.assigned_to_user_id ? String(e.assigned_to_user_id._id || e.assigned_to_user_id) : (e.assignedTo ? String(e.assignedTo) : ""),
+          notes: e.notes || "",
+          createdAt: e.createdAt || new Date().toISOString()
+        }));
+        setEnquiries(formattedEnqs);
       } catch (e) {
         console.warn("Backend Enquiries API notice:", e.message);
       }

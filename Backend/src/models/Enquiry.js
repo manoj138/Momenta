@@ -67,5 +67,7 @@ EnquirySchema.virtual('template', {
     justOne: true
 });
 
+EnquirySchema.index({ createdAt: -1 });
+
 const Enquiry = mongoose.model('Enquiry', EnquirySchema);
 module.exports = Enquiry;

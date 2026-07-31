@@ -1,7 +1,7 @@
 import React from "react";
 import { useApp } from "../../../context/AppContext";
 import { useAuth } from "../../../context/AuthContext";
-import { FileText, CheckCircle2, ChevronRight, Activity, PlusCircle, Trash2, Pencil } from "lucide-react";
+import { FileText, CheckCircle2, ChevronRight, Activity, PlusCircle, Trash2, Pencil, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import Button from "../../../components/common/Button";
 
@@ -9,6 +9,7 @@ const CreatorDashboard = () => {
   const { enquiries, experiences, categories, deleteExperience, fetchApiData } = useApp();
   const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState("queue"); // "queue" | "completed"
 
   React.useEffect(() => {
     fetchApiData();
@@ -20,19 +21,29 @@ const CreatorDashboard = () => {
     setTimeout(() => setIsRefreshing(false), 500);
   };
 
-  // Filter tasks assigned to this creator OR unassigned new customer submissions
-  const creatorTasks = enquiries.filter(
-    (e) => (e.assignedTo === user?.id || !e.assignedTo || user?.role === "superadmin") && 
-           (e.status !== "Completed" && e.status !== "Cancelled")
-  );
+  // Filter tasks assigned to this creator OR unassigned new customer submissions OR all pending customer inquiries
+  const creatorTasks = enquiries.filter((e) => {
+    const statusLower = (e.status || "").toLowerCase();
+    const isFinished = statusLower === "completed" || statusLower === "cancelled";
+    return !isFinished;
+  });
 
-  const completedCount = enquiries.filter(
-    (e) => (e.assignedTo === user?.id || user?.role === "superadmin") && e.status === "Completed"
-  ).length;
+  const completedEnquiries = enquiries.filter((e) => {
+    const statusLower = (e.status || "").toLowerCase();
+    return statusLower === "completed";
+  });
+
+  const completedCount = completedEnquiries.length;
 
   const activeExperiences = experiences.filter(
     (exp) => exp.status === "published"
   );
+
+  const getSlugFromNotes = (notes) => {
+    if (!notes) return "";
+    const match = notes.match(/\/e\/([a-zA-Z0-9_-]+)/);
+    return match ? match[1] : "";
+  };
 
   return (
     <div className="p-6 md:p-10 space-y-8 bg-slate-950 min-h-screen text-white">
@@ -55,20 +66,30 @@ const CreatorDashboard = () => {
 
       {/* Metric summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-5 bg-slate-900 border border-white/5 rounded-2xl flex items-center justify-between">
+        <div 
+          onClick={() => setActiveTab("queue")}
+          className={`p-5 bg-slate-900 border rounded-2xl flex items-center justify-between cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
+            activeTab === "queue" ? "border-brand-500/50 ring-2 ring-brand-500/20" : "border-white/5 hover:border-white/20"
+          }`}
+        >
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Assigned Tasks</span>
-            <span className="block text-2xl font-extrabold">{creatorTasks.length}</span>
+            <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Pending Queue</span>
+            <span className="block text-2xl font-extrabold text-white">{creatorTasks.length}</span>
           </div>
           <div className="p-3 bg-brand-500/10 text-brand-400 rounded-xl">
             <Activity size={22} />
           </div>
         </div>
 
-        <div className="p-5 bg-slate-900 border border-white/5 rounded-2xl flex items-center justify-between">
+        <div 
+          onClick={() => setActiveTab("completed")}
+          className={`p-5 bg-slate-900 border rounded-2xl flex items-center justify-between cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
+            activeTab === "completed" ? "border-emerald-500/50 ring-2 ring-emerald-500/20" : "border-white/5 hover:border-white/20"
+          }`}
+        >
           <div className="space-y-1">
-            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Completed Invitations</span>
-            <span className="block text-2xl font-extrabold">{completedCount}</span>
+            <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">Completed Invitations</span>
+            <span className="block text-2xl font-extrabold text-emerald-400">{completedCount}</span>
           </div>
           <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
             <CheckCircle2 size={22} />
@@ -91,38 +112,122 @@ const CreatorDashboard = () => {
         
         {/* Task Lists */}
         <div className="lg:col-span-2 space-y-4">
-          <h3 className="text-lg font-bold text-brand-400">Your Assigned Production Queue</h3>
+          {/* Tab Controls */}
+          <div className="flex items-center gap-3 border-b border-white/10 pb-3">
+            <button
+              onClick={() => setActiveTab("queue")}
+              className={`text-sm font-bold pb-2 transition-all border-b-2 cursor-pointer ${
+                activeTab === "queue"
+                  ? "border-brand-500 text-brand-400"
+                  : "border-transparent text-gray-400 hover:text-white"
+              }`}
+            >
+              Pending Queue ({creatorTasks.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("completed")}
+              className={`text-sm font-bold pb-2 transition-all border-b-2 cursor-pointer ${
+                activeTab === "completed"
+                  ? "border-emerald-500 text-emerald-400"
+                  : "border-transparent text-gray-400 hover:text-white"
+              }`}
+            >
+              Completed Invitations ({completedEnquiries.length})
+            </button>
+          </div>
 
-          {creatorTasks.length === 0 ? (
-            <div className="p-12 text-center bg-slate-900 border border-white/5 rounded-2xl">
-              <p className="text-gray-400 text-sm">No pending customer inquiries assigned to you. Enjoy your day! 🎉</p>
-            </div>
-          ) : (
-            <div className="space-y-3.5">
-              {creatorTasks.map((task) => (
-                <div key={task.id} className="p-5 bg-slate-900 border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white">{task.clientName}</span>
-                      <span className="text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400">
-                        {categories.find(c => c.id === task.category)?.name || task.category}
-                      </span>
+          {activeTab === "queue" ? (
+            creatorTasks.length === 0 ? (
+              <div className="p-12 text-center bg-slate-900 border border-white/5 rounded-2xl">
+                <p className="text-gray-400 text-sm">No pending customer inquiries assigned to you. Enjoy your day! 🎉</p>
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                {creatorTasks.map((task) => (
+                  <div key={task.id} className="p-5 bg-slate-900 border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white">{task.clientName}</span>
+                        <span className="text-[10px] uppercase font-extrabold px-2.5 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400">
+                          {categories.find(c => c.id === task.category)?.name || task.category}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400">Contact: {task.clientPhone} • {task.clientEmail}</p>
+                      <p className="text-[11px] text-gray-400 font-medium flex items-center gap-1.5 pt-0.5">
+                        <Clock size={12} className="text-brand-400 shrink-0" />
+                        <span>Submitted: {new Date(task.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} at {new Date(task.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                      </p>
                     </div>
-                    <p className="text-xs text-gray-400">Contact: {task.clientPhone} • {task.clientEmail}</p>
-                    <p className="text-[11px] text-gray-500">Submitted: {new Date(task.createdAt).toLocaleDateString()}</p>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <Link to={`/creator/experience/create/${task.id}`}>
-                      <Button variant="primary" size="sm" className="flex items-center gap-1.5 cursor-pointer">
-                        <PlusCircle size={14} />
-                        <span>Launch Creator Studio</span>
-                      </Button>
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link to={`/creator/experience/create/${task.id}`}>
+                        <Button variant="primary" size="sm" className="flex items-center gap-1.5 cursor-pointer">
+                          <PlusCircle size={14} />
+                          <span>Launch Creator Studio</span>
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )
+          ) : (
+            completedEnquiries.length === 0 ? (
+              <div className="p-12 text-center bg-slate-900 border border-white/5 rounded-2xl">
+                <p className="text-gray-400 text-sm">No completed invitations yet. Publish your first digital card to see it here! ✨</p>
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                {completedEnquiries.map((item) => {
+                  const liveSlug = getSlugFromNotes(item.notes);
+
+                  return (
+                    <div key={item.id} className="p-5 bg-slate-900 border border-emerald-500/20 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-lg shadow-emerald-950/20">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2.5">
+                          <span className="font-bold text-white text-base">{item.clientName}</span>
+                          <span className="text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                            <CheckCircle2 size={11} />
+                            <span>Completed & Published</span>
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-400">Contact: {item.clientPhone} • {item.clientEmail}</p>
+                        <p className="text-[11px] text-gray-400 font-medium flex items-center gap-1.5 pt-0.5">
+                          <Clock size={12} className="text-emerald-400 shrink-0" />
+                          <span>Submitted: {new Date(item.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} at {new Date(item.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-gray-400 pt-0.5">
+                          <span className="text-[11px] bg-slate-800 px-2 py-0.5 rounded text-gray-300">Category: {item.category}</span>
+                          {liveSlug && (
+                            <span className="font-mono text-emerald-400 text-[11px]">Link: /e/{liveSlug}</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2.5">
+                        {liveSlug && (
+                          <a
+                            href={`/e/${liveSlug}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition-all flex items-center gap-1.5 shadow-md shadow-emerald-600/20"
+                          >
+                            <FileText size={14} />
+                            <span>Visit Live Card</span>
+                          </a>
+                        )}
+                        <Link to={`/creator/experience/create/${item.id}`}>
+                          <Button variant="outline" size="sm" className="bg-white/5 border-white/10 hover:bg-white/10 text-xs font-bold py-2 flex items-center gap-1.5">
+                            <Pencil size={13} />
+                            <span>Edit Card</span>
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )
           )}
         </div>
 

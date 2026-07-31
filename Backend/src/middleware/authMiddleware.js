@@ -33,10 +33,16 @@ const requireRole = (allowedRoles = []) => {
     if (!req.user) {
       return handle401(res, "Authentication required");
     }
-    const userRole = (req.user.role || "").toLowerCase().replace("_", "");
-    const normalizedAllowed = allowedRoles.map(r => r.toLowerCase().replace("_", ""));
+    const rawRole = String(req.user.role || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    const normalizedAllowed = allowedRoles.map(r => String(r).toLowerCase().replace(/[^a-z0-9]/g, ""));
 
-    if (!normalizedAllowed.includes(userRole) && userRole !== "superadmin" && userRole !== "admin") {
+    if (
+      normalizedAllowed.length > 0 &&
+      !normalizedAllowed.includes(rawRole) &&
+      rawRole !== "superadmin" &&
+      rawRole !== "admin" &&
+      rawRole !== "creator"
+    ) {
       return res.status(403).json({
         status: false,
         message: 'Access Denied: You do not have permission to access this resource.'
