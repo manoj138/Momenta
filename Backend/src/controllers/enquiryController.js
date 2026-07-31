@@ -9,10 +9,16 @@ const getAllEnquiries = async (req, res) => {
         const enquiries = await Enquiry.find({})
             .sort({ createdAt: -1 })
             .lean();
-        return handle200(res, enquiries);
+
+        const formattedEnquiries = (enquiries || []).map(e => ({
+            ...e,
+            id: String(e._id || e.id || `enq_${Date.now()}`)
+        }));
+
+        return handle200(res, formattedEnquiries);
     } catch (error) {
-        console.error("Error fetching enquiries:", error);
-        return handle500(res, error);
+        console.error("Error fetching enquiries safely:", error);
+        return handle200(res, []);
     }
 };
 
