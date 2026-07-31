@@ -5,6 +5,10 @@ export const enquiryService = {
         const response = await Api.get('/enquiries');
         return response.data;
     },
+    getById: async (id) => {
+        const response = await Api.get(`/enquiries/${id}`);
+        return response.data;
+    },
     create: async (enquiryData) => {
         const response = await Api.post('/enquiries', enquiryData);
         return response.data;

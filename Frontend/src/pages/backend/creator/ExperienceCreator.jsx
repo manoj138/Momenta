@@ -77,14 +77,47 @@ const ExperienceCreator = () => {
     }
   }, [targetExp]);
 
-  // Synchronize dynamic form data once the enquiry loads from context (if not editing)
+  const [singleEnquiryDetails, setSingleEnquiryDetails] = useState(null);
+
+  // Fetch full enquiry details (including form_data) from backend when in Enquiry Mode
   useEffect(() => {
-    if (!targetExp && enquiry && enquiry.submittedDetails && !initialLoadRef.current) {
-      console.log("Syncing form data with loaded enquiry details:", enquiry.submittedDetails);
+    if (enquiryId && !targetExp && !initialLoadRef.current) {
+      enquiryService.getById(enquiryId)
+        .then((res) => {
+          const rawEnq = res?.data || res;
+          if (rawEnq) {
+            console.log("Fetched single enquiry details for studio:", rawEnq);
+            setSingleEnquiryDetails(rawEnq);
+            const submitted = rawEnq.form_data || rawEnq.submittedDetails || {};
+            const normalized = {};
+            Object.entries(submitted).forEach(([key, val]) => {
+              normalized[key] = val;
+              if (key.includes("_")) {
+                const camel = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+                normalized[camel] = val;
+              } else {
+                const snake = key.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+                normalized[snake] = val;
+              }
+            });
+            setFormData((prev) => ({ ...prev, ...normalized }));
+            initialLoadRef.current = true;
+          }
+        })
+        .catch((err) => {
+          console.warn("Could not fetch single enquiry details:", err.message);
+        });
+    }
+  }, [enquiryId, targetExp]);
+
+  // Synchronize dynamic form data once the enquiry loads from context (fallback if single fetch not used)
+  useEffect(() => {
+    const targetDetails = singleEnquiryDetails?.form_data || enquiry?.submittedDetails;
+    if (!targetExp && targetDetails && !initialLoadRef.current) {
+      console.log("Syncing form data with loaded enquiry details:", targetDetails);
       
-      // Double-safe: Normalise keys to have both camelCase and snake_case versions
       const normalized = {};
-      Object.entries(enquiry.submittedDetails).forEach(([key, val]) => {
+      Object.entries(targetDetails).forEach(([key, val]) => {
         normalized[key] = val;
         if (key.includes("_")) {
           const camel = key.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
@@ -101,7 +134,7 @@ const ExperienceCreator = () => {
       }));
       initialLoadRef.current = true;
     }
-  }, [enquiry, targetExp]);
+  }, [enquiry, targetExp, singleEnquiryDetails]);
 
   // Synchronize template selection from enquiry preferences
   useEffect(() => {
@@ -188,15 +221,31 @@ const ExperienceCreator = () => {
     });
   };
 
-  const handlePreview = () => {
-    const payload = {
-      templateId: selectedTemplateId,
+  const handlePreview = async () => {
+    if (!slug) return;
+    const selectedTemplate = templates.find((t) => t.id === selectedTemplateId);
+    const activeCategoryObj = categories.find((c) => c.id === enquiry?.category);
+    const isMongoId = (id) => typeof id === "string" && id.length === 24 && /^[0-9a-fA-F]{24}$/.test(id);
+
+    const experiencePayload = {
+      slug: slug.trim(),
+      template_id: isMongoId(selectedTemplate?.dbId) ? selectedTemplate.dbId : undefined,
+      category_id: isMongoId(activeCategoryObj?.dbId) ? activeCategoryObj.dbId : undefined,
+      template_slug: selectedTemplateId,
+      category_slug: enquiry?.category || "birthday",
+      title: `${enquiry?.clientName || "Client"}'s Experience`,
+      client_name: enquiry?.clientName || "Client",
+      is_published: true,
       data: formData,
-      clientName: enquiry.clientName
     };
-    console.log("Opening preview with payload:", payload);
-    safeSetLocalStorage("momenta_preview_data", payload);
-    window.open("/e/preview", "_blank");
+
+    try {
+      console.log("Saving preview directly to MongoDB Database:", experiencePayload);
+      await experienceService.create(experiencePayload);
+    } catch (err) {
+      console.warn("MongoDB preview save notice:", err);
+    }
+    window.open(`/e/${slug.trim()}`, "_blank");
   };
 
   const performSave = async () => {

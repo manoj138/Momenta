@@ -75,27 +75,12 @@ const ExperienceViewer = () => {
           clientName: "Rahul & Priya",
           data: {}
         },
-        "wedding-animated": {
-          templateId: "wedding-animated",
-          clientName: "Rahul & Priya",
-          data: {}
-        },
         "royal-gold-demo": {
           templateId: "wedding-royal-gold",
           clientName: "Rahul & Priya",
           data: {}
         },
-        "wedding-royal-gold": {
-          templateId: "wedding-royal-gold",
-          clientName: "Rahul & Priya",
-          data: {}
-        },
         "neon-surprise-demo": {
-          templateId: "birthday-neon-surprise",
-          clientName: "Sneha Shinde",
-          data: {}
-        },
-        "birthday-neon-surprise": {
           templateId: "birthday-neon-surprise",
           clientName: "Sneha Shinde",
           data: {}
@@ -112,46 +97,6 @@ const ExperienceViewer = () => {
             venueAddress: "123 Elegance Road, Sector 5",
             secretReveal: "Join us for cake cutting and special announcement!",
             description: "Join us for an elegant evening of cinematic storytelling, celebration, and love."
-          }
-        },
-        "birthday-cinematic-love": {
-          templateId: "birthday-cinematic-love",
-          clientName: "Sneha Shinde",
-          data: {
-            personName: "Sneha Shinde",
-            age: 25,
-            eventDate: "Saturday, October 18",
-            eventTime: "7:00 PM Onwards",
-            venueName: "Skyline Lounge, Royal Park",
-            venueAddress: "123 Elegance Road, Sector 5",
-            secretReveal: "Join us for cake cutting and special announcement!",
-            description: "Join us for an elegant evening of cinematic storytelling, celebration, and love."
-          }
-        },
-        "birthday-belated-apology": {
-          templateId: "birthday-belated-apology",
-          clientName: "Sneha Shinde",
-          data: {
-            personName: "Sneha",
-            petName: "Cutie",
-            lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
-            letterText: "Dearest Sneha,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
-            favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
-            stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
-            iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
-          }
-        },
-        "vinit-dada-birthday": {
-          templateId: "birthday-belated-apology",
-          clientName: "Vinit Dada",
-          data: {
-            personName: "Vinit Dada",
-            petName: "Cutie",
-            lateReason: "Finding the perfect words for someone as special as you took a little extra time! ✨",
-            letterText: "Dearest Vinit Dada,\n\nI know I missed the exact clock tick of your birthday, but please know that every single beat of my heart is always celebrating you.\n\nYou bring so much sunshine, laughter, and magic into my life that a single day isn't enough to celebrate you anyway. So consider this the start of your extended birthday week!\n\nHappy Belated Birthday to my favorite person in the world! 💖",
-            favNotification: "BETTER LATE THAN NEVER — YOU ARE MY FAVORITE PERSON 💖",
-            stayCute: "HAPPY BELATED BIRTHDAY TO MY FAVORITE PERSON 🎂✨",
-            iloveYou: "ONCE AGAIN, SORRY FOR BEING LATE! 🥺 HAPPY BIRTHDAY! 🎉💖"
           }
         },
         "belated-apology-demo": {

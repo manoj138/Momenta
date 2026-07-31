@@ -68,8 +68,23 @@ const deleteEnquiry = async (req, res) => {
     }
 };
 
+const getEnquiryById = async (req, res) => {
+    try {
+        const enquiry = await Enquiry.findById(req.params.id).lean();
+        if (!enquiry) return handle404(res, 'Enquiry not found');
+        return handle200(res, {
+            ...enquiry,
+            id: String(enquiry._id || enquiry.id)
+        });
+    } catch (error) {
+        console.error("Error fetching single enquiry:", error);
+        return handle500(res, error);
+    }
+};
+
 module.exports = {
     getAllEnquiries,
+    getEnquiryById,
     createEnquiry,
     updateEnquiryStatus,
     deleteEnquiry

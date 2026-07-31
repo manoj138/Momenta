@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Button from "../../../components/common/Button";
 
 const CreatorDashboard = () => {
-  const { enquiries, experiences, categories, deleteExperience, fetchApiData } = useApp();
+  const { enquiries, experiences, categories, deleteExperience, deleteEnquiry, fetchApiData } = useApp();
   const { user } = useAuth();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("queue"); // "queue" | "completed"
@@ -43,6 +43,12 @@ const CreatorDashboard = () => {
     if (!notes) return "";
     const match = notes.match(/\/e\/([a-zA-Z0-9_-]+)/);
     return match ? match[1] : "";
+  };
+
+  const handleDeleteEnquiry = async (id, name) => {
+    if (window.confirm(`Are you sure you want to delete the enquiry for "${name}"? This action cannot be undone.`)) {
+      await deleteEnquiry(id);
+    }
   };
 
   return (
@@ -166,6 +172,13 @@ const CreatorDashboard = () => {
                           <span>Launch Creator Studio</span>
                         </Button>
                       </Link>
+                      <button
+                        onClick={() => handleDeleteEnquiry(task.id, task.clientName)}
+                        className="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 rounded-xl border border-rose-500/20 transition-all cursor-pointer flex items-center justify-center"
+                        title="Delete Enquiry"
+                      >
+                        <Trash2 size={15} />
+                      </button>
                     </div>
                   </div>
                 ))}

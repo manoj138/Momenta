@@ -357,7 +357,7 @@ export const AppProvider = ({ children }) => {
   const addRSVPToExperience = (slug, rsvp) => {
     setExperiences((prev) => prev.map((exp) => {
       if (exp.slug === slug) {
-        const rsvpList = exp.data.rsvpList || [];
+        const rsvpList = exp.data?.rsvpList || [];
         return {
           ...exp,
           data: {
@@ -370,15 +370,25 @@ export const AppProvider = ({ children }) => {
     }));
   };
 
+  const deleteEnquiry = async (id) => {
+    try {
+      const { enquiryService } = await import("../services/enquiryService");
+      await enquiryService.delete(id);
+    } catch (e) {
+      console.warn("API Enquiry deletion notice:", e.message);
+    }
+    setEnquiries((prev) => prev.filter((e) => e.id !== id && String(e._id || e.id) !== String(id)));
+  };
+
   return (
     <AppContext.Provider
       value={{
-        fetchApiData,
         categories,
         templates,
         admins,
         enquiries,
         experiences,
+        fetchApiData,
         addCategory,
         updateCategory,
         deleteCategory,
@@ -390,6 +400,7 @@ export const AppProvider = ({ children }) => {
         deleteAdmin,
         addEnquiry,
         updateEnquiryStatus,
+        deleteEnquiry,
         addExperience,
         updateExperience,
         deleteExperience,

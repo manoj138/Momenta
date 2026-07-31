@@ -4,6 +4,7 @@ const enquiryController = require('../controllers/enquiryController');
 const { authenticateToken, requireRole } = require('../middleware/authMiddleware');
 
 router.get('/', authenticateToken, enquiryController.getAllEnquiries);
+router.get('/:id', authenticateToken, enquiryController.getEnquiryById);
 router.post('/', enquiryController.createEnquiry); // Public customer submission
 router.put('/:id/status', authenticateToken, enquiryController.updateEnquiryStatus);
 router.delete('/:id', authenticateToken, enquiryController.deleteEnquiry);
