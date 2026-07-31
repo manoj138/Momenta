@@ -194,20 +194,7 @@ export const AppProvider = ({ children }) => {
           }));
         }
 
-        let localExps = [];
-        try {
-          const stored = localStorage.getItem("momenta_local_experiences");
-          if (stored) localExps = JSON.parse(stored);
-        } catch (err) {}
-
-        const mergedExps = [...apiExps];
-        localExps.forEach(localExp => {
-          if (!mergedExps.some(e => e.slug === localExp.slug)) {
-            mergedExps.push(localExp);
-          }
-        });
-
-        setExperiences(mergedExps);
+        setExperiences(apiExps);
       } catch (e) {
         console.warn("Backend Experiences API notice:", e.message);
       }
@@ -262,6 +249,10 @@ export const AppProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    try {
+      localStorage.removeItem("momenta_local_experiences");
+      localStorage.removeItem("momenta_local_enquiries");
+    } catch (e) {}
     fetchApiData();
   }, []);
 
@@ -321,11 +312,7 @@ export const AppProvider = ({ children }) => {
       notes: enquiry.notes || "",
       ...enquiry,
     };
-    setEnquiries((prev) => {
-      const updated = [fullEnquiry, ...prev.filter(e => e.id !== fullEnquiry.id)];
-      safeSetLocalStorage("momenta_local_enquiries", updated);
-      return updated;
-    });
+    setEnquiries((prev) => [fullEnquiry, ...prev.filter(e => e.id !== fullEnquiry.id)]);
     return fullEnquiry;
   };
   const updateEnquiryStatus = (id, status, notes = "", assignedTo = null) => {
@@ -353,26 +340,14 @@ export const AppProvider = ({ children }) => {
         ...experience.data
       }
     };
-    setExperiences((prev) => {
-      const updated = [fullExperience, ...prev.filter(e => e.slug !== fullExperience.slug)];
-      safeSetLocalStorage("momenta_local_experiences", updated);
-      return updated;
-    });
+    setExperiences((prev) => [fullExperience, ...prev.filter(e => e.slug !== fullExperience.slug)]);
     return fullExperience;
   };
   const updateExperience = (id, updatedFields) => {
-    setExperiences((prev) => {
-      const updated = prev.map((e) => (e.id === id || e.slug === id ? { ...e, ...updatedFields } : e));
-      safeSetLocalStorage("momenta_local_experiences", updated);
-      return updated;
-    });
+    setExperiences((prev) => prev.map((e) => (e.id === id || e.slug === id ? { ...e, ...updatedFields } : e)));
   };
   const deleteExperience = async (id) => {
-    setExperiences((prev) => {
-      const updated = prev.filter((e) => e.id !== id && e.slug !== id);
-      safeSetLocalStorage("momenta_local_experiences", updated);
-      return updated;
-    });
+    setExperiences((prev) => prev.filter((e) => e.id !== id && e.slug !== id));
 
     try {
       await experienceService.delete(id);

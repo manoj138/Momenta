@@ -96,11 +96,13 @@ Api.interceptors.response.use(
 
 const sessionStore = (token, user) => {
     localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("users", JSON.stringify(user));
 }
 
 const sessionRemove = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     localStorage.removeItem("users");
 }
 
