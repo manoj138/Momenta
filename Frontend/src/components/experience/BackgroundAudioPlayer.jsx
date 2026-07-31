@@ -8,7 +8,7 @@ import { Volume2, VolumeX, Music } from "lucide-react";
  * @param {boolean} [autoPlay=false] - Whether to attempt autoplay on user gesture
  * @param {string} [position="bottom-right"] - Button positioning ('bottom-right' | 'top-right' | 'bottom-left' | 'top-left')
  */
-const BackgroundAudioPlayer = ({ audioUrl, autoPlay = false, position = "bottom-right" }) => {
+const BackgroundAudioPlayer = ({ audioUrl, autoPlay = false, position = "top-right" }) => {
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [hasInteracted, setHasInteracted] = useState(false);
   const audioRef = useRef(null);
@@ -33,15 +33,15 @@ const BackgroundAudioPlayer = ({ audioUrl, autoPlay = false, position = "bottom-
 
   const getPositionClasses = () => {
     switch (position) {
-      case "top-right":
-        return "top-6 right-6";
+      case "bottom-right":
+        return "bottom-6 right-6";
       case "top-left":
         return "top-6 left-6";
       case "bottom-left":
         return "bottom-6 left-6";
-      case "bottom-right":
+      case "top-right":
       default:
-        return "bottom-6 right-6";
+        return "top-6 right-6";
     }
   };
 

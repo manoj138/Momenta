@@ -216,7 +216,22 @@ const ExperienceViewer = () => {
         return "birthday-belated-apology";
       };
 
-      // 1. TOP PRIORITY: Smart Backend Fetch with Retry Loop for Render Cold Starts
+      // 1. TOP PRIORITY: Check static demo templates first to prevent 404 network warnings
+      if (demoTemplates[slug]) {
+        const demo = demoTemplates[slug];
+        setExperience({
+          slug: slug,
+          templateId: demo.templateId,
+          data: demo.data,
+          clientName: demo.clientName,
+          status: "published",
+          is_published: true
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 2. SECOND PRIORITY: Smart Backend Fetch with Retry Loop for Live Links
       let attempts = 0;
       let expData = null;
 
