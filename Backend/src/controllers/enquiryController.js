@@ -8,8 +8,7 @@ const getAllEnquiries = async (req, res) => {
     try {
         const enquiries = await Enquiry.find({})
             .sort({ createdAt: -1 })
-            .populate('category')
-            .populate('template');
+            .lean();
         return handle200(res, enquiries);
     } catch (error) {
         console.error("Error fetching enquiries:", error);
